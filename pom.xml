@@ -9,16 +9,17 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.dataint.applicataion</groupId>
-    <artifactId>wxhg-diseasepo-back</artifactId>
+    <artifactId>wxhg-infectdismonitor-back</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>wxhg-diseasepo-back</name>
-    <description>无锡海关-全球人类传染病疫情监测系统</description>
+    <name>wxhg-infectdismonitor-back</name>
+    <description>无锡海关-全球人类传染病智慧监测预警系统</description>
 
     <modules>
         <module>cloud-common</module>
-        <module>app-diseasepo</module>
+        <module>app-monitor</module>
         <module>service-datapack</module>
+        <module>service-topic</module>
     </modules>
 
     <properties>
@@ -27,8 +28,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
         <!-- spring -->
-        <spring-cloud.version>Greenwich.SR4</spring-cloud.version>
-        <spring-boot.test.version>2.2.2.RELEASE</spring-boot.test.version>
+        <spring-boot.test.version>2.1.5.RELEASE</spring-boot.test.version>
         <!-- dependency -->
         <springfox.swagger.version>2.9.2</springfox.swagger.version>
         <fastjson.version>1.2.54</fastjson.version>
@@ -38,8 +38,7 @@
         <!-- docker -->
         <docker.image.prefix>dataint</docker.image.prefix>
         <!-- dataint -->
-        <dataint.cloud-common.version>0.0.1-SNAPSHOT</dataint.cloud-common.version>
-        <dataint.cloud-auth-client.version>0.0.1-SNAPSHOT</dataint.cloud-auth-client.version>
+        <dataint.cloud-common.version>0.0.1-RELEASE</dataint.cloud-common.version>
     </properties>
 
     <dependencies>
@@ -102,6 +101,4 @@
             <version>${joda-time.version}</version>
         </dependency>
     </dependencies>
-
-
 </project>

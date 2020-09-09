@@ -1,102 +1,102 @@
-stages:
-  - .pre
-  - build_common
-  - build_A
-  - .post
-
-## pre
-pre_deploy_file:
-  stage: .pre
-  only:
-    - master
-    - dev
-  script:
-    - zip -r deploy.zip ./deploy/deploy.sh
-    # 不同分支 对应 不同变量
-    - if [ "${CI_COMMIT_REF_NAME}" == "master" ]; then USER_NAME=${user_master}; else USER_NAME=${user_test}; fi
-    - if [ "${CI_COMMIT_REF_NAME}" == "master" ]; then HOST=${host_master}; else HOST=${host_test}; fi
-    - if [ "${CI_COMMIT_REF_NAME}" == "master" ]; then BRANCH_NAME="branch-master"; else BRANCH_NAME="branch-test"; fi
-    # 部署
-    - scp -P 88 deploy.zip ${USER_NAME}@${HOST}:/opt/coding/dataint-cloud/${BRANCH_NAME}/
-    - ssh -p 88 ${USER_NAME}@${HOST} "cd /opt/coding/dataint-cloud/${BRANCH_NAME}/ ; unzip -o deploy.zip"
-
-## dataint
-build_master_common:
-  stage: build_common
-  only:
-    refs:
-      - master
-      - dev
-  script:
-    - pwd
-    - whoami
-    - cd sub/cloud-base/cloud-parent/ && mvn clean install -Dmaven.test.skip=true
-    - cd ../cloud-common/ && mvn clean install -Dmaven.test.skip=true
-    - cd ../cloud-auth-client/ && mvn clean install -Dmaven.test.skip=true
-    - cd ../../../
-
-## app-diseasepo
-build_master_diseasepo:
-  stage: build_A
-  only:
-    refs:
-      - master
-      - dev
-    changes:
-      - app-diseasepo/**/*
-  script:
-    - pwd
-    - whoami
-    # 不同分支 对应 不同变量
-    - if [ "${CI_COMMIT_REF_NAME}" == "master" ]; then USER_NAME=${user_master}; else USER_NAME=${user_test}; fi
-    - if [ "${CI_COMMIT_REF_NAME}" == "master" ]; then HOST=${host_master}; else HOST=${host_test}; fi
-    - if [ "${CI_COMMIT_REF_NAME}" == "master" ]; then BRANCH_NAME="branch-master"; else BRANCH_NAME="branch-test"; fi
-    # 上传所需本地资源
-    - cp -r ./app-diseasepo/src/main/resources/report ./
-    - zip -r resource.zip ./report
-    - scp -P 88 ./resource.zip ${USER_NAME}@${HOST}:/opt/coding/dataint-cloud/${BRANCH_NAME}/app-diseasepo/
-    - ssh -p 88 ${USER_NAME}@${HOST} "cd /opt/coding/dataint-cloud/${BRANCH_NAME}/app-diseasepo ; unzip -o resource.zip ; rm resource.zip"
-    # 后台打包部署
-    - cd app-diseasepo/
-    - mvn clean install -Dmaven.test.skip=true
-    - cd ../
-    - scp -P 88 ./app-diseasepo/target/app-diseasepo-0.0.1-SNAPSHOT.jar ${USER_NAME}@${HOST}:/opt/coding/dataint-cloud/${BRANCH_NAME}/app-diseasepo/
-    - ssh -p 88 ${USER_NAME}@${HOST} "cd /opt/coding/dataint-cloud/${BRANCH_NAME}/ ; bash ./deploy/deploy.sh ${BRANCH_NAME} app-diseasepo 0.0.1-SNAPSHOT"
-
-## service-datapack
-build_master_datapack:
-  stage: build_A
-  only:
-    refs:
-      - master
-      - dev
-    changes:
-      - service-datapack/**/*
-  script:
-    - pwd
-    - whoami
-    # 不同分支 对应 不同变量
-    - if [ "${CI_COMMIT_REF_NAME}" == "master" ]; then USER_NAME=${user_master}; else USER_NAME=${user_test}; fi
-    - if [ "${CI_COMMIT_REF_NAME}" == "master" ]; then HOST=${host_master}; else HOST=${host_test}; fi
-    - if [ "${CI_COMMIT_REF_NAME}" == "master" ]; then BRANCH_NAME="branch-master"; else BRANCH_NAME="branch-test"; fi
-    # 后台打包部署
-    - cd service-datapack/
-    - mvn clean install -Dmaven.test.skip=true
-    - cd ../
-    - scp -P 88 ./service-datapack/target/service-datapack-0.0.1-SNAPSHOT.jar ${USER_NAME}@${HOST}:/opt/coding/dataint-cloud/${BRANCH_NAME}/service-datapack/
-    - ssh -p 88 ${USER_NAME}@${HOST} "cd /opt/coding/dataint-cloud/${BRANCH_NAME}/ ; bash ./deploy/deploy.sh ${BRANCH_NAME} service-datapack 0.0.1-SNAPSHOT"
-
-## post
-post_deploy_file:
-  stage: .post
-  only:
-    - master
-    - dev
-  script:
-    - pwd
-    - whoami
-    # 不同分支 对应 不同变量
-    - if [ "${CI_COMMIT_REF_NAME}" == "master" ]; then USER_NAME=${user_master}; else USER_NAME=${user_test}; fi
-    - if [ "${CI_COMMIT_REF_NAME}" == "master" ]; then HOST=${host_master}; else HOST=${host_test}; fi
-    - if [ "${CI_COMMIT_REF_NAME}" == "master" ]; then BRANCH_NAME="branch-master"; else BRANCH_NAME="branch-test"; fi
-    - ssh -p 88 ${USER_NAME}@${HOST} "cd /opt/coding/dataint-cloud/${BRANCH_NAME}/ ; rm deploy.zip"
+#stages:
+#  - .pre
+#  - build_common
+#  - build_A
+#  - .post
+#
+### pre
+#pre_deploy_file:
+#  stage: .pre
+#  only:
+#    - master
+#    - dev
+#  script:
+#    - zip -r deploy.zip ./deploy/deploy.sh
+#    # 不同分支 对应 不同变量
+#    - if [ "${CI_COMMIT_REF_NAME}" == "master" ]; then USER_NAME=${user_master}; else USER_NAME=${user_test}; fi
+#    - if [ "${CI_COMMIT_REF_NAME}" == "master" ]; then HOST=${host_master}; else HOST=${host_test}; fi
+#    - if [ "${CI_COMMIT_REF_NAME}" == "master" ]; then BRANCH_NAME="branch-master"; else BRANCH_NAME="branch-test"; fi
+#    # 部署
+#    - scp -P 88 deploy.zip ${USER_NAME}@${HOST}:/opt/coding/dataint-cloud/${BRANCH_NAME}/
+#    - ssh -p 88 ${USER_NAME}@${HOST} "cd /opt/coding/dataint-cloud/${BRANCH_NAME}/ ; unzip -o deploy.zip"
+#
+### dataint
+#build_master_common:
+#  stage: build_common
+#  only:
+#    refs:
+#      - master
+#      - dev
+#  script:
+#    - pwd
+#    - whoami
+#    - cd sub/cloud-base/cloud-parent/ && mvn clean install -Dmaven.test.skip=true
+#    - cd ../cloud-common/ && mvn clean install -Dmaven.test.skip=true
+#    - cd ../cloud-auth-client/ && mvn clean install -Dmaven.test.skip=true
+#    - cd ../../../
+#
+### app-monitor
+#build_master_diseasepo:
+#  stage: build_A
+#  only:
+#    refs:
+#      - master
+#      - dev
+#    changes:
+#      - app-monitor/**/*
+#  script:
+#    - pwd
+#    - whoami
+#    # 不同分支 对应 不同变量
+#    - if [ "${CI_COMMIT_REF_NAME}" == "master" ]; then USER_NAME=${user_master}; else USER_NAME=${user_test}; fi
+#    - if [ "${CI_COMMIT_REF_NAME}" == "master" ]; then HOST=${host_master}; else HOST=${host_test}; fi
+#    - if [ "${CI_COMMIT_REF_NAME}" == "master" ]; then BRANCH_NAME="branch-master"; else BRANCH_NAME="branch-test"; fi
+#    # 上传所需本地资源
+#    - cp -r ./app-monitor/src/main/resources/report ./
+#    - zip -r resource.zip ./report
+#    - scp -P 88 ./resource.zip ${USER_NAME}@${HOST}:/opt/coding/dataint-cloud/${BRANCH_NAME}/app-monitor/
+#    - ssh -p 88 ${USER_NAME}@${HOST} "cd /opt/coding/dataint-cloud/${BRANCH_NAME}/app-monitor ; unzip -o resource.zip ; rm resource.zip"
+#    # 后台打包部署
+#    - cd app-monitor/
+#    - mvn clean install -Dmaven.test.skip=true
+#    - cd ../
+#    - scp -P 88 ./app-monitor/target/app-monitor-0.0.1-SNAPSHOT.jar ${USER_NAME}@${HOST}:/opt/coding/dataint-cloud/${BRANCH_NAME}/app-monitor/
+#    - ssh -p 88 ${USER_NAME}@${HOST} "cd /opt/coding/dataint-cloud/${BRANCH_NAME}/ ; bash ./deploy/deploy.sh ${BRANCH_NAME} app-monitor 0.0.1-SNAPSHOT"
+#
+### service-datapack
+#build_master_datapack:
+#  stage: build_A
+#  only:
+#    refs:
+#      - master
+#      - dev
+#    changes:
+#      - service-datapack/**/*
+#  script:
+#    - pwd
+#    - whoami
+#    # 不同分支 对应 不同变量
+#    - if [ "${CI_COMMIT_REF_NAME}" == "master" ]; then USER_NAME=${user_master}; else USER_NAME=${user_test}; fi
+#    - if [ "${CI_COMMIT_REF_NAME}" == "master" ]; then HOST=${host_master}; else HOST=${host_test}; fi
+#    - if [ "${CI_COMMIT_REF_NAME}" == "master" ]; then BRANCH_NAME="branch-master"; else BRANCH_NAME="branch-test"; fi
+#    # 后台打包部署
+#    - cd service-datapack/
+#    - mvn clean install -Dmaven.test.skip=true
+#    - cd ../
+#    - scp -P 88 ./service-datapack/target/service-datapack-0.0.1-SNAPSHOT.jar ${USER_NAME}@${HOST}:/opt/coding/dataint-cloud/${BRANCH_NAME}/service-datapack/
+#    - ssh -p 88 ${USER_NAME}@${HOST} "cd /opt/coding/dataint-cloud/${BRANCH_NAME}/ ; bash ./deploy/deploy.sh ${BRANCH_NAME} service-datapack 0.0.1-SNAPSHOT"
+#
+### post
+#post_deploy_file:
+#  stage: .post
+#  only:
+#    - master
+#    - dev
+#  script:
+#    - pwd
+#    - whoami
+#    # 不同分支 对应 不同变量
+#    - if [ "${CI_COMMIT_REF_NAME}" == "master" ]; then USER_NAME=${user_master}; else USER_NAME=${user_test}; fi
+#    - if [ "${CI_COMMIT_REF_NAME}" == "master" ]; then HOST=${host_master}; else HOST=${host_test}; fi
+#    - if [ "${CI_COMMIT_REF_NAME}" == "master" ]; then BRANCH_NAME="branch-master"; else BRANCH_NAME="branch-test"; fi
+#    - ssh -p 88 ${USER_NAME}@${HOST} "cd /opt/coding/dataint-cloud/${BRANCH_NAME}/ ; rm deploy.zip"

@@ -1,0 +1,53 @@
+# Server configuration
+server:
+  port: 8072
+
+spring:
+  application:
+    name: app-monitor
+  profiles:
+    active: dev
+
+#######
+# dev #
+#######
+---
+spring:
+  profiles: dev
+
+logging:
+  file: logs/${spring.application.name}.log
+  level:
+    root: Info
+    org.springframework: Debug
+    com.dataint: Debug
+
+
+########
+# test #
+########
+---
+spring:
+  profiles: test
+
+logging:
+  file: logs/${spring.application.name}.log
+  level:
+    root: Info
+    org.springframework: Debug
+    com.dataint: Debug
+
+
+########
+# prod #
+########
+---
+spring:
+  profiles: prod
+
+logging:
+  file: logs/${spring.application.name}.log
+  level:
+    root: Info
+    org.springframework: Info
+    com.dataint: Info
