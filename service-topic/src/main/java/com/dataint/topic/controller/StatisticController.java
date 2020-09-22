@@ -1,7 +1,7 @@
 package com.dataint.topic.controller;
 
 import com.dataint.topic.service.IStatisticService;
-import com.dataint.topic.common.exception.ThinventBaseException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,21 +13,21 @@ public class StatisticController {
 
     @GetMapping("/getSpreadSpeed/{keywordId}")
     @ResponseBody
-    public Object getSpreadSpeed(@PathVariable("keywordId") Integer keywordId, int countDays) throws ThinventBaseException {
+    public Object getSpreadSpeed(@PathVariable("keywordId") Integer keywordId, int countDays) {
 
         return statisticService.getSpreadSpeed(keywordId, countDays);
     }
 
     @GetMapping("/getSpreadRange/{keywordId}")
     @ResponseBody
-    public Object getSpreadRange(@PathVariable("keywordId") Integer keywordId, int countDays) throws ThinventBaseException {
+    public Object getSpreadRange(@PathVariable("keywordId") Integer keywordId, int countDays) {
 
         return statisticService.getSpreadRange(keywordId, countDays);
     }
 
     @GetMapping("/periodHotPOStat")
     @ResponseBody
-    public Object periodHotPOStat(String beginTime, String overTime) throws ThinventBaseException {
+    public Object periodHotPOStat(String beginTime, String overTime) {
 
         return statisticService.periodHotPOStat(beginTime, overTime);
     }
@@ -35,14 +35,14 @@ public class StatisticController {
     // not use and not finished!
     @GetMapping("/sendPeriodHotPOStat")
     @ResponseBody
-    public Object sendPeriodHotPOStat(String beginTime, String overTime) throws ThinventBaseException {
+    public Object sendPeriodHotPOStat(String beginTime, String overTime) {
 
         return statisticService.sendPeriodHotPOStat(beginTime, overTime);
     }
 
     @GetMapping("/sendPeriodDetails")
     @ResponseBody
-    public Object sendPeriodDetails(String beginTime, String overTime) throws ThinventBaseException {
+    public Object sendPeriodDetails(String beginTime, String overTime) {
 
         return statisticService.sendPeriodDetails(beginTime, overTime);
     }

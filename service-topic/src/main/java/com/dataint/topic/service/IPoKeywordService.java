@@ -1,14 +1,14 @@
 package com.dataint.topic.service;
 
-import com.dataint.topic.common.exception.ThinventBaseException;
+
 
 public interface IPoKeywordService {
 
-    Object getPoKeywordList() throws ThinventBaseException;
+    Object getPoKeywordList();
 
-    Object addPoKeyword(String poKeyword) throws ThinventBaseException;
+    Object addPoKeyword(String poKeyword);
 
-    Object updateStatusById(Integer keywordId, String statusType) throws ThinventBaseException;
+    Object updateStatusById(Integer keywordId, String statusType);
 
-    Object deletePoKeywordById(Integer keywordId) throws ThinventBaseException;
+    Object deletePoKeywordById(Integer keywordId);
 }

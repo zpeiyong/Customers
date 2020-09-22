@@ -1,5 +1,6 @@
 package com.dataint.topic.model;
 
+import com.dataint.cloud.common.model.param.PageParam;
 import lombok.Getter;
 import lombok.Setter;
 

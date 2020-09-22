@@ -1,9 +1,13 @@
 package com.dataint.topic.controller;
 
+import com.dataint.cloud.common.model.ResultVO;
 import com.dataint.topic.model.ArticleConditionReq;
 import com.dataint.topic.service.IArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/article")
@@ -13,8 +17,8 @@ public class ArticleController {
 
     @GetMapping("/getArticleList")
     @ResponseBody
-    public Object getArticleList(ArticleConditionReq acReq) {
+    public ResultVO getArticleList(ArticleConditionReq acReq) {
 
-        return articleService.queryArticlesByCondition(acReq);
+        return ResultVO.success(articleService.queryArticlesByCondition(acReq));
     }
 }

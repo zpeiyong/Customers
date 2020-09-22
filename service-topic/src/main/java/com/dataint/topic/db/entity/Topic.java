@@ -1,16 +1,16 @@
 package com.dataint.topic.db.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.dataint.cloud.common.model.po.BasePO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.*;
-import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.List;
-import java.util.Set;
 
 /**
  * 专题组表
@@ -22,32 +22,10 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Topic  {
-    private static final String SYSTEM = "system";
-    private static final long serialVersionUID =  6821295278083265413L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
-
-    @Column(name = "created_by")
-    private String createdBy = SYSTEM;
-
-    @Column(name = "created_time")
-    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
-    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    private Date createdTime = new Date();
-
-    @Column(name = "updated_by")
-    private String updatedBy;
-
-    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
-    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    @Column(name = "updated_time")
-    private Date updatedTime;
+public class Topic extends BasePO {
 
     @Column(name = "name")
-    private String name; //专题组名称
+    private String name; // 专题组名称
 
     @Column(name = "enable", nullable = false)
     private Boolean enable = true;  // 是否可用
@@ -56,6 +34,6 @@ public class Topic  {
     private Boolean ifDeleted = false; //是否已删除(1:已删除;0:未删除)
 
     @Transient
-    private List<String> keyWordName;
+    private List<String> keywordList;
 
 }

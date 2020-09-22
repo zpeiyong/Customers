@@ -25,7 +25,7 @@ public class TopicVO {
 
     private Date updatedTime;
 
-    private List<String> keyWordNames;
+    private List<String> keywordNames;
 
     private ArrayList<TopicTreeVO> children;
 

@@ -1,32 +1,30 @@
 package com.dataint.topic.utils;
 
+import com.dataint.cloud.common.model.Constants;
 import com.dataint.topic.model.SendModelEvent;
 import com.dataint.topic.model.SendModelStatistic;
-import com.dataint.topic.common.Constants;
-import com.dataint.topic.common.config.ServiceConfig;
-import org.apache.commons.lang3.time.DateFormatUtils;
-import org.apache.poi.hssf.usermodel.HSSFDateUtil;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+//import org.apache.poi.hssf.usermodel.HSSFDateUtil;
+//import org.apache.poi.ss.usermodel.CellType;
+//import org.apache.poi.ss.usermodel.Row;
+//import org.apache.poi.xssf.usermodel.XSSFCell;
+//import org.apache.poi.xssf.usermodel.XSSFRow;
+//import org.apache.poi.xssf.usermodel.XSSFSheet;
+//import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 public class SendDataUtil {
     private static DecimalFormat df = new DecimalFormat("#.00");
     private static SimpleDateFormat parseSDF = new SimpleDateFormat("yyyy/MM/dd");
 
-    private static String dataFolderPath = ServiceConfig.getServiceConfig(Constants.apiBasicService, Constants.shhgBDCenterDataPath);
+//    private static String dataFolderPath = ServiceConfig.getServiceConfig(Constants.apiBasicService, Constants.shhgBDCenterDataPath);
+    private static String dataFolderPath = "";
 
     public static List<SendModelStatistic> getSendModelStatistic() throws Exception {
         List<SendModelStatistic> statisticList = new ArrayList<>();
@@ -168,69 +166,69 @@ public class SendDataUtil {
     }
 
     private static List<List<String>> readXlsx(String path) throws Exception {
-        InputStream is = new FileInputStream(path);
-        XSSFWorkbook xssfWorkbook = new XSSFWorkbook(is);
+//        InputStream is = new FileInputStream(path);
+//        XSSFWorkbook xssfWorkbook = new XSSFWorkbook(is);
         List<List<String>> result =new ArrayList<>();
-        //循环每一页，并处理当前循环页
-        //for(XSSFSheet xssfSheet : xssfWorkbook){
-        for(int numSheet=0; numSheet < xssfWorkbook.getNumberOfSheets(); numSheet++){
-            XSSFSheet xssfSheet = xssfWorkbook.getSheetAt(numSheet);
-            if (xssfSheet==null)
-                continue;
-            //处理当前页，循环读取每一行
-            for (Row row : xssfSheet) {
-//            for(int rowNum=0; rowNum<=xssfSheet.getLastRowNum();rowNum++){
-//                XSSFRow xssfRow = xssfSheet.getRow(rowNum);
-                XSSFRow xssfRow = (XSSFRow) row;
-
-                if (xssfRow == null)
-                    continue;
-                int minColIx = xssfRow.getFirstCellNum();
-                int maxColIx = xssfRow.getLastCellNum();
-                List<String> rowList = new ArrayList<>();
-                //遍历该行获取处理每个cell元素
-                for(int colIx=minColIx;colIx<maxColIx; colIx++){
-                    XSSFCell cell= xssfRow.getCell(colIx);
-                    if (cell==null) {
-                        rowList.add("");
-                    } else {
-                        rowList.add(getStringVal(cell));
-                    }
-                }
-                result.add(rowList);
-            }
-        }
-
-        //
-        is.close();
-//        is = null;
+//        //循环每一页，并处理当前循环页
+//        //for(XSSFSheet xssfSheet : xssfWorkbook){
+//        for(int numSheet=0; numSheet < xssfWorkbook.getNumberOfSheets(); numSheet++){
+//            XSSFSheet xssfSheet = xssfWorkbook.getSheetAt(numSheet);
+//            if (xssfSheet==null)
+//                continue;
+//            //处理当前页，循环读取每一行
+//            for (Row row : xssfSheet) {
+////            for(int rowNum=0; rowNum<=xssfSheet.getLastRowNum();rowNum++){
+////                XSSFRow xssfRow = xssfSheet.getRow(rowNum);
+//                XSSFRow xssfRow = (XSSFRow) row;
+//
+//                if (xssfRow == null)
+//                    continue;
+//                int minColIx = xssfRow.getFirstCellNum();
+//                int maxColIx = xssfRow.getLastCellNum();
+//                List<String> rowList = new ArrayList<>();
+//                //遍历该行获取处理每个cell元素
+//                for(int colIx=minColIx;colIx<maxColIx; colIx++){
+//                    XSSFCell cell= xssfRow.getCell(colIx);
+//                    if (cell==null) {
+//                        rowList.add("");
+//                    } else {
+//                        rowList.add(getStringVal(cell));
+//                    }
+//                }
+//                result.add(rowList);
+//            }
+//        }
+//
+//        //
+//        is.close();
+////        is = null;
 
         return result;
     }
-
-    private static String getStringVal (XSSFCell cell){
-        switch (cell.getCellType()) {
-            case BOOLEAN:
-                return cell.getBooleanCellValue() ? "TRUE" : "FALSE";
-            case FORMULA://公式格式
-                return cell.getCellFormula();
-            case NUMERIC://数字格式
-                if (HSSFDateUtil.isCellDateFormatted(cell)) {
-                    Date date = cell.getDateCellValue();
-                    return DateFormatUtils.format(date, "yyyy/MM/dd");
-                } else {
-                    cell.setCellType(CellType.STRING);
-
-//                    DecimalFormat df = new DecimalFormat("#.00");
-//                    return df.format(cell.getNumericCellValue());
-                }
-            case STRING:
-                return cell.getStringCellValue();
-
-            default:
-                return "";
-        }
-    }
+//
+//    private static String getStringVal (XSSFCell cell){
+//        switch (cell.getCellType()) {
+//            case BOOLEAN:
+//                return cell.getBooleanCellValue() ? "TRUE" : "FALSE";
+//            case FORMULA://公式格式
+//                return cell.getCellFormula();
+//            case NUMERIC://数字格式
+//                if (HSSFDateUtil.isCellDateFormatted(cell)) {
+//                    Date date = cell.getDateCellValue();
+//                    return DateFormatUtils.format(date, "yyyy/MM/dd");
+//                } else {
+//                    cell.setCellType(CellType.STRING);
+//
+////                    DecimalFormat df = new DecimalFormat("#.00");
+////                    return df.format(cell.getNumericCellValue());
+//                }
+//            case STRING:
+//                return cell.getStringCellValue();
+//
+//            default:
+//                return "";
+//        }
+//    }
 
     /**
      * get all files' absolute path under the folder

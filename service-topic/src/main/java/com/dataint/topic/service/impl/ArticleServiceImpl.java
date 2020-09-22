@@ -1,12 +1,11 @@
 package com.dataint.topic.service.impl;
 
-import com.dataint.topic.db.entity.Article;
 import com.dataint.topic.db.entity.MediaType;
+import com.dataint.topic.db.entity.TopicArticle;
 import com.dataint.topic.db.repository.ArticleRepository;
 import com.dataint.topic.db.repository.MediaTypeRepository;
 import com.dataint.topic.model.ArticleConditionReq;
 import com.dataint.topic.service.IArticleService;
-import com.dataint.topic.common.exception.ThinventBaseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,11 +28,11 @@ public class ArticleServiceImpl implements IArticleService {
     private MediaTypeRepository mediaTypeRepository;
 
     @Override
-    public Object queryArticlesByCondition(ArticleConditionReq acReq) throws ThinventBaseException {
+    public Object queryArticlesByCondition(ArticleConditionReq acReq) {
 
-        Page<Article> result = articleRepository.findAll(new Specification<Article>() {
+        Page<TopicArticle> result = articleRepository.findAll(new Specification<TopicArticle>() {
             @Override
-            public Predicate toPredicate(Root<Article> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+            public Predicate toPredicate(Root<TopicArticle> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
                 List<Predicate> list = new ArrayList<>();
 
                 int keywordId = acReq.getKeywordId();
@@ -60,9 +59,9 @@ public class ArticleServiceImpl implements IArticleService {
 
                         if (mediaTypeList != null && mediaTypeList.size() > 0) {
                             CriteriaBuilder.In<String> in = criteriaBuilder.in(root.get("author"));
-                            for (MediaType mediaType : mediaTypeList) {
-                                in.value(mediaType.getMediaTypeName());
-                            }
+//                            for (MediaType mediaType : mediaTypeList) {
+//                                in.value(mediaType.getMediaTypeName());
+//                            }
 
                             list.add(criteriaBuilder.not(in));
                         }
@@ -78,7 +77,7 @@ public class ArticleServiceImpl implements IArticleService {
                 Predicate[] p = new Predicate[list.size()];
                 return criteriaBuilder.and(list.toArray(p));
             }
-        }, PageRequest.of(acReq.getCurrentPage()-1, acReq.getPageSize()));
+        }, PageRequest.of(acReq.getCurrent()-1, acReq.getPageSize()));
 
         return result;
     }

@@ -1,26 +1,18 @@
 package com.dataint.topic.service.impl;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.dataint.topic.api.db.entity.*;
-import com.dataint.topic.api.db.repository.*;
+import com.dataint.cloud.common.model.Constants;
+import com.dataint.cloud.common.utils.DateUtil;
+import com.dataint.topic.db.*;
+import com.dataint.topic.db.entity.PoKeyword;
+import com.dataint.topic.db.entity.Statistic;
+import com.dataint.topic.db.repository.*;
 import com.dataint.topic.model.SendModelStatistic;
 import com.dataint.topic.model.StatisticRangeVO;
 import com.dataint.topic.service.IStatisticService;
-import com.dataint.topic.utils.DateUtil;
-import com.dataint.topic.utils.RequestUtil;
-import com.dataint.topic.utils.ResultUtil;
 import com.dataint.topic.utils.SendDataUtil;
-import com.dataint.topic.common.Constants;
-import com.dataint.topic.common.exception.ThinventBaseException;
-import com.dataint.topic.db.*;
-import com.dataint.topic.db.entity.*;
-import com.dataint.topic.db.repository.*;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -87,41 +79,41 @@ public class StatisticServiceImpl implements IStatisticService {
         // get/set articleCnt, websiteCnt and other info
         List<IBaseArticle> articleCntList = articleRepository.countArticlesAndWebsite(startTime, endTime);
         for (IBaseArticle baseArticle : articleCntList) {
-            Statistic statistic = new Statistic();
+//            Statistic statistic = new Statistic();
+//
+//            Integer keywordId = baseArticle.getKeywordId();
+//            statistic.setStatisticType(HOURLY);
+//            statistic.setKeywordId(keywordId);
+//            statistic.setArticleCnt(baseArticle.getArticleCnt());
+//            statistic.setWebsiteCnt(baseArticle.getWebsiteCnt());
+//
+//            try {
+//                statistic.setStartTime(Constants.DateTimeSDF.parse(startTime));
+//                statistic.setEndTime(Constants.DateTimeSDF.parse(endTime));
+//                statistic.setStatisticTime(Constants.DateTimeSDF.parse(Constants.DateTimeSDF.format(new Date())));
+//            } catch (ParseException pe) {
+//                pe.printStackTrace();
+//            }
 
-            Integer keywordId = baseArticle.getKeywordId();
-            statistic.setStatisticType(HOURLY);
-            statistic.setKeywordId(keywordId);
-            statistic.setArticleCnt(baseArticle.getArticleCnt());
-            statistic.setWebsiteCnt(baseArticle.getWebsiteCnt());
-
-            try {
-                statistic.setStartTime(Constants.DateTimeSDF.parse(startTime));
-                statistic.setEndTime(Constants.DateTimeSDF.parse(endTime));
-                statistic.setStatisticTime(Constants.DateTimeSDF.parse(Constants.DateTimeSDF.format(new Date())));
-            } catch (ParseException pe) {
-                pe.printStackTrace();
-            }
-
-            statisticMap.put(keywordId, statistic);
+//            statisticMap.put(keywordId, statistic);
         }
 
         // get/set forwardCnt, commentCnt, likeCnt
         List<IBaseInteraction> interactionCntList = dynamicDataRepository.countInteractions(startTime, endTime);
-        for (IBaseInteraction baseInteraction : interactionCntList) {
-            Integer keywordId = baseInteraction.getKeywordId();
-            Statistic statistic = statisticMap.get(keywordId);
-
-            //
-            if (baseInteraction.getForwardCnt() != null)
-                statistic.setForwardCnt(baseInteraction.getForwardCnt());
-            if (baseInteraction.getCommentCnt() != null)
-                statistic.setCommentCnt(baseInteraction.getCommentCnt());
-            if (baseInteraction.getLikeCnt() != null)
-                statistic.setLikeCnt(baseInteraction.getLikeCnt());
-
-            statisticMap.put(keywordId, statistic);
-        }
+//        for (IBaseInteraction baseInteraction : interactionCntList) {
+//            Integer keywordId = baseInteraction.getKeywordId();
+//            Statistic statistic = statisticMap.get(keywordId);
+//
+//            //
+//            if (baseInteraction.getForwardCnt() != null)
+//                statistic.setForwardCnt(baseInteraction.getForwardCnt());
+//            if (baseInteraction.getCommentCnt() != null)
+//                statistic.setCommentCnt(baseInteraction.getCommentCnt());
+//            if (baseInteraction.getLikeCnt() != null)
+//                statistic.setLikeCnt(baseInteraction.getLikeCnt());
+//
+//            statisticMap.put(keywordId, statistic);
+//        }
 
         // get/set mediaCnt
         statisticMap = getMediaCount(statisticMap, startTime, endTime);
@@ -138,38 +130,38 @@ public class StatisticServiceImpl implements IStatisticService {
 
         // get/set articleCnt, forwardCnt, commentCnt, likeCnt and other info
         List<IBaseStatistic> statisticList = statisticRepository.countTotalStatistic(startTime, endTime, HOURLY);
-        for (IBaseStatistic baseStatistic : statisticList) {
-            Statistic statistic = new Statistic();
-
-            Integer keywordId = baseStatistic.getKeywordId();
-            statistic.setStatisticType(DAILY);
-            statistic.setKeywordId(keywordId);
-            statistic.setArticleCnt(baseStatistic.getArticleCnt());
-            statistic.setForwardCnt(baseStatistic.getForwardCnt());
-            statistic.setCommentCnt(baseStatistic.getCommentCnt());
-            statistic.setLikeCnt(baseStatistic.getLikeCnt());
-
-            try {
-                statistic.setStartTime(Constants.DateTimeSDF.parse(startTime));
-                statistic.setEndTime(Constants.DateTimeSDF.parse(endTime));
-                statistic.setStatisticTime(Constants.DateTimeSDF.parse(Constants.DateTimeSDF.format(new Date())));
-            } catch (ParseException pe) {
-                pe.printStackTrace();
-            }
-
-            statisticMap.put(keywordId, statistic);
-        }
+//        for (IBaseStatistic baseStatistic : statisticList) {
+//            Statistic statistic = new Statistic();
+//
+//            Integer keywordId = baseStatistic.getKeywordId();
+//            statistic.setStatisticType(DAILY);
+//            statistic.setKeywordId(keywordId);
+//            statistic.setArticleCnt(baseStatistic.getArticleCnt());
+//            statistic.setForwardCnt(baseStatistic.getForwardCnt());
+//            statistic.setCommentCnt(baseStatistic.getCommentCnt());
+//            statistic.setLikeCnt(baseStatistic.getLikeCnt());
+//
+//            try {
+//                statistic.setStartTime(Constants.DateTimeSDF.parse(startTime));
+//                statistic.setEndTime(Constants.DateTimeSDF.parse(endTime));
+//                statistic.setStatisticTime(Constants.DateTimeSDF.parse(Constants.DateTimeSDF.format(new Date())));
+//            } catch (ParseException pe) {
+//                pe.printStackTrace();
+//            }
+//
+//            statisticMap.put(keywordId, statistic);
+//        }
 
         // get/set websiteCnt
         List<IBaseArticle> articleCntList = articleRepository.countArticlesAndWebsite(startTime, endTime);
-        for (IBaseArticle baseArticle : articleCntList) {
-            Integer keywordId = baseArticle.getKeywordId();
-            Statistic statistic = statisticMap.get(keywordId);
-
-            statistic.setWebsiteCnt(baseArticle.getWebsiteCnt());
-
-            statisticMap.put(keywordId, statistic);
-        }
+//        for (IBaseArticle baseArticle : articleCntList) {
+//            Integer keywordId = baseArticle.getKeywordId();
+//            Statistic statistic = statisticMap.get(keywordId);
+//
+//            statistic.setWebsiteCnt(baseArticle.getWebsiteCnt());
+//
+//            statisticMap.put(keywordId, statistic);
+//        }
 
         // get/set mediaCnt
         statisticMap = getMediaCount(statisticMap, startTime, endTime);
@@ -183,63 +175,63 @@ public class StatisticServiceImpl implements IStatisticService {
     @Override
     public void eventStatistic(String startTime, String endTime) {
         /*
-         * check and append to Event
+         * check and append to Topic
          */
         // interactionCnt
         List<IBaseInteraction> totalCntList = statisticRepository.countTotalInteraction(HOURLY);
-        for (IBaseInteraction baseInteraction : totalCntList) {
-            Integer keywordId = baseInteraction.getKeywordId();
-
-            // check if exist
-            Event tmp = eventRepository.getEventByKeywordIdAndSubTitle(keywordId, EventEnum.getName(1));
-            if (tmp != null)
-                continue;
-
-            // > 1000
-            if (baseInteraction.getTotalCnt() >= EVENT_INTERACTION_THRESHOLD) {
-                Event event = new Event();
-                event.setKeywordId(keywordId);
-                event.setEventTime(new Date());
-                event.setEventType("1");  // 1:舆情热度值关键节点
-                event.setSubTitle(EventEnum.getName(1));
-                event.setGmtCreate(new Date());
-
-                eventRepository.save(event);
-            }
-        }
+//        for (IBaseInteraction baseInteraction : totalCntList) {
+//            Integer keywordId = baseInteraction.getKeywordId();
+//
+//            // check if exist
+//            Topic tmp = eventRepository.getEventByKeywordIdAndSubTitle(keywordId, EventEnum.getName(1));
+//            if (tmp != null)
+//                continue;
+//
+//            // > 1000
+//            if (baseInteraction.getTotalCnt() >= EVENT_INTERACTION_THRESHOLD) {
+//                Topic event = new Topic();
+//                event.setKeywordId(keywordId);
+//                event.setEventTime(new Date());
+//                event.setEventType("1");  // 1:舆情热度值关键节点
+//                event.setSubTitle(EventEnum.getName(1));
+//                event.setGmtCreate(new Date());
+//
+//                eventRepository.save(event);
+//            }
+//        }
 
         // govMedia for first time
         List<Integer> keywordIdList = articleRepository.getKeywordIdList(startTime, endTime);
-        for (Integer keywordId : keywordIdList) {
-            // get first article
-            Article article = articleRepository.findTop1ByKeywordIdOrderByGmtCrawl(keywordId);
-            if (article != null) {
-                // check if exist
-                Event tmp = eventRepository.getEventByKeywordIdAndSubTitle(article.getKeywordId(), EventEnum.getName(4));
-
-                if (tmp != null)
-                    continue;
-
-                MediaType mediaType = mediaTypeRepository.getMediaTypeByMediaTypeNameLike(article.getAuthor());
-                if (mediaType != null && mediaType.getMediaTypeId() == 1) {
-                    // add Event()
-                    Event event = new Event();
-                    event.setKeywordId(article.getKeywordId());
-                    event.setEventTime(new Date());
-                    event.setEventType("1");  // 1:舆情热度值关键节点
-                    event.setSubTitle(EventEnum.getName(4));
-                    event.setTitle(article.getTitle());
-                    event.setMediaType(mediaType);
-                    event.setSummary(article.getSummary());
-
-                    eventRepository.save(event);
-                }
-            }
-        }
+//        for (Integer keywordId : keywordIdList) {
+//            // get first article
+//            TopicArticle article = articleRepository.findTop1ByKeywordIdOrderByGmtCrawl(keywordId);
+//            if (article != null) {
+//                // check if exist
+//                Topic tmp = eventRepository.getEventByKeywordIdAndSubTitle(article.getKeywordId(), EventEnum.getName(4));
+//
+//                if (tmp != null)
+//                    continue;
+//
+//                MediaType mediaType = mediaTypeRepository.getMediaTypeByMediaTypeNameLike(article.getAuthor());
+//                if (mediaType != null && mediaType.getMediaTypeId() == 1) {
+//                    // add Topic()
+//                    Topic event = new Topic();
+//                    event.setKeywordId(article.getKeywordId());
+//                    event.setEventTime(new Date());
+//                    event.setEventType("1");  // 1:舆情热度值关键节点
+//                    event.setSubTitle(EventEnum.getName(4));
+//                    event.setTitle(article.getTitle());
+//                    event.setMediaType(mediaType);
+//                    event.setSummary(article.getSummary());
+//
+//                    eventRepository.save(event);
+//                }
+//            }
+//        }
     }
 
     @Override
-    public Object getSpreadSpeed(Integer keywordId, int countDays) throws ThinventBaseException {
+    public Object getSpreadSpeed(Integer keywordId, int countDays) {
         List<Map<String, String>> respList = buildRespList(countDays);
 
         List<ISpreadSpeed> speedList = statisticRepository.countSpreadSpeed(keywordId, HOURLY, countDays);
@@ -255,7 +247,7 @@ public class StatisticServiceImpl implements IStatisticService {
     }
 
     @Override
-    public Object getSpreadRange(Integer keywordId, int countDays) throws ThinventBaseException {
+    public Object getSpreadRange(Integer keywordId, int countDays) {
         // get all startTimes since <countDays> ago
         List<Date> startTimeList = getDateList(countDays);
 
@@ -264,10 +256,10 @@ public class StatisticServiceImpl implements IStatisticService {
         List<String> nameList = Arrays.asList("官方媒体", "新闻媒体", "微博", "微信");
         for (String name : nameList) {
             Map<String, String> map = new HashMap<String, String>(){{
-                for (Date date : startTimeList) {
-                    put(Constants.DateTimeSDF.format(date), "0");
-                }
-                put("name", name);
+//                for (Date date : startTimeList) {
+//                    put(Constants.DateTimeSDF.format(date), "0");
+//                }
+//                put("name", name);
             }};
             dataList.add(map);
         }
@@ -275,21 +267,21 @@ public class StatisticServiceImpl implements IStatisticService {
         // countSpreadRange
         List<Statistic> statisticList = statisticRepository.countSpreadRange(keywordId, HOURLY, startTimeList);
         for (Statistic statistic : statisticList) {
-            for (Map<String, String> map : dataList) {
-                // startTime
-                String startTime = Constants.DateTimeSDF.format(statistic.getStartTime());
-                // name
-                String name = map.get("name");
-
-                if ("官方媒体".equals(name))
-                    map.put(startTime, statistic.getGovMediaCnt()+"");
-                if ("新闻媒体".equals(name))
-                    map.put(startTime, statistic.getSelfMediaCnt()+"");
-                if ("微博".equals(name))
-                    map.put(startTime, statistic.getWbMediaCnt()+"");
-                if ("微信".equals(name))
-                    map.put(startTime, statistic.getWxMediaCnt()+"");
-            }
+//            for (Map<String, String> map : dataList) {
+//                // startTime
+//                String startTime = Constants.DateTimeSDF.format(statistic.getStartTime());
+//                // name
+//                String name = map.get("name");
+//
+//                if ("官方媒体".equals(name))
+//                    map.put(startTime, statistic.getGovMediaCnt()+"");
+//                if ("新闻媒体".equals(name))
+//                    map.put(startTime, statistic.getSelfMediaCnt()+"");
+//                if ("微博".equals(name))
+//                    map.put(startTime, statistic.getWbMediaCnt()+"");
+//                if ("微信".equals(name))
+//                    map.put(startTime, statistic.getWxMediaCnt()+"");
+//            }
         }
 
         // build return type
@@ -301,17 +293,17 @@ public class StatisticServiceImpl implements IStatisticService {
     }
 
     @Override
-    public Object periodHotPOStat(String beginTime, String overTime) throws ThinventBaseException {
+    public Object periodHotPOStat(String beginTime, String overTime) {
         boolean ifDaily = false;
         // verify time period
         try {
             Date beginDate = Constants.DateTimeSDF.parse(beginTime);
             Date overDate = Constants.DateTimeSDF.parse(overTime);
-            if (overDate.getTime() - beginDate.getTime() < Long.valueOf(60*60*12*1000))  // 12 hours
-                return ResultUtil.buildFailMap("时间间隔需至少相隔12小时!");
-            else if (overDate.getTime() - beginDate.getTime() >= Long.valueOf(60*60*24*1000))  // 24 hours
-                // 时间间隔大于24小时, 则进行日统计到overTime的前一天
-                ifDaily = true;
+//            if (overDate.getTime() - beginDate.getTime() < Long.valueOf(60*60*12*1000))  // 12 hours
+//                return ResultUtil.buildFailMap("时间间隔需至少相隔12小时!");
+//            else if (overDate.getTime() - beginDate.getTime() >= Long.valueOf(60*60*24*1000))  // 24 hours
+//                // 时间间隔大于24小时, 则进行日统计到overTime的前一天
+//                ifDaily = true;
         } catch (ParseException pe) {
             pe.printStackTrace();
             return null;
@@ -337,19 +329,20 @@ public class StatisticServiceImpl implements IStatisticService {
             }
         }
 
-        return ResultUtil.buildSuccResultMap();
+//        return ResultUtil.buildSuccResultMap();
+        return null;
     }
 
     /* 暂时不实现，只定时发送excel数据 */
     @Override
-    public Object sendPeriodHotPOStat(String beginTime, String overTime) throws ThinventBaseException {
+    public Object sendPeriodHotPOStat(String beginTime, String overTime) {
         List<Map<String, String>> intervalList = DateUtil.getHourlyBetweenIntervals(beginTime, overTime);
 
         return null;
     }
 
     @Override
-    public Object sendPeriodDetails(String beginTime, String overTime) throws ThinventBaseException {
+    public Object sendPeriodDetails(String beginTime, String overTime) {
         List<Map<String, String>> list = DateUtil.getDailyBetweenIntervals(beginTime, overTime);
 
         for (Map<String, String> map : list) {
@@ -359,7 +352,8 @@ public class StatisticServiceImpl implements IStatisticService {
             sendHotPODetails(startTime, endTime);
         }
 
-        return ResultUtil.buildSuccResultMap();
+//        return ResultUtil.buildSuccResultMap();
+        return null;
     }
 
 
@@ -385,21 +379,21 @@ public class StatisticServiceImpl implements IStatisticService {
                 sendDataJO.put("type", "CUSTOMS_YQ_TIMENODEINFO");
                 sendDataJO.put("data", sendModelStatistic.convertToJSONObject());
 
-                // send to bdCenter
-                JSONObject responseJO = RequestUtil.postToShhgBDCenter(sendDataJO);
-//                System.out.println(sendDataJO.toJSONString());
-
-                if (responseJO != null) {
-                    if ("200".equals(responseJO.getString("code"))) {
-                        System.out.println(responseJO.getString("msg"));
-
-                        // success
-                        ifSuccess = true;
-                    } else {
-                        System.out.println("发送热点统计信息数据失败! " + startTime);
-                        System.out.println(responseJO.getString("msgError"));
-                    }
-                }
+//                // send to bdCenter
+//                JSONObject responseJO = RequestUtil.postToShhgBDCenter(sendDataJO);
+////                System.out.println(sendDataJO.toJSONString());
+//
+//                if (responseJO != null) {
+//                    if ("200".equals(responseJO.getString("code"))) {
+//                        System.out.println(responseJO.getString("msg"));
+//
+//                        // success
+//                        ifSuccess = true;
+//                    } else {
+//                        System.out.println("发送热点统计信息数据失败! " + startTime);
+//                        System.out.println(responseJO.getString("msgError"));
+//                    }
+//                }
 
                 // make delay
                 try {
@@ -421,92 +415,92 @@ public class StatisticServiceImpl implements IStatisticService {
         JSONObject sendDataJO = new JSONObject();
         sendDataJO.put("type", "CUSTOMS_YQ_ARTICLEINFO");
 
-        for (PoKeyword poKeyword : poKeywordList) {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("KEYWORD_ID", poKeyword.getKeywordId()+"");
-            jsonObject.put("KEYWORDS", poKeyword.getKeyword());
-            jsonObject.put("YQSTAT_TIME", Constants.DateTimeSDF.format(new Date()));
-
-            // set articleInfo
-            int currentPage = 1;
-            int pageSize = 50;
-            boolean flag = true;
-            while (flag) {
-                //
-                sendDataJO.remove("data");
-                jsonObject.remove("ARTICLEINFO");
-
-                // get Articles by keywordId
-                Page<Article> articlePage = null;
-                try {
-                    articlePage = articleRepository.getArticlesByKeywordIdAndGmtCrawlBetween(
-                            poKeyword.getKeywordId(), Constants.DateTimeSDF.parse(startTime), Constants.DateTimeSDF.parse(endTime),
-                            PageRequest.of(currentPage-1, pageSize, Sort.by("gmtCreate")));
-                } catch (ParseException pe) {
-                    pe.printStackTrace();
-                }
-
-                if (articlePage != null) {
-                    List<Article> articleList = articlePage.getContent();
-
-                    if (articleList.size() > 0) {
-                        JSONArray articleJA = new JSONArray();
-
-                        for (Article article : articleList) {
-                            JSONObject articleJO = new JSONObject();
-                            articleJO.put("ARTICLE_ID", article.getArticleId()+"");
-                            articleJO.put("ARTICLE_URL", article.getArticleUrl());
-                            articleJO.put("AUTHOR", article.getAuthor());
-                            articleJO.put("GMT_PUBLISH", Constants.DateTimeSDF.format(article.getGmtRelease()));
-                            articleJO.put("TITLE", article.getTitle());
-                            if (article.getSummary() != null && !article.getSummary().isEmpty()) {
-                                String summary = article.getSummary();
-                                if (article.getSummary().length() >= 500) {
-                                    summary = summary.substring(0, 497) + "...";
-                                }
-                                articleJO.put("SUMMARY", summary);
-                            }
-
-                            articleJA.add(articleJO);
-                        }
-
-                        //
-                        jsonObject.put("ARTICLEINFO", articleJA);
-                        sendDataJO.put("data", jsonObject);
-
-                        // send to bdCenter
-                        JSONObject resJO = RequestUtil.postToShhgBDCenter(sendDataJO);
-//                        System.out.println(sendDataJO);
-
-                        //
-                        if (resJO != null) {
-                            if ("200".equals(resJO.getString("code"))) {
-                                System.out.println(startTime + " - " + endTime + " : " + poKeyword.getKeyword());
-                                System.out.println(resJO.getString("msg"));
-                            } else {
-                                System.out.println("发送热点舆情详细数据失败! " + startTime);
-                                System.out.println(resJO.getString("msgError"));
-                            }
-                        }
-                    }
-
-                    //
-                    if (articlePage.isLast())
-                        flag = false;
-                    else
-                        currentPage += 1;
-                } else {
-                    flag = false;
-                }
-
-                // make delay
-                try {
-                    Thread.sleep(1000 * 10);  // 10s
-                } catch (InterruptedException ie) {
-                    ie.printStackTrace();
-                }
-            }
-        }
+//        for (PoKeyword poKeyword : poKeywordList) {
+//            JSONObject jsonObject = new JSONObject();
+//            jsonObject.put("KEYWORD_ID", poKeyword.getKeywordId()+"");
+//            jsonObject.put("KEYWORDS", poKeyword.getKeyword());
+//            jsonObject.put("YQSTAT_TIME", Constants.DateTimeSDF.format(new Date()));
+//
+//            // set articleInfo
+//            int currentPage = 1;
+//            int pageSize = 50;
+//            boolean flag = true;
+//            while (flag) {
+//                //
+//                sendDataJO.remove("data");
+//                jsonObject.remove("ARTICLEINFO");
+//
+//                // get Articles by keywordId
+//                Page<TopicArticle> articlePage = null;
+//                try {
+//                    articlePage = articleRepository.getArticlesByKeywordIdAndGmtCrawlBetween(
+//                            poKeyword.getKeywordId(), Constants.DateTimeSDF.parse(startTime), Constants.DateTimeSDF.parse(endTime),
+//                            PageRequest.of(currentPage-1, pageSize, Sort.by("gmtCreate")));
+//                } catch (ParseException pe) {
+//                    pe.printStackTrace();
+//                }
+//
+//                if (articlePage != null) {
+//                    List<TopicArticle> articleList = articlePage.getContent();
+//
+//                    if (articleList.size() > 0) {
+//                        JSONArray articleJA = new JSONArray();
+//
+//                        for (TopicArticle article : articleList) {
+//                            JSONObject articleJO = new JSONObject();
+//                            articleJO.put("ARTICLE_ID", article.getArticleId()+"");
+//                            articleJO.put("ARTICLE_URL", article.getArticleUrl());
+//                            articleJO.put("AUTHOR", article.getAuthor());
+//                            articleJO.put("GMT_PUBLISH", Constants.DateTimeSDF.format(article.getGmtRelease()));
+//                            articleJO.put("TITLE", article.getTitle());
+//                            if (article.getSummary() != null && !article.getSummary().isEmpty()) {
+//                                String summary = article.getSummary();
+//                                if (article.getSummary().length() >= 500) {
+//                                    summary = summary.substring(0, 497) + "...";
+//                                }
+//                                articleJO.put("SUMMARY", summary);
+//                            }
+//
+//                            articleJA.add(articleJO);
+//                        }
+//
+//                        //
+//                        jsonObject.put("ARTICLEINFO", articleJA);
+//                        sendDataJO.put("data", jsonObject);
+//
+//                        // send to bdCenter
+//                        JSONObject resJO = RequestUtil.postToShhgBDCenter(sendDataJO);
+////                        System.out.println(sendDataJO);
+//
+//                        //
+//                        if (resJO != null) {
+//                            if ("200".equals(resJO.getString("code"))) {
+//                                System.out.println(startTime + " - " + endTime + " : " + poKeyword.getKeyword());
+//                                System.out.println(resJO.getString("msg"));
+//                            } else {
+//                                System.out.println("发送热点舆情详细数据失败! " + startTime);
+//                                System.out.println(resJO.getString("msgError"));
+//                            }
+//                        }
+//                    }
+//
+//                    //
+//                    if (articlePage.isLast())
+//                        flag = false;
+//                    else
+//                        currentPage += 1;
+//                } else {
+//                    flag = false;
+//                }
+//
+//                // make delay
+//                try {
+//                    Thread.sleep(1000 * 10);  // 10s
+//                } catch (InterruptedException ie) {
+//                    ie.printStackTrace();
+//                }
+//            }
+//        }
     }
 
     /**
@@ -527,39 +521,39 @@ public class StatisticServiceImpl implements IStatisticService {
             // govMediaCnt/....
             Integer notSelfMediaCnt = 0;
             Integer mediaType = baseMedia.getMediaTypeId();
-            if (mediaType == 1) {
-                statistic.setGovMediaCnt(baseMedia.getMediaCnt());
-                notSelfMediaCnt += baseMedia.getMediaCnt();
-            }
+//            if (mediaType == 1) {
+//                statistic.setGovMediaCnt(baseMedia.getMediaCnt());
+//                notSelfMediaCnt += baseMedia.getMediaCnt();
+//            }
 
             // selfMediaCnt
-            Integer websiteCnt = statistic.getWebsiteCnt();  // media/author/..
-            statistic.setSelfMediaCnt(websiteCnt - notSelfMediaCnt);
-
-            statisticMap.put(keywordId, statistic);
+//            Integer websiteCnt = statistic.getWebsiteCnt();  // media/author/..
+//            statistic.setSelfMediaCnt(websiteCnt - notSelfMediaCnt);
+//
+//            statisticMap.put(keywordId, statistic);
         }
 
         // wbMediaCnt
         List<IBaseMedia> wbMediaCntList = mediaRepository.countWbWxMedia(startTime, endTime, "微博");
-        for (IBaseMedia baseMedia : wbMediaCntList) {
-            Integer keywordId = baseMedia.getKeywordId();
-            Statistic statistic = statisticMap.get(keywordId);
-
-            statistic.setWbMediaCnt(baseMedia.getMediaCnt());
-
-            statisticMap.put(keywordId, statistic);
-        }
+//        for (IBaseMedia baseMedia : wbMediaCntList) {
+//            Integer keywordId = baseMedia.getKeywordId();
+//            Statistic statistic = statisticMap.get(keywordId);
+//
+//            statistic.setWbMediaCnt(baseMedia.getMediaCnt());
+//
+//            statisticMap.put(keywordId, statistic);
+//        }
 
         // wxMediaCnt
         List<IBaseMedia> wxMediaCntList = mediaRepository.countWbWxMedia(startTime, endTime, "微信");
-        for (IBaseMedia baseMedia : wxMediaCntList) {
-            Integer keywordId = baseMedia.getKeywordId();
-            Statistic statistic = statisticMap.get(keywordId);
-
-            statistic.setWxMediaCnt(baseMedia.getMediaCnt());
-
-            statisticMap.put(keywordId, statistic);
-        }
+//        for (IBaseMedia baseMedia : wxMediaCntList) {
+//            Integer keywordId = baseMedia.getKeywordId();
+//            Statistic statistic = statisticMap.get(keywordId);
+//
+//            statistic.setWxMediaCnt(baseMedia.getMediaCnt());
+//
+//            statisticMap.put(keywordId, statistic);
+//        }
 
         return statisticMap;
     }
@@ -569,13 +563,13 @@ public class StatisticServiceImpl implements IStatisticService {
      * @param statistic
      */
     private void save(Statistic statistic) {
-        // check if already exist
-        Statistic tmp = statisticRepository.getByKeywordIdAndStartTimeAndEndTimeAndStatisticType(statistic.getKeywordId(),
-                statistic.getStartTime(), statistic.getEndTime(), statistic.getStatisticType());
-
-        // save
-        if (tmp == null)
-            statisticRepository.save(statistic);
+//        // check if already exist
+//        Statistic tmp = statisticRepository.getByKeywordIdAndStartTimeAndEndTimeAndStatisticType(statistic.getKeywordId(),
+//                statistic.getStartTime(), statistic.getEndTime(), statistic.getStatisticType());
+//
+//        // save
+//        if (tmp == null)
+//            statisticRepository.save(statistic);
     }
 
     private List<Map<String, String>> buildRespList(Integer days) {

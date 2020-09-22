@@ -8,10 +8,10 @@ public interface ITopicKeywordService {
     /**
      * 批量添加
      * @param topicId
-     * @param keyWordNames
+     * @param keywordNames
      * @return
      */
-    boolean saveBatch(Long topicId, List<String> keyWordNames);
+    boolean saveBatch(Long topicId, List<String> keywordNames);
 
     /**
      * 根据id删除

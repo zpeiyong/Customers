@@ -1,6 +1,6 @@
 package com.dataint.topic.service;
 
-import com.dataint.topic.common.exception.ThinventBaseException;
+
 
 public interface IStatisticService {
 
@@ -10,15 +10,15 @@ public interface IStatisticService {
 
     void eventStatistic(String startTime, String endTime);
 
-    Object getSpreadSpeed(Integer keywordId, int countDays) throws ThinventBaseException;
+    Object getSpreadSpeed(Integer keywordId, int countDays);
 
-    Object getSpreadRange(Integer keywordId, int countDays) throws ThinventBaseException;
+    Object getSpreadRange(Integer keywordId, int countDays);
 
-    Object periodHotPOStat(String startTime, String endTime) throws ThinventBaseException;
+    Object periodHotPOStat(String startTime, String endTime);
 
-    Object sendPeriodHotPOStat(String startTime, String endTime) throws ThinventBaseException;
+    Object sendPeriodHotPOStat(String startTime, String endTime);
 
-    Object sendPeriodDetails(String beginTime, String overTime) throws ThinventBaseException;
+    Object sendPeriodDetails(String beginTime, String overTime);
 
     // StatisticTasks
     Boolean sendStatistic(String startTime, String endTime);

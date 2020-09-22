@@ -13,6 +13,6 @@ public class TopicForm  {
     private String name;
 
     @ApiModelProperty(value = "专题组拥有的关键词列表")
-    private List<String> keyWordNames;
+    private List<String> keywordNames;
 
 }

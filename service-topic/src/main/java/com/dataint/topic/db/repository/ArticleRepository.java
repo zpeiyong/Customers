@@ -1,8 +1,8 @@
 package com.dataint.topic.db.repository;
 
 import com.dataint.topic.db.IBaseArticle;
-import com.dataint.topic.db.entity.Article;
-import com.dataint.topic.db.entity.Event;
+import com.dataint.topic.db.entity.Topic;
+import com.dataint.topic.db.entity.TopicArticle;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,9 +14,9 @@ import java.util.Date;
 import java.util.List;
 
 @Repository
-public interface ArticleRepository extends JpaRepository<Article, Integer>, JpaSpecificationExecutor<Article> {
+public interface ArticleRepository extends JpaRepository<TopicArticle, Integer>, JpaSpecificationExecutor<TopicArticle> {
 
-    Page<Article> findAll(Pageable pageable);
+    Page<TopicArticle> findAll(Pageable pageable);
 
     @Query(value = "SELECT keyword_id AS keywordId, COUNT(1) AS articleCnt, COUNT(DISTINCT author) AS websiteCnt " +
             "FROM article " +
@@ -29,11 +29,11 @@ public interface ArticleRepository extends JpaRepository<Article, Integer>, JpaS
             "WHERE gmt_release >= ?1 AND gmt_release <= ?2", nativeQuery = true)
     List<Integer> getKeywordIdList(String startTime, String endTime);
 
-    Article findTop1ByKeywordIdOrderByGmtCrawl(int keywordId);
+    TopicArticle findTop1ByKeywordIdOrderByGmtCrawl(int keywordId);
 
-    @Query(value = "FROM Article a WHERE a.keywordId = ?1 AND a.gmtCrawl >= ?2 AND a.gmtCrawl <= ?3")
-    Page<Article> getArticlesByKeywordIdAndGmtCrawlBetween(int keywordId, Date startTime, Date endTime, Pageable pageable);
+    @Query(value = "FROM TopicArticle a WHERE a.keywordId = ?1 AND a.gmtCrawl >= ?2 AND a.gmtCrawl <= ?3")
+    Page<TopicArticle> getArticlesByKeywordIdAndGmtCrawlBetween(int keywordId, Date startTime, Date endTime, Pageable pageable);
 
-    Article getArticleByEvent(Event event);
+    TopicArticle getArticleByEvent(Topic event);
 
 }

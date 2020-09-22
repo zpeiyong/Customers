@@ -20,8 +20,8 @@ public class TopicKeywordServiceImpl implements ITopicKeywordService {
     @Autowired
     private ITopicKeywordDao topicKeywordDao;
     @Override
-    public boolean saveBatch(Long topicId, List<String> keyWordNames) {
-        List<TopicKeyword> topicKeywords = keyWordNames.stream().map(names -> {
+    public boolean saveBatch(Long topicId, List<String> keywordNames) {
+        List<TopicKeyword> topicKeywords = keywordNames.stream().map(names -> {
             TopicKeyword topicKeyword = new TopicKeyword();
             topicKeyword.setCreatedTime(new Date());
             topicKeyword.setTopicId(topicId);

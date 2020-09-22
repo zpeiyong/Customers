@@ -4,7 +4,7 @@ import com.dataint.topic.db.entity.CrawlSite;
 import com.dataint.topic.db.repository.CrawlSiteRepository;
 import com.dataint.topic.model.CrawlSiteVO;
 import com.dataint.topic.service.ICrawlSiteService;
-import com.dataint.topic.common.exception.ThinventBaseException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,12 +19,12 @@ public class CrawlSiteServiceImpl implements ICrawlSiteService {
     private CrawlSiteRepository crawlSiteRepository;
 
     @Override
-    public Object getCrawlSiteList() throws ThinventBaseException {
+    public Object getCrawlSiteList() {
         return null;
     }
 
     @Override
-    public Object getCrawlSiteNames() throws ThinventBaseException {
+    public Object getCrawlSiteNames() {
         List<Map<String, Object>> retList = new ArrayList<>();
 
         List<Map> siteNameList = crawlSiteRepository.getCrawlSiteNames("1");
@@ -41,22 +41,22 @@ public class CrawlSiteServiceImpl implements ICrawlSiteService {
     }
 
     @Override
-    public CrawlSiteVO getCrawlSiteById(Integer siteId) throws ThinventBaseException {
+    public CrawlSiteVO getCrawlSiteById(Integer siteId) {
         return null;
     }
 
     @Override
-    public Object addCrawlSite(CrawlSiteVO crawlSiteVO) throws ThinventBaseException {
+    public Object addCrawlSite(CrawlSiteVO crawlSiteVO) {
         return null;
     }
 
     @Override
-    public Object updateCrawlSiteById(Integer siteId, CrawlSiteVO crawlSiteVO) throws ThinventBaseException {
+    public Object updateCrawlSiteById(Integer siteId, CrawlSiteVO crawlSiteVO) {
         return null;
     }
 
     @Override
-    public Object deleteCrawlSiteById(Integer siteId) throws ThinventBaseException {
+    public Object deleteCrawlSiteById(Integer siteId) {
         return null;
     }
 

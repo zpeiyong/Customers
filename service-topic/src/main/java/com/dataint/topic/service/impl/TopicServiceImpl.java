@@ -13,7 +13,6 @@ import javax.persistence.EntityNotFoundException;
 import java.util.Date;
 import java.util.Optional;
 
-
 @Service
 public class TopicServiceImpl implements ITopicService {
     @Autowired
@@ -23,9 +22,9 @@ public class TopicServiceImpl implements ITopicService {
     @Override
     public TopicVO addTopic(Topic topic) {
         topic.setCreatedTime(new Date());
-        Topic success = topicDao.save(topic);
-        topicKeywordService.saveBatch(success.getId(),success.getKeyWordName());
-        return new TopicVO(success);
+        topicDao.save(topic);
+        topicKeywordService.saveBatch(topic.getId(),topic.getKeywordList());
+        return new TopicVO(topic);
     }
 
     @Override
@@ -65,7 +64,7 @@ public class TopicServiceImpl implements ITopicService {
         topic.setCreatedBy(ifExist.getCreatedBy());
         topic.setUpdatedBy(ifExist.getUpdatedBy());
         topicDao.save(topic);
-        topicKeywordService.saveBatch(topic.getId(),topic.getKeyWordName());
+        topicKeywordService.saveBatch(topic.getId(),topic.getKeywordList());
         return true;
     }
 

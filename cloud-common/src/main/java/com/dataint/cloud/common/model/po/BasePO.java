@@ -21,7 +21,8 @@ public class BasePO implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Integer id;
+    private Long id;
+
     @Column(name = "created_by")
     private String createdBy = SYSTEM;
 

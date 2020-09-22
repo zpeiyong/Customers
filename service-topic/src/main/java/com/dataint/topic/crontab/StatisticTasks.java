@@ -2,10 +2,8 @@ package com.dataint.topic.crontab;
 
 import com.dataint.cloud.common.model.Constants;
 import com.dataint.topic.service.IStatisticService;
-import com.dataint.topic.utils.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
