@@ -4,11 +4,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.dataint.cloud.common.model.Constants;
 import com.dataint.cloud.common.utils.DateUtil;
 import com.dataint.topic.db.*;
+import com.dataint.topic.db.dao.*;
 import com.dataint.topic.db.entity.PoKeyword;
 import com.dataint.topic.db.entity.Statistic;
-import com.dataint.topic.db.repository.*;
-import com.dataint.topic.model.SendModelStatistic;
-import com.dataint.topic.model.StatisticRangeVO;
+import com.dataint.topic.model.po.SendModelStatistic;
+import com.dataint.topic.model.vo.StatisticRangeVO;
 import com.dataint.topic.service.IStatisticService;
 import com.dataint.topic.utils.SendDataUtil;
 import lombok.Getter;
@@ -21,25 +21,25 @@ import java.util.*;
 @Service
 public class StatisticServiceImpl implements IStatisticService {
     @Autowired
-    private ArticleRepository articleRepository;
+    private IArticleDao articleDao;
 
     @Autowired
-    private DynamicDataRepository dynamicDataRepository;
+    private IDynamicDataDao dynamicDataDao;
 
     @Autowired
-    private MediaRepository mediaRepository;
+    private IMediaDao mediaDao;
 
     @Autowired
-    private MediaTypeRepository mediaTypeRepository;
+    private IMediaTypeDao mediaTypeDao;
 
     @Autowired
-    private EventRepository eventRepository;
+    private IEventDao eventDao;
 
     @Autowired
-    private StatisticRepository statisticRepository;
+    private IStatisticDao statisticDao;
 
     @Autowired
-    private PoKeywordRepository poKeywordRepository;
+    private IPoKeywordDao poKeywordDao;
 
     private static String HOURLY = "hourly";
     private static String DAILY = "daily";
@@ -77,7 +77,7 @@ public class StatisticServiceImpl implements IStatisticService {
          *  get/set statistic results
          */
         // get/set articleCnt, websiteCnt and other info
-        List<IBaseArticle> articleCntList = articleRepository.countArticlesAndWebsite(startTime, endTime);
+        List<IBaseArticle> articleCntList = articleDao.countArticlesAndWebsite(startTime, endTime);
         for (IBaseArticle baseArticle : articleCntList) {
 //            Statistic statistic = new Statistic();
 //
@@ -99,7 +99,7 @@ public class StatisticServiceImpl implements IStatisticService {
         }
 
         // get/set forwardCnt, commentCnt, likeCnt
-        List<IBaseInteraction> interactionCntList = dynamicDataRepository.countInteractions(startTime, endTime);
+        List<IBaseInteraction> interactionCntList = dynamicDataDao.countInteractions(startTime, endTime);
 //        for (IBaseInteraction baseInteraction : interactionCntList) {
 //            Integer keywordId = baseInteraction.getKeywordId();
 //            Statistic statistic = statisticMap.get(keywordId);
@@ -129,7 +129,7 @@ public class StatisticServiceImpl implements IStatisticService {
         Map<Integer, Statistic> statisticMap = new HashMap<>();
 
         // get/set articleCnt, forwardCnt, commentCnt, likeCnt and other info
-        List<IBaseStatistic> statisticList = statisticRepository.countTotalStatistic(startTime, endTime, HOURLY);
+        List<IBaseStatistic> statisticList = statisticDao.countTotalStatistic(startTime, endTime, HOURLY);
 //        for (IBaseStatistic baseStatistic : statisticList) {
 //            Statistic statistic = new Statistic();
 //
@@ -153,7 +153,7 @@ public class StatisticServiceImpl implements IStatisticService {
 //        }
 
         // get/set websiteCnt
-        List<IBaseArticle> articleCntList = articleRepository.countArticlesAndWebsite(startTime, endTime);
+        List<IBaseArticle> articleCntList = articleDao.countArticlesAndWebsite(startTime, endTime);
 //        for (IBaseArticle baseArticle : articleCntList) {
 //            Integer keywordId = baseArticle.getKeywordId();
 //            Statistic statistic = statisticMap.get(keywordId);
@@ -178,12 +178,12 @@ public class StatisticServiceImpl implements IStatisticService {
          * check and append to Topic
          */
         // interactionCnt
-        List<IBaseInteraction> totalCntList = statisticRepository.countTotalInteraction(HOURLY);
+        List<IBaseInteraction> totalCntList = statisticDao.countTotalInteraction(HOURLY);
 //        for (IBaseInteraction baseInteraction : totalCntList) {
 //            Integer keywordId = baseInteraction.getKeywordId();
 //
 //            // check if exist
-//            Topic tmp = eventRepository.getEventByKeywordIdAndSubTitle(keywordId, EventEnum.getName(1));
+//            Topic tmp = eventDao.getEventByKeywordIdAndSubTitle(keywordId, EventEnum.getName(1));
 //            if (tmp != null)
 //                continue;
 //
@@ -201,13 +201,13 @@ public class StatisticServiceImpl implements IStatisticService {
 //        }
 
         // govMedia for first time
-        List<Integer> keywordIdList = articleRepository.getKeywordIdList(startTime, endTime);
+        List<Integer> keywordIdList = articleDao.getKeywordIdList(startTime, endTime);
 //        for (Integer keywordId : keywordIdList) {
 //            // get first article
 //            TopicArticle article = articleRepository.findTop1ByKeywordIdOrderByGmtCrawl(keywordId);
 //            if (article != null) {
 //                // check if exist
-//                Topic tmp = eventRepository.getEventByKeywordIdAndSubTitle(article.getKeywordId(), EventEnum.getName(4));
+//                Topic tmp = eventDao.getEventByKeywordIdAndSubTitle(article.getKeywordId(), EventEnum.getName(4));
 //
 //                if (tmp != null)
 //                    continue;
@@ -234,7 +234,7 @@ public class StatisticServiceImpl implements IStatisticService {
     public Object getSpreadSpeed(Integer keywordId, int countDays) {
         List<Map<String, String>> respList = buildRespList(countDays);
 
-        List<ISpreadSpeed> speedList = statisticRepository.countSpreadSpeed(keywordId, HOURLY, countDays);
+        List<ISpreadSpeed> speedList = statisticDao.countSpreadSpeed(keywordId, HOURLY, countDays);
         for (ISpreadSpeed item : speedList) {
             respList.forEach((e) -> {
                 if (item.getStartTime().equals(e.get("startTime"))) {
@@ -265,7 +265,7 @@ public class StatisticServiceImpl implements IStatisticService {
         }
 
         // countSpreadRange
-        List<Statistic> statisticList = statisticRepository.countSpreadRange(keywordId, HOURLY, startTimeList);
+        List<Statistic> statisticList = statisticDao.countSpreadRange(keywordId, HOURLY, startTimeList);
         for (Statistic statistic : statisticList) {
 //            for (Map<String, String> map : dataList) {
 //                // startTime
@@ -410,7 +410,7 @@ public class StatisticServiceImpl implements IStatisticService {
     // StatisticTasks.sendData()
     @Override
     public void sendHotPODetails(String startTime, String endTime) {
-        List<PoKeyword> poKeywordList = poKeywordRepository.findAllByIfSend("1");
+        List<PoKeyword> poKeywordList = poKeywordDao.findAllByIfSend("1");
         // 构建将要发送的数据JO
         JSONObject sendDataJO = new JSONObject();
         sendDataJO.put("type", "CUSTOMS_YQ_ARTICLEINFO");
@@ -513,7 +513,7 @@ public class StatisticServiceImpl implements IStatisticService {
      */
     private Map<Integer, Statistic> getMediaCount(Map<Integer, Statistic> statisticMap, String startTime, String endTime) {
         // govMediaCnt, selfMediaCnt
-        List<IBaseMedia> mediaCntList = mediaRepository.countMedia(startTime, endTime);
+        List<IBaseMedia> mediaCntList = mediaDao.countMedia(startTime, endTime);
         for (IBaseMedia baseMedia : mediaCntList) {
             Integer keywordId = baseMedia.getKeywordId();
             Statistic statistic = statisticMap.get(keywordId);
@@ -534,7 +534,7 @@ public class StatisticServiceImpl implements IStatisticService {
         }
 
         // wbMediaCnt
-        List<IBaseMedia> wbMediaCntList = mediaRepository.countWbWxMedia(startTime, endTime, "微博");
+        List<IBaseMedia> wbMediaCntList = mediaDao.countWbWxMedia(startTime, endTime, "微博");
 //        for (IBaseMedia baseMedia : wbMediaCntList) {
 //            Integer keywordId = baseMedia.getKeywordId();
 //            Statistic statistic = statisticMap.get(keywordId);
@@ -545,7 +545,7 @@ public class StatisticServiceImpl implements IStatisticService {
 //        }
 
         // wxMediaCnt
-        List<IBaseMedia> wxMediaCntList = mediaRepository.countWbWxMedia(startTime, endTime, "微信");
+        List<IBaseMedia> wxMediaCntList = mediaDao.countWbWxMedia(startTime, endTime, "微信");
 //        for (IBaseMedia baseMedia : wxMediaCntList) {
 //            Integer keywordId = baseMedia.getKeywordId();
 //            Statistic statistic = statisticMap.get(keywordId);

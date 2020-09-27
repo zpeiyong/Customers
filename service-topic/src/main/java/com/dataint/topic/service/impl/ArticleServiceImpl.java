@@ -2,9 +2,9 @@ package com.dataint.topic.service.impl;
 
 import com.dataint.topic.db.entity.MediaType;
 import com.dataint.topic.db.entity.TopicArticle;
-import com.dataint.topic.db.repository.ArticleRepository;
-import com.dataint.topic.db.repository.MediaTypeRepository;
-import com.dataint.topic.model.ArticleConditionReq;
+import com.dataint.topic.db.dao.IArticleDao;
+import com.dataint.topic.db.dao.IMediaTypeDao;
+import com.dataint.topic.model.form.ArticleConditionForm;
 import com.dataint.topic.service.IArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,15 +22,15 @@ import java.util.List;
 @Service
 public class ArticleServiceImpl implements IArticleService {
     @Autowired
-    private ArticleRepository articleRepository;
+    private IArticleDao articleDao;
 
     @Autowired
-    private MediaTypeRepository mediaTypeRepository;
+    private IMediaTypeDao mediaTypeDao;
 
     @Override
-    public Object queryArticlesByCondition(ArticleConditionReq acReq) {
+    public Object queryArticlesByCondition(ArticleConditionForm acReq) {
 
-        Page<TopicArticle> result = articleRepository.findAll(new Specification<TopicArticle>() {
+        Page<TopicArticle> result = articleDao.findAll(new Specification<TopicArticle>() {
             @Override
             public Predicate toPredicate(Root<TopicArticle> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
                 List<Predicate> list = new ArrayList<>();
@@ -55,7 +55,7 @@ public class ArticleServiceImpl implements IArticleService {
 
                     } else {
                         // getAll 官方媒体/新闻媒体
-                        List<MediaType> mediaTypeList = mediaTypeRepository.getAllByMediaTypeId(mediaTypeId);
+                        List<MediaType> mediaTypeList = mediaTypeDao.getAllByMediaTypeId(mediaTypeId);
 
                         if (mediaTypeList != null && mediaTypeList.size() > 0) {
                             CriteriaBuilder.In<String> in = criteriaBuilder.in(root.get("author"));

@@ -95,10 +95,11 @@ public class EventServiceImpl implements IEventService {
             sourceDao.saveAll(sourceList);
 
             // persist event_source
-            sourceIdList = sourceList.stream().map(BasePO::getId).collect(Collectors.toList());
+//            sourceIdList = sourceList.stream().map(BasePO::getId).collect(Collectors.toList()); update
             List<EventSource> eventSourceList = sourceIdList.stream()
                     .map(integer -> {
-                        EventSource eventSource = new EventSource(event.getId(), integer);
+//                        EventSource eventSource = new EventSource(event.getId(), integer); update
+                        EventSource eventSource =new EventSource();
                         eventSource.setCreatedTime(new Date());
 
                         return eventSource;
@@ -234,10 +235,11 @@ public class EventServiceImpl implements IEventService {
             sourceDao.saveAll(sourceList);
 
             // persist event_source
-            sourceIdList = sourceList.stream().map(BasePO::getId).collect(Collectors.toList());
+//            sourceIdList = sourceList.stream().map(BasePO::getId).collect(Collectors.toList());
             List<EventSource> eventSourceList = new ArrayList<>();
             for (Integer sourceId : sourceIdList) {
-                EventSource eventSource = new EventSource(event.getId(), sourceId);
+//                EventSource eventSource = new EventSource(event.getId(), sourceId); update
+                EventSource eventSource=new EventSource();
                 eventSource.setUpdatedTime(new Date());
                 eventSourceList.add(eventSource);
             }

@@ -1,7 +1,8 @@
 package com.dataint.topic.controller;
 
-import com.dataint.topic.model.CrawlSiteVO;
-import com.dataint.topic.model.UpdateCrawlSiteReq;
+import com.dataint.cloud.common.model.ResultVO;
+import com.dataint.topic.model.vo.CrawlSiteVO;
+import com.dataint.topic.model.form.UpdateCrawlSiteForm;
 import com.dataint.topic.service.ICrawlSiteService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,16 +16,16 @@ public class CrawlSiteController {
 
     @GetMapping("/getCrawlSiteList")
     @ResponseBody
-    public Object getCrawlSiteList() {
+    public ResultVO getCrawlSiteList() {
 
-        return crawlSiteService.getCrawlSiteList();
+        return ResultVO.success(crawlSiteService.getCrawlSiteList());
     }
 
     @GetMapping("/getCrawlSiteNames")
     @ResponseBody
-    public Object getCrawlSiteNames() {
+    public ResultVO getCrawlSiteNames() {
 
-        return crawlSiteService.getCrawlSiteNames();
+        return ResultVO.success(crawlSiteService.getCrawlSiteNames());
     }
 
     @GetMapping("/getCrawlSiteById/{siteId}")
@@ -36,22 +37,22 @@ public class CrawlSiteController {
 
     @PostMapping("/add")
     @ResponseBody
-    public Object addCrawlSite(@RequestBody CrawlSiteVO crawlSiteVO) {
+    public ResultVO addCrawlSite(@RequestBody CrawlSiteVO crawlSiteVO) {
 
-        return crawlSiteService.addCrawlSite(crawlSiteVO);
+        return ResultVO.success(crawlSiteService.addCrawlSite(crawlSiteVO));
     }
 
     @PostMapping("/update")
     @ResponseBody
-    public Object updateCrawlSiteById(@RequestBody UpdateCrawlSiteReq updateCrawlSiteReq) {
+    public ResultVO updateCrawlSiteById(@RequestBody UpdateCrawlSiteForm updateCrawlSiteReq) {
 
-        return crawlSiteService.updateCrawlSiteById(updateCrawlSiteReq.getSiteId(), updateCrawlSiteReq.getCrawlSiteVO());
+        return ResultVO.success(crawlSiteService.updateCrawlSiteById(updateCrawlSiteReq.getSiteId(), updateCrawlSiteReq.getCrawlSiteVO()));
     }
 
     @GetMapping("/delete/{siteId}")
     @ResponseBody
-    public Object deleteCrawlSiteById(@PathVariable("siteId") Integer siteId) {
+    public ResultVO deleteCrawlSiteById(@PathVariable("siteId") Integer siteId) {
 
-        return crawlSiteService.deleteCrawlSiteById(siteId);
+        return ResultVO.success(crawlSiteService.deleteCrawlSiteById(siteId));
     }
 }

@@ -1,7 +1,8 @@
 package com.dataint.topic.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.dataint.topic.model.UpdateKeywordReq;
+import com.dataint.cloud.common.model.ResultVO;
+import com.dataint.topic.model.form.UpdateKeywordForm;
 import com.dataint.topic.service.IPoKeywordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -14,29 +15,29 @@ public class PoKeywordController {
 
     @GetMapping("/getPoKeywordList")
     @ResponseBody
-    public Object getPoKeywordList() {
+    public ResultVO getPoKeywordList() {
 
-        return poKeywordService.getPoKeywordList();
+        return ResultVO.success(poKeywordService.getPoKeywordList());
     }
 
     @PostMapping("/add")
     @ResponseBody
-    public Object addPoKeyword(@RequestBody JSONObject jsonObject) {
+    public ResultVO addPoKeyword(@RequestBody JSONObject jsonObject) {
 
-        return poKeywordService.addPoKeyword(jsonObject.getString("poKeyword"));
+        return ResultVO.success(poKeywordService.addPoKeyword(jsonObject.getString("poKeyword")));
     }
 
     @PostMapping("/update")
     @ResponseBody
-    public Object updateStatusById(@RequestBody UpdateKeywordReq updateKeywordReq) {
+    public ResultVO updateStatusById(@RequestBody UpdateKeywordForm updateKeywordReq) {
 
-        return poKeywordService.updateStatusById(updateKeywordReq.getKeywordId(), updateKeywordReq.getStatusType());
+        return ResultVO.success(poKeywordService.updateStatusById(updateKeywordReq.getKeywordId(), updateKeywordReq.getStatusType()));
     }
 
     @GetMapping("/delete/{keywordId}")
     @ResponseBody
-    public Object deletePoKeywordById(@PathVariable("keywordId") Integer keywordId) {
+    public ResultVO deletePoKeywordById(@PathVariable("keywordId") Integer keywordId) {
 
-        return poKeywordService.deletePoKeywordById(keywordId);
+        return ResultVO.success( poKeywordService.deletePoKeywordById(keywordId));
     }
 }

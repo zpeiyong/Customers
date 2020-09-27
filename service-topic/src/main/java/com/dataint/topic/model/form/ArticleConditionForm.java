@@ -1,4 +1,4 @@
-package com.dataint.topic.model;
+package com.dataint.topic.model.form;
 
 import com.dataint.cloud.common.model.param.PageParam;
 import lombok.Getter;
@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 @Getter
 @Setter
-public class ArticleConditionReq extends PageParam implements Serializable {
+public class ArticleConditionForm extends PageParam implements Serializable {
 
     private int keywordId;
 

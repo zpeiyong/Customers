@@ -44,7 +44,7 @@ public enum BaseExceptionEnum implements ExceptionType {
     GATEWAY_CONNECT_TIME_OUT("网关超时!", 504),
 
     // [500,600)操作错误
-
+    DATA_REPETITION("数据重复错误！", 511),
     ;
 
 //    DATA_NOTEXSIT("该数据不存在。", 300),

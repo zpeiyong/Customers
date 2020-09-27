@@ -1,4 +1,4 @@
-package com.dataint.topic.db.repository;
+package com.dataint.topic.db.dao;
 
 import com.dataint.topic.db.IBaseInteraction;
 import com.dataint.topic.db.entity.DynamicData;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface DynamicDataRepository extends JpaRepository<DynamicData, Integer> {
+public interface IDynamicDataDao extends JpaRepository<DynamicData, Integer> {
 
     @Query(value = "SELECT a.keyword_id AS keywordId, any_value(SUM(c.forwardCnt)) AS forwardCnt, " +
             "any_value(SUM(c.commentCnt)) AS commentCnt, any_value(SUM(c.likeCnt)) AS likeCnt " +

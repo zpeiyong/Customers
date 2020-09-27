@@ -24,17 +24,17 @@ public class StatisticTasks extends SimpleAsyncTaskExecutor {
 
         // last interval startTime/endTime
         try {
-            // startTime
-            Calendar startCal = DateUtil.getStartTimeOfInterval(Constants.DateTimeSDF.format(currentTimestamps-intervalTimestamps));
-
-            // endTime
-            Calendar endCal = DateUtil.getStartTimeOfInterval(Constants.DateTimeSDF.format(currentTimestamps));
-            endCal.add(Calendar.MILLISECOND, -1);
-
-            // statistic
-            statisticService.hourlyStatistic(Constants.DateTimeSDF.format(startCal.getTime()),
-                    Constants.DateTimeSDF.format(endCal.getTime()));
-        } catch (ParseException pe) {
+//            // startTime
+////            Calendar startCal = DateUtil.getStartTimeOfInterval(Constants.DateTimeSDF.format(currentTimestamps-intervalTimestamps));
+//
+//            // endTime
+////            Calendar endCal = DateUtil.getStartTimeOfInterval(Constants.DateTimeSDF.format(currentTimestamps));
+////            endCal.add(Calendar.MILLISECOND, -1);
+//
+//            // statistic
+//            statisticService.hourlyStatistic(Constants.DateTimeSDF.format(startCal.getTime()),
+//                    Constants.DateTimeSDF.format(endCal.getTime()));
+        } catch (Exception pe) {
             pe.printStackTrace();
         }
     }
@@ -47,16 +47,16 @@ public class StatisticTasks extends SimpleAsyncTaskExecutor {
         // yesterday
         try {
             // startTime
-            Calendar startCal = DateUtil.getStartTimeOfDay(Constants.DateTimeSDF.format(currentTimestamps-oneDayTimestamps));
-
-            // endTime
-            Calendar endCal = DateUtil.getStartTimeOfInterval(Constants.DateTimeSDF.format(currentTimestamps));
-            endCal.add(Calendar.MILLISECOND, -1);
-
-            // statistic
-            statisticService.dailyStatistic(Constants.DateTimeSDF.format(startCal.getTime()),
-                    Constants.DateTimeSDF.format(endCal.getTime()));
-        } catch (ParseException pe) {
+//            Calendar startCal = DateUtil.getStartTimeOfDay(Constants.DateTimeSDF.format(currentTimestamps-oneDayTimestamps));
+//
+//            // endTime
+//            Calendar endCal = DateUtil.getStartTimeOfInterval(Constants.DateTimeSDF.format(currentTimestamps));
+//            endCal.add(Calendar.MILLISECOND, -1);
+//
+//            // statistic
+//            statisticService.dailyStatistic(Constants.DateTimeSDF.format(startCal.getTime()),
+//                    Constants.DateTimeSDF.format(endCal.getTime()));
+        } catch (Exception pe) {
             pe.printStackTrace();
         }
     }
@@ -68,17 +68,17 @@ public class StatisticTasks extends SimpleAsyncTaskExecutor {
 
         // last interval startTime/endTime
         try {
-            // startTime
-            Calendar startCal = DateUtil.getStartTimeOfInterval(Constants.DateTimeSDF.format(currentTimestamps-intervalTimestamps));
-
-            // endTime
-            Calendar endCal = DateUtil.getStartTimeOfInterval(Constants.DateTimeSDF.format(currentTimestamps));
-            endCal.add(Calendar.MILLISECOND, -1);
-
-            // statistic
-            statisticService.eventStatistic(Constants.DateTimeSDF.format(startCal.getTime()),
-                    Constants.DateTimeSDF.format(endCal.getTime()));
-        } catch (ParseException pe) {
+//            // startTime
+//            Calendar startCal = DateUtil.getStartTimeOfInterval(Constants.DateTimeSDF.format(currentTimestamps-intervalTimestamps));
+//
+//            // endTime
+//            Calendar endCal = DateUtil.getStartTimeOfInterval(Constants.DateTimeSDF.format(currentTimestamps));
+//            endCal.add(Calendar.MILLISECOND, -1);
+//
+//            // statistic
+//            statisticService.eventStatistic(Constants.DateTimeSDF.format(startCal.getTime()),
+//                    Constants.DateTimeSDF.format(endCal.getTime()));
+        } catch (Exception pe) {
             pe.printStackTrace();
         }
     }
@@ -86,12 +86,12 @@ public class StatisticTasks extends SimpleAsyncTaskExecutor {
 //    @Scheduled(cron = "0 28 0,12 * * ?")
     public void sendStatistic() {
 
-        boolean ifSuccess = statisticService.sendStatistic(DateUtil.getYesterdayStart(), DateUtil.getYesterdayEnd());
+      //  boolean ifSuccess = statisticService.sendStatistic(DateUtil.getYesterdayStart(), DateUtil.getYesterdayEnd());
     }
 
 //    @Scheduled(cron = "0 29 0,12 * * ?")
     public void sendDetails() {
 
-        statisticService.sendHotPODetails(DateUtil.getYesterdayStart(), DateUtil.getYesterdayEnd());
+    //    statisticService.sendHotPODetails(DateUtil.getYesterdayStart(), DateUtil.getYesterdayEnd());
     }
 }

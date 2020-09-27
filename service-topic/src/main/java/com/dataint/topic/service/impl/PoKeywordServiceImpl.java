@@ -1,7 +1,7 @@
 package com.dataint.topic.service.impl;
 
 import com.dataint.topic.db.entity.PoKeyword;
-import com.dataint.topic.db.repository.PoKeywordRepository;
+import com.dataint.topic.db.dao.IPoKeywordDao;
 import com.dataint.topic.service.IPoKeywordService;
 import com.dataint.topic.service.ISpiderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,7 @@ import java.util.*;
 @Service
 public class PoKeywordServiceImpl implements IPoKeywordService {
     @Autowired
-    private PoKeywordRepository poKeywordRepository;
+    private IPoKeywordDao poKeywordDao;
     @Autowired
     private ISpiderService spiderService;
 
@@ -20,7 +20,7 @@ public class PoKeywordServiceImpl implements IPoKeywordService {
 
     @Override
     public Object getPoKeywordList() {
-        List<PoKeyword> allList = poKeywordRepository.findAll();
+        List<PoKeyword> allList = poKeywordDao.findAll();
 
         List<PoKeyword> enableList = new ArrayList<>();
         List<PoKeyword> disableList = new ArrayList<>();
@@ -43,7 +43,7 @@ public class PoKeywordServiceImpl implements IPoKeywordService {
     @Override
     public Object addPoKeyword(String keyword) {
         // 检查keyword是否已存在
-        PoKeyword poKeyword = poKeywordRepository.findPoKeywordByKeyword(keyword);
+        PoKeyword poKeyword = poKeywordDao.findPoKeywordByKeyword(keyword);
 //        if (poKeyword != null) {
 //            if ("1".equals(poKeyword.getEnable())) {
 //                return ResultUtil.buildSuccResultMap("关键词 " + poKeyword.getKeyword() + " 已经在爬取列表中...");
@@ -73,9 +73,9 @@ public class PoKeywordServiceImpl implements IPoKeywordService {
 
         // update database
         if ("pause".equals(statusType))
-            poKeywordRepository.updateByKeywordId(keywordId, "0");
+            poKeywordDao.updateByKeywordId(keywordId, "0");
         else if ("restart".equals(statusType))
-            poKeywordRepository.updateByKeywordId(keywordId, "1");
+            poKeywordDao.updateByKeywordId(keywordId, "1");
 
 //        return ResultUtil.buildSuccResultMap();
         return null;
@@ -84,7 +84,7 @@ public class PoKeywordServiceImpl implements IPoKeywordService {
     @Override
     public Object deletePoKeywordById(Integer keywordId) {
 
-        poKeywordRepository.deleteByKeywordId(keywordId);
+        poKeywordDao.deleteByKeywordId(keywordId);
 
 //        return ResultUtil.buildSuccResultMap();
         return null;

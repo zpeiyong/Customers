@@ -1,14 +1,16 @@
 package com.dataint.topic.service.impl;
 
+import com.dataint.cloud.common.dim.BaseExceptionEnum;
+import com.dataint.cloud.common.exception.DataintBaseException;
 import com.dataint.cloud.common.model.param.PageParam;
 import com.dataint.topic.db.entity.MediaType;
 import com.dataint.topic.db.entity.Topic;
 import com.dataint.topic.db.entity.TopicArticle;
-import com.dataint.topic.db.repository.ArticleRepository;
-import com.dataint.topic.db.repository.EventRepository;
-import com.dataint.topic.db.repository.MediaTypeRepository;
-import com.dataint.topic.model.EventBaseVO;
-import com.dataint.topic.model.EventVO;
+import com.dataint.topic.db.dao.IArticleDao;
+import com.dataint.topic.db.dao.IEventDao;
+import com.dataint.topic.db.dao.IMediaTypeDao;
+import com.dataint.topic.model.vo.EventBaseVO;
+import com.dataint.topic.model.vo.EventVO;
 import com.dataint.topic.service.IEventService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,19 +21,20 @@ import org.springframework.stereotype.Service;
 @Service
 public class EventServiceImpl implements IEventService {
     @Autowired
-    private EventRepository eventRepository;
+    private IEventDao eventDao;
 
     @Autowired
-    private ArticleRepository articleRepository;
+    private IArticleDao articleDao;
 
     @Autowired
-    private MediaTypeRepository mediaTypeRepository;
+    private IMediaTypeDao mediaTypeDao;
 
     @Override
     public Object getEventList(int keywordId, PageParam pageParam) {
 
-        return eventRepository.getEventsByKeywordId(keywordId, PageRequest.of(
-                pageParam.getCurrent()-1, pageParam.getPageSize(), Sort.by("eventTime").descending()));
+//        return eventDao.getEventsByKeywordId(keywordId, PageRequest.of(
+//                pageParam.getCurrent()-1, pageParam.getPageSize(), Sort.by("eventTime").descending()));
+        return null;
     }
 
     @Override
@@ -45,22 +48,22 @@ public class EventServiceImpl implements IEventService {
 //
 //        event.setMediaType(new MediaType(eventVO.getMediaTypeId()));
 
-        eventRepository.save(event);
+//      eventDao.save(event);
 
         return event;
     }
 
     @Override
     public Object addFromList(EventBaseVO eventBaseVO) {
-        TopicArticle article = articleRepository.getOne(eventBaseVO.getArticleId());
+        TopicArticle article = articleDao.getOne(eventBaseVO.getArticleId());
         if (article.getEvent() != null) {
-//            throw new DataintBaseException(BaseExceptionEnum.DATA_REPETITION.getIndex(), BaseExceptionEnum.DATA_REPETITION.getName());
+        throw new DataintBaseException(BaseExceptionEnum.DATA_REPETITION.getName(), BaseExceptionEnum.DATA_REPETITION.getIndex());
         }
 
         Topic event = new Topic();
 
         // site
-        MediaType mediaType = mediaTypeRepository.getMediaTypeByMediaTypeNameLike(article.getAuthor());
+        MediaType mediaType = mediaTypeDao.getMediaTypeByMediaTypeNameLike(article.getAuthor());
         if (mediaType != null)
 //            event.setMediaType(mediaType);
 
@@ -77,11 +80,11 @@ public class EventServiceImpl implements IEventService {
 //        event.setGmtCreate(new Date());
 
         // save event
-        eventRepository.save(event);
+ //           eventDao.save(event);
 
         // save article
 //        article.setEvent(event);
-        articleRepository.save(article);
+        articleDao.save(article);
 
         return null;
     }
@@ -89,16 +92,16 @@ public class EventServiceImpl implements IEventService {
     @Override
     public Object deleteEvent(int eventId) {
 
-        Topic event = eventRepository.getEventByEventId(eventId);
+        Topic event = eventDao.getEventByEventId(eventId);
 
         if (event != null) {
-            TopicArticle article = articleRepository.getArticleByEvent(event);
+            TopicArticle article = articleDao.getArticleByEvent(event);
 
             article.setEvent(null);
-            articleRepository.save(article);
+            articleDao.save(article);
         }
 
-        eventRepository.deleteById(eventId);
+        eventDao.deleteById(eventId);
 
 //        return ResultUtil.buildSuccResultMap();
         return null;

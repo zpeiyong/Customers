@@ -1,7 +1,7 @@
 package com.dataint.topic.service;
 
 import com.dataint.topic.db.entity.CrawlSite;
-import com.dataint.topic.model.CrawlSiteVO;
+import com.dataint.topic.model.vo.CrawlSiteVO;
 
 import java.util.List;
 

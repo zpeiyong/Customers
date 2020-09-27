@@ -1,4 +1,4 @@
-package com.dataint.topic.db.repository;
+package com.dataint.topic.db.dao;
 
 import com.dataint.topic.db.entity.PoKeyword;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Repository
-public interface PoKeywordRepository extends JpaRepository<PoKeyword, Integer> {
+public interface IPoKeywordDao extends JpaRepository<PoKeyword, Integer> {
     PoKeyword findPoKeywordByKeyword(String keyword);
 
     @Transactional

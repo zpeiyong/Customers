@@ -2,7 +2,7 @@ package com.dataint.topic.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.dataint.cloud.common.exception.DataintBaseException;
-import com.dataint.topic.model.SpiderProject;
+import com.dataint.topic.model.po.SpiderProject;
 import com.dataint.topic.service.ICrawlSiteService;
 import com.dataint.topic.service.ISpiderService;
 import org.apache.http.NameValuePair;

@@ -1,4 +1,4 @@
-package com.dataint.topic.db.repository;
+package com.dataint.topic.db.dao;
 
 import com.dataint.topic.db.IBaseMedia;
 import com.dataint.topic.db.entity.Media;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface MediaRepository extends JpaRepository<Media, Integer> {
+public interface IMediaDao extends JpaRepository<Media, Integer> {
 
     @Query(value = "SELECT a.keyword_id AS keywordId, m.media_type_id AS mediaTypeId, COUNT(1) AS mediaCnt " +
             "FROM media m " +

@@ -1,8 +1,9 @@
 package com.dataint.topic.controller;
 
+import com.dataint.cloud.common.model.ResultVO;
 import com.dataint.cloud.common.model.param.PageParam;
-import com.dataint.topic.model.EventBaseVO;
-import com.dataint.topic.model.EventVO;
+import com.dataint.topic.model.vo.EventBaseVO;
+import com.dataint.topic.model.vo.EventVO;
 import com.dataint.topic.service.IEventService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,30 +17,30 @@ public class EventController {
 
     @GetMapping("/getEventList/{keywordId}")
     @ResponseBody
-    public Object getEventList(@PathVariable("keywordId") Integer keywordId, PageParam pageParam) {
+    public ResultVO getEventList(@PathVariable("keywordId") Integer keywordId, PageParam pageParam) {
 
-        return eventService.getEventList(keywordId, pageParam);
+        return ResultVO.success(eventService.getEventList(keywordId, pageParam));
     }
 
     @PostMapping("/addFromUser")
     @ResponseBody
-    public Object addFromUser(@RequestBody EventVO eventVO) {
+    public ResultVO addFromUser(@RequestBody EventVO eventVO) {
 
-        return eventService.addFromUser(eventVO);
+        return ResultVO.success(eventService.addFromUser(eventVO));
     }
 
     @PostMapping("/addFromList")
     @ResponseBody
-    public Object addFromList(@RequestBody EventBaseVO eventBaseVO) {
+    public ResultVO addFromList(@RequestBody EventBaseVO eventBaseVO) {
 
-        return eventService.addFromList(eventBaseVO);
+        return ResultVO.success(eventService.addFromList(eventBaseVO));
     }
 
     @GetMapping("/delete/{eventId}")
     @ResponseBody
-    public Object deleteEvent(@PathVariable("eventId") Integer eventId) {
+    public ResultVO deleteEvent(@PathVariable("eventId") Integer eventId) {
 
-        return eventService.deleteEvent(eventId);
+        return ResultVO.success( eventService.deleteEvent(eventId));
     }
 
 }

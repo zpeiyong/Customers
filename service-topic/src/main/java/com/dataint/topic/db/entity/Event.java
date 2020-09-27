@@ -6,15 +6,15 @@ import lombok.experimental.Accessors;
 import javax.persistence.*;
 import java.util.Date;
 
-//@Data
-//@Entity
-//@Table(name = "event")
-//@Accessors(chain = true)
+@Data
+@Entity
+@Table(name = "event")
+@Accessors(chain = true)
 public class Event {
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "event_id", nullable = false)
-//    private Integer eventId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "event_id", nullable = false)
+    private Integer eventId;
 //
 //    @Column(name = "keyword_id")
 //    private Integer keywordId;  // PoKeyword.keywordId

@@ -10,12 +10,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Repository
-public interface IEventSourceDao extends JpaRepository<EventSource, Integer> {
+public interface IEventSourceDao extends JpaRepository<EventSource,Long> {
 
-    List<EventSource> findAllByEventId(Integer eventId);
+    List<EventSource> findAllByEventId(Long eventId);
 
     @Transactional
     @Modifying
     @Query("delete from EventSource es where es.eventId = ?1")
-    void deleteByEventId(Integer eventId);
+    void deleteByEventId(Long eventId);
 }

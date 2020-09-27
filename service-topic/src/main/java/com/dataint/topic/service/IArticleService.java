@@ -1,11 +1,11 @@
 package com.dataint.topic.service;
 
-import com.dataint.topic.model.ArticleConditionReq;
+import com.dataint.topic.model.form.ArticleConditionForm;
 
 
 public interface IArticleService {
 
-    Object queryArticlesByCondition(ArticleConditionReq acReq);
+    Object queryArticlesByCondition(ArticleConditionForm acReq);
 
 //    Object updateArticle(UpdateArticleReq poReq);
 //

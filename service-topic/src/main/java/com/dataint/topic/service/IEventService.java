@@ -1,8 +1,8 @@
 package com.dataint.topic.service;
 
 import com.dataint.cloud.common.model.param.PageParam;
-import com.dataint.topic.model.EventBaseVO;
-import com.dataint.topic.model.EventVO;
+import com.dataint.topic.model.vo.EventBaseVO;
+import com.dataint.topic.model.vo.EventVO;
 
 public interface IEventService {
 

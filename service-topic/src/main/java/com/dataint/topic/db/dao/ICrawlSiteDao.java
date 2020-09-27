@@ -1,4 +1,4 @@
-package com.dataint.topic.db.repository;
+package com.dataint.topic.db.dao;
 
 import com.dataint.topic.db.entity.CrawlSite;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-public interface CrawlSiteRepository extends JpaRepository<CrawlSite, Integer> {
+public interface ICrawlSiteDao extends JpaRepository<CrawlSite, Integer> {
 
     List<CrawlSite> findAllByEnable(String enable);
 

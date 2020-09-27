@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface IArticleUserDao extends JpaRepository<ArticleUser, Integer> {
+public interface IArticleUserDao extends JpaRepository<ArticleUser, Long> {
 
     ArticleUser findByUserIdAndArticleId(int userId, int articleId);
 }

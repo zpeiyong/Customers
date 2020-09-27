@@ -1,4 +1,4 @@
-package com.dataint.topic.db.repository;
+package com.dataint.topic.db.dao;
 
 import com.dataint.topic.db.IBaseArticle;
 import com.dataint.topic.db.entity.Topic;
@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 @Repository
-public interface ArticleRepository extends JpaRepository<TopicArticle, Integer>, JpaSpecificationExecutor<TopicArticle> {
+public interface IArticleDao extends JpaRepository<TopicArticle, Integer>, JpaSpecificationExecutor<TopicArticle> {
 
     Page<TopicArticle> findAll(Pageable pageable);
 

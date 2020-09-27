@@ -1,4 +1,4 @@
-package com.dataint.topic.model;
+package com.dataint.topic.model.po;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;

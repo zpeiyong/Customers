@@ -1,7 +1,7 @@
 package com.dataint.topic.controller;
 
 import com.dataint.cloud.common.model.ResultVO;
-import com.dataint.topic.model.ArticleConditionReq;
+import com.dataint.topic.model.form.ArticleConditionForm;
 import com.dataint.topic.service.IArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +17,7 @@ public class ArticleController {
 
     @GetMapping("/getArticleList")
     @ResponseBody
-    public ResultVO getArticleList(ArticleConditionReq acReq) {
+    public ResultVO getArticleList(ArticleConditionForm acReq) {
 
         return ResultVO.success(articleService.queryArticlesByCondition(acReq));
     }

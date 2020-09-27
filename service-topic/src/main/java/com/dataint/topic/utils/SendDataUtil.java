@@ -1,8 +1,8 @@
 package com.dataint.topic.utils;
 
 import com.dataint.cloud.common.model.Constants;
-import com.dataint.topic.model.SendModelEvent;
-import com.dataint.topic.model.SendModelStatistic;
+import com.dataint.topic.model.po.SendModelEvent;
+import com.dataint.topic.model.po.SendModelStatistic;
 
 import java.io.File;
 import java.text.DecimalFormat;

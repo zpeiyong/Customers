@@ -1,8 +1,8 @@
 package com.dataint.topic.service.impl;
 
 import com.dataint.topic.db.entity.CrawlSite;
-import com.dataint.topic.db.repository.CrawlSiteRepository;
-import com.dataint.topic.model.CrawlSiteVO;
+import com.dataint.topic.db.dao.ICrawlSiteDao;
+import com.dataint.topic.model.vo.CrawlSiteVO;
 import com.dataint.topic.service.ICrawlSiteService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ import java.util.Map;
 @Service
 public class CrawlSiteServiceImpl implements ICrawlSiteService {
     @Autowired
-    private CrawlSiteRepository crawlSiteRepository;
+    private ICrawlSiteDao crawlSiteDao;
 
     @Override
     public Object getCrawlSiteList() {
@@ -27,7 +27,7 @@ public class CrawlSiteServiceImpl implements ICrawlSiteService {
     public Object getCrawlSiteNames() {
         List<Map<String, Object>> retList = new ArrayList<>();
 
-        List<Map> siteNameList = crawlSiteRepository.getCrawlSiteNames("1");
+        List<Map> siteNameList = crawlSiteDao.getCrawlSiteNames("1");
 
         for (Map siteNameMap : siteNameList) {
             Map<String, Object> map = new HashMap<>();
@@ -63,6 +63,6 @@ public class CrawlSiteServiceImpl implements ICrawlSiteService {
     @Override
     public List<CrawlSite> getEnableCrawlSiteList() {
 
-        return crawlSiteRepository.findAllByEnable("1");
+        return crawlSiteDao.findAllByEnable("1");
     }
 }

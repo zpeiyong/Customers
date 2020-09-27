@@ -1,11 +1,11 @@
-package com.dataint.topic.model;
+package com.dataint.topic.model.form;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class UpdateKeywordReq {
+public class UpdateKeywordForm {
 
     Integer keywordId;
 

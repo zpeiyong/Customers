@@ -1,4 +1,4 @@
-package com.dataint.topic.db.repository;
+package com.dataint.topic.db.dao;
 
 import com.dataint.topic.db.IBaseInteraction;
 import com.dataint.topic.db.IBaseStatistic;
@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 @Repository
-public interface StatisticRepository extends JpaRepository<Statistic, Integer> {
+public interface IStatisticDao extends JpaRepository<Statistic, Integer> {
 
     Statistic getByKeywordIdAndStartTimeAndEndTimeAndStatisticType(Integer keywordId, Date startTime, Date endTime, String statisticType);
 

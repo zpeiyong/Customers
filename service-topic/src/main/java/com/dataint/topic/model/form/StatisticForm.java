@@ -1,4 +1,4 @@
-package com.dataint.topic.model;
+package com.dataint.topic.model.form;
 
 import com.dataint.cloud.common.model.param.PageParam;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import java.util.Date;
 
 @Getter
 @Setter
-public class StatisticReq extends PageParam implements Serializable {
+public class StatisticForm extends PageParam implements Serializable {
 
     private Integer keywordId;
 
