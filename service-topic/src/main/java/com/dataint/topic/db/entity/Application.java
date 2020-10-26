@@ -34,7 +34,7 @@ public class Application extends BasePO {
     @Column(name = "keywords")
     private String keywords;  // 关键词列表(多个关键词根据|区分)
 
-    @Column(name = "status")
+    @Column(name = "status", nullable = false)
     private Integer status;  // 状态(0:未处理1:通过;2:拒绝)
 
     @Column(name = "feedback")
