@@ -6,6 +6,7 @@ import lombok.experimental.Accessors;
 import javax.persistence.*;
 import java.util.Date;
 
+@Deprecated
 @Data
 @Entity
 @Table(name = "statistic")

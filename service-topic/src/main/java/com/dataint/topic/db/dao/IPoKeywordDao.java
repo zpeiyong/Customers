@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Deprecated
 @Repository
 public interface IPoKeywordDao extends JpaRepository<PoKeyword, Integer> {
     PoKeyword findPoKeywordByKeyword(String keyword);

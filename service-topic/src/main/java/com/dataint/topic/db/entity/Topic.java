@@ -27,13 +27,19 @@ public class Topic extends BasePO {
     @Column(name = "name")
     private String name; // 专题组名称
 
+    @Column(name="if_deleted", nullable = false)
+    private Boolean ifDeleted = false;  // 是否已删除(1:已删除;0:未删除)
+
+    @Column(name = "if_recommend", nullable = false)
+    private Boolean ifRecommend = false;  // 是否为推荐专题
+
+    @Column(name = "if_watch", nullable = false)
+    private Boolean ifWatch = false;  // 是否设置关注
+
     @Column(name = "enable", nullable = false)
     private Boolean enable = true;  // 是否可用
 
-    @Column(name="if_deleted")
-    private Boolean ifDeleted = false; //是否已删除(1:已删除;0:未删除)
-
     @Transient
-    private List<String> keywordList;
+    private List<TopicKeyword> keywordList;
 
 }

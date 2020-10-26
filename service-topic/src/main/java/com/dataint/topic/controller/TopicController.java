@@ -5,15 +5,16 @@ import com.dataint.cloud.common.model.ResultVO;
 import com.dataint.topic.db.entity.Topic;
 import com.dataint.topic.model.form.TopicForm;
 import com.dataint.topic.model.form.UpdateTopicForm;
-import com.dataint.topic.model.vo.TopicVO;
 import com.dataint.topic.service.ITopicKeywordService;
 import com.dataint.topic.service.ITopicService;
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 
 import javax.validation.Valid;
 

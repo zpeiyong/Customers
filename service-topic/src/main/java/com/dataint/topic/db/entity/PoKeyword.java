@@ -5,6 +5,7 @@ import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 
+@Deprecated
 @Data
 @Entity
 @Table(name = "pokeyword")

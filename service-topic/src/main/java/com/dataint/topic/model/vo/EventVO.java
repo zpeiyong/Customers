@@ -1,6 +1,5 @@
 package com.dataint.topic.model.vo;
 
-import com.dataint.topic.model.vo.EventBaseVO;
 import lombok.Getter;
 import lombok.Setter;
 

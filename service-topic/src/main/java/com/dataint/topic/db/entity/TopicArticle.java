@@ -4,59 +4,56 @@ import com.dataint.cloud.common.model.po.BasePO;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.Date;
 
 @Data
 @Entity
 @Table(name = "topic_article")
 @Accessors(chain = true)
-public class TopicArticle {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "article_id", nullable = false)
-    private Integer articleId;
+public class TopicArticle extends BasePO {
 
-    @Column(name = "article_key", length = 64)
-    private String  articleKey;
+    @Column(name = "article_key", nullable = false)
+    private String  articleKey;  // 原始数据在mongodb的ObjectId值
 
     @Column(name = "article_url", length = 1024)
-    private String  articleUrl;
+    private String  articleUrl;  // 文章链接
 
     @Column(name = "site_id", nullable = false)
-    private Integer siteId;
+    private Long siteId;  // 爬取网站id
 
-    @Column(name = "author", length = 64)
-    private String  author;     // 来源(机构/个人等)
+    @Column(name = "author")
+    private String  author;  // 来源(机构/个人等)
 
-    @Column(name = "title", length = 128)
-    private String  title;      //标题
+    @Column(name = "title")
+    private String  title;  // 标题
 
-    @Column(name = "summary", length = 512)
-    private String  summary;    // 摘要
+    @Column(name = "sub_title")
+    private String  subTitle;  // 副标题
 
-    @Column(name = "keyword_id")
-    private Integer keywordId;  // 关键词唯一id
+    @Column(name = "summary", length = 2000)
+    private String  summary;  // 摘要
 
-    @Column(name = "gmt_release")
-    private Date    gmtRelease; // 发布时间
+    @Column(name = "topic_id", nullable = false)
+    private Long topicId;  // 专题id
+
+    @Column(name = "keyword_id", nullable = false)
+    private Long keywordId;  // 关键词id
+
+    @Column(name = "content", columnDefinition = "TEXT")
+    private String content;  // 文章正文
+
+    @Column(name = "origin_url", length = 1024)
+    private String  originUrl;  // 文章来源源地址
 
     @Column(name = "gmt_crawl")
-    private Date    gmtCrawl;
+    private Date gmtCrawl;  // 爬取时间
 
-//    @Column(name = "gmt_create")
-//    private Date    gmtCreate;
+    @Column(name = "gmt_release")
+    private Date gmtRelease;  // 文章发布时间
 
-    @Column(name = "sub_title", length = 128)
-    private String  subTitle;
-
-    @Column(name = "content")
-    private String  content;
-
-    @Column(name = "origin_url")
-    private String  originUrl;  //源地址
-
-    @OneToOne
-    @JoinColumn(name = "event_id")
-    private Event event;
+    @Column(name = "media_type_id")
+    private Long mediaTypeId;  // 媒体类型id
 }

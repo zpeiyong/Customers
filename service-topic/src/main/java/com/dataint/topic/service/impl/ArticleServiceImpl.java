@@ -55,7 +55,7 @@ public class ArticleServiceImpl implements IArticleService {
 
                     } else {
                         // getAll 官方媒体/新闻媒体
-                        List<MediaType> mediaTypeList = mediaTypeDao.getAllByMediaTypeId(mediaTypeId);
+                        List<MediaType> mediaTypeList = mediaTypeDao.getAllById(mediaTypeId);
 
                         if (mediaTypeList != null && mediaTypeList.size() > 0) {
                             CriteriaBuilder.In<String> in = criteriaBuilder.in(root.get("author"));

@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class EventBaseVO {
 
-    private Integer articleId;  // TopicArticle.articleId
+    private Long articleId;  // TopicArticle.articleId
 
     private String subTitle;  // Topic.subTitle
 

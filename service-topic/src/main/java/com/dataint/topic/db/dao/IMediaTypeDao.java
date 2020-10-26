@@ -9,8 +9,8 @@ import java.util.List;
 @Repository
 public interface IMediaTypeDao extends JpaRepository<MediaType, Integer>  {
 
-    List<MediaType> getAllByMediaTypeId(int mediaTypeId);
+    List<MediaType> getAllById(int mediaTypeId);
 
-    MediaType getMediaTypeByMediaTypeNameLike(String mediaTypeName);
+    MediaType getMediaTypeByNameLike(String mediaTypeName);
 
 }

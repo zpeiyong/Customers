@@ -3,19 +3,17 @@ package com.dataint.topic.service.impl;
 import com.dataint.cloud.common.dim.BaseExceptionEnum;
 import com.dataint.cloud.common.exception.DataintBaseException;
 import com.dataint.cloud.common.model.param.PageParam;
-import com.dataint.topic.db.entity.MediaType;
-import com.dataint.topic.db.entity.Topic;
-import com.dataint.topic.db.entity.TopicArticle;
 import com.dataint.topic.db.dao.IArticleDao;
 import com.dataint.topic.db.dao.IEventDao;
 import com.dataint.topic.db.dao.IMediaTypeDao;
+import com.dataint.topic.db.entity.MediaType;
+import com.dataint.topic.db.entity.Topic;
+import com.dataint.topic.db.entity.TopicArticle;
 import com.dataint.topic.model.vo.EventBaseVO;
 import com.dataint.topic.model.vo.EventVO;
 import com.dataint.topic.service.IEventService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -56,14 +54,14 @@ public class EventServiceImpl implements IEventService {
     @Override
     public Object addFromList(EventBaseVO eventBaseVO) {
         TopicArticle article = articleDao.getOne(eventBaseVO.getArticleId());
-        if (article.getEvent() != null) {
-        throw new DataintBaseException(BaseExceptionEnum.DATA_REPETITION.getName(), BaseExceptionEnum.DATA_REPETITION.getIndex());
+        if (article.getTopicId() != null) {
+            throw new DataintBaseException(BaseExceptionEnum.DATA_REPETITION.getName(), BaseExceptionEnum.DATA_REPETITION.getIndex());
         }
 
         Topic event = new Topic();
 
         // site
-        MediaType mediaType = mediaTypeDao.getMediaTypeByMediaTypeNameLike(article.getAuthor());
+        MediaType mediaType = mediaTypeDao.getMediaTypeByNameLike(article.getAuthor());
         if (mediaType != null)
 //            event.setMediaType(mediaType);
 
@@ -94,12 +92,12 @@ public class EventServiceImpl implements IEventService {
 
         Topic event = eventDao.getEventByEventId(eventId);
 
-        if (event != null) {
-            TopicArticle article = articleDao.getArticleByEvent(event);
-
-            article.setEvent(null);
-            articleDao.save(article);
-        }
+//        if (event != null) {
+//            TopicArticle article = articleDao.getArticleByEvent(event);
+//
+//            article.setTopicId(null);
+//            articleDao.save(article);
+//        }
 
         eventDao.deleteById(eventId);
 

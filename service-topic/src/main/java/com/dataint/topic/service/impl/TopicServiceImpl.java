@@ -23,7 +23,7 @@ public class TopicServiceImpl implements ITopicService {
     public TopicVO addTopic(Topic topic) {
         topic.setCreatedTime(new Date());
         topicDao.save(topic);
-        topicKeywordService.saveBatch(topic.getId(),topic.getKeywordList());
+//        topicKeywordService.saveBatch(topic.getId(),topic.getKeywordList());
         return new TopicVO(topic);
     }
 
@@ -64,7 +64,7 @@ public class TopicServiceImpl implements ITopicService {
         topic.setCreatedBy(ifExist.getCreatedBy());
         topic.setUpdatedBy(ifExist.getUpdatedBy());
         topicDao.save(topic);
-        topicKeywordService.saveBatch(topic.getId(),topic.getKeywordList());
+//        topicKeywordService.saveBatch(topic.getId(),topic.getKeywordList());
         return true;
     }
 

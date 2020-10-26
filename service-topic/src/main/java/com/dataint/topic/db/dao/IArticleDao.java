@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 @Repository
-public interface IArticleDao extends JpaRepository<TopicArticle, Integer>, JpaSpecificationExecutor<TopicArticle> {
+public interface IArticleDao extends JpaRepository<TopicArticle, Long>, JpaSpecificationExecutor<TopicArticle> {
 
     Page<TopicArticle> findAll(Pageable pageable);
 
@@ -34,6 +34,6 @@ public interface IArticleDao extends JpaRepository<TopicArticle, Integer>, JpaSp
     @Query(value = "FROM TopicArticle a WHERE a.keywordId = ?1 AND a.gmtCrawl >= ?2 AND a.gmtCrawl <= ?3")
     Page<TopicArticle> getArticlesByKeywordIdAndGmtCrawlBetween(int keywordId, Date startTime, Date endTime, Pageable pageable);
 
-    TopicArticle getArticleByEvent(Topic event);
+//    TopicArticle getArticleByEvent(Topic event);
 
 }

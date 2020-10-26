@@ -15,6 +15,7 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 public class TopicKeywordVO {
+
     private Long id;//关键词主键id
 
     private Long topicId;//专题组id

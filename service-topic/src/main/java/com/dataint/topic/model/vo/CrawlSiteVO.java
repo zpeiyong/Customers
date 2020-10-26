@@ -6,7 +6,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CrawlSiteVO {
-    private Integer siteId;
+
+    private Long siteId;
 
     private String siteName;
 

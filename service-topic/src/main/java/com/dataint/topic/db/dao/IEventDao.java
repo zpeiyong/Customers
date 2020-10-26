@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
+@Deprecated
 @Repository
 public interface IEventDao extends JpaRepository<Event,Integer>{//<Topic, Integer>, JpaSpecificationExecutor<Topic> {
 

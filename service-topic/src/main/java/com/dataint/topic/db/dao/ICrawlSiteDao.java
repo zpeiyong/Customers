@@ -13,6 +13,6 @@ public interface ICrawlSiteDao extends JpaRepository<CrawlSite, Integer> {
 
     List<CrawlSite> findAllByEnable(String enable);
 
-    @Query(value = "SELECT new Map(c.siteId, c.siteName) FROM CrawlSite c WHERE enable = ?1")
+    @Query(value = "SELECT new Map(c.id, c.nameCn) FROM CrawlSite c WHERE enable = ?1")
     List<Map> getCrawlSiteNames(String enable);
 }

@@ -8,7 +8,7 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 public class TopicTreeVO {
-    private Long Id;
+    private Long id;
     private String name;
     private Date createTime;
 }

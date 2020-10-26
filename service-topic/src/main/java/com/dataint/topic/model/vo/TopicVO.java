@@ -19,7 +19,7 @@ public class TopicVO {
 
     private boolean enable;
 
-    private boolean ifdeleted;
+    private boolean ifDeleted;
 
     private Date createdTime;
 
