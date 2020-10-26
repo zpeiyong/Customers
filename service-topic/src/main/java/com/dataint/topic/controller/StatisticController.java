@@ -5,7 +5,13 @@ import com.dataint.topic.service.IStatisticService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
+/**
+ * 统计模块， 暂时不写
+ *
+ * @auther: Tim_Huo
+ * @date: 2020/10/26 5:16 下午
+ */
+@Deprecated
 @RestController
 @RequestMapping(value = "/statistic")
 public class StatisticController {
