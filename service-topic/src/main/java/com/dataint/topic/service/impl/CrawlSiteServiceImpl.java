@@ -27,7 +27,7 @@ public class CrawlSiteServiceImpl implements ICrawlSiteService {
     public Object getCrawlSiteNames() {
         List<Map<String, Object>> retList = new ArrayList<>();
 
-        List<Map> siteNameList = crawlSiteDao.getCrawlSiteNames("1");
+        List<Map> siteNameList = crawlSiteDao.getCrawlSiteNames(true);
 
         for (Map siteNameMap : siteNameList) {
             Map<String, Object> map = new HashMap<>();

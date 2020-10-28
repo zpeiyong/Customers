@@ -5,6 +5,7 @@ import com.dataint.topic.model.vo.CrawlSiteVO;
 import com.dataint.topic.model.form.UpdateCrawlSiteForm;
 import com.dataint.topic.service.ICrawlSiteService;
 
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +22,14 @@ public class CrawlSiteController {
         return ResultVO.success(crawlSiteService.getCrawlSiteList());
     }
 
+    /**
+     * 查询所有信息来源
+     *
+     * @auther: Tim_Huo
+     * @return: ResultVO
+     * @date: 2020/10/28 10:29 上午
+     */
+    @ApiOperation(value = "获取信息来源" , notes = "获取信息来源")
     @GetMapping("/getCrawlSiteNames")
     @ResponseBody
     public ResultVO getCrawlSiteNames() {
