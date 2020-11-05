@@ -67,5 +67,4 @@ public class TopicServiceImpl implements ITopicService {
 //        topicKeywordService.saveBatch(topic.getId(),topic.getKeywordList());
         return true;
     }
-
 }

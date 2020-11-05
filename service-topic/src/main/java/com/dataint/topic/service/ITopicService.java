@@ -28,5 +28,5 @@ public interface ITopicService {
      * @param topic
      * @return
      */
-      boolean update(Topic topic);
+        boolean update(Topic topic);
 }

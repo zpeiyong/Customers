@@ -6,6 +6,7 @@ import com.dataint.topic.db.dao.IArticleDao;
 import com.dataint.topic.db.dao.IMediaTypeDao;
 import com.dataint.topic.model.form.ArticleConditionForm;
 import com.dataint.topic.service.IArticleService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,6 +20,7 @@ import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 public class ArticleServiceImpl implements IArticleService {
     @Autowired
@@ -81,4 +83,17 @@ public class ArticleServiceImpl implements IArticleService {
 
         return result;
     }
+
+    @Override
+    public Object getArticleById(Long id) {
+        if(id == 0) {
+            log.info("传入Id为空，请重试：{}", id);
+            return null;
+        }
+
+        String topicArticle = articleDao.getArticleById(id);
+        return topicArticle;
+    }
+
+
 }

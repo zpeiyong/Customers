@@ -36,4 +36,7 @@ public interface IArticleDao extends JpaRepository<TopicArticle, Long>, JpaSpeci
 
 //    TopicArticle getArticleByEvent(Topic event);
 
+    @Query(value = "SELECT title from topic_article WHERE id = 1", nativeQuery = true)
+    String getArticleById(Long id);
+
 }
