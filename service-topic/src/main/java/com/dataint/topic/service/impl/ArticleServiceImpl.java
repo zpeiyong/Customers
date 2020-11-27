@@ -1,6 +1,5 @@
 package com.dataint.topic.service.impl;
 
-import com.dataint.topic.db.entity.MediaType;
 import com.dataint.topic.db.entity.TopicArticle;
 import com.dataint.topic.db.dao.IArticleDao;
 import com.dataint.topic.db.dao.IMediaTypeDao;
@@ -37,38 +36,44 @@ public class ArticleServiceImpl implements IArticleService {
             public Predicate toPredicate(Root<TopicArticle> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
                 List<Predicate> list = new ArrayList<>();
 
-                int keywordId = acReq.getKeywordId();
-                int siteId = acReq.getSiteId();
-                int mediaTypeId = acReq.getMediaTypeId();
+                Integer keywordId = acReq.getKeywordId();
+                Integer topicId = acReq.getTopicId();
+                ArrayList<Integer> siteIdList = acReq.getSiteIdList();
+                ArrayList<Integer> mediaTypeIdList = acReq.getMediaTypeIdList();
                 String sortOrder = acReq.getSortOrder();
 
-                // 关键字
-                if (keywordId != 0)
-                    list.add(criteriaBuilder.equal(root.get("keywordId"), keywordId));
+                //专题id
+                if(topicId != null && topicId > 0) {
+                    list.add(criteriaBuilder.equal(root.get("topicId"), topicId));
+                }else {
+                    // 关键字
+                    if (keywordId != null && keywordId >  0)
+                        list.add(criteriaBuilder.equal(root.get("keywordId"), keywordId));
+                }
+
+
 
                 // 来源
-                if (siteId != 0)
-                    list.add(criteriaBuilder.equal(root.get("siteId"), siteId));
+                if (siteIdList != null && siteIdList.size() != 0){
+                    CriteriaBuilder.In<Integer> siteId = criteriaBuilder.in(root.get("siteId"));
+                    for (Integer id:
+                         siteIdList) {
+                        siteId.value(id);
+                    }
+                    list.add(criteriaBuilder.and(siteId));
+                }
 
                 // 类型
-                if (mediaTypeId != 0) {
-                    if (mediaTypeId == 3) {
-                        // 知名大V
-
-                    } else {
                         // getAll 官方媒体/新闻媒体
-                        List<MediaType> mediaTypeList = mediaTypeDao.getAllById(mediaTypeId);
 
-                        if (mediaTypeList != null && mediaTypeList.size() > 0) {
-                            CriteriaBuilder.In<String> in = criteriaBuilder.in(root.get("author"));
-//                            for (MediaType mediaType : mediaTypeList) {
-//                                in.value(mediaType.getMediaTypeName());
-//                            }
+                        if (mediaTypeIdList != null && mediaTypeIdList.size() > 0) {
+                            CriteriaBuilder.In<Integer> mediaTypeId = criteriaBuilder.in(root.get("mediaTypeId"));
+                            for (Integer id : mediaTypeIdList) {
+                                mediaTypeId.value(id);
+                            }
 
-                            list.add(criteriaBuilder.not(in));
+                            list.add(criteriaBuilder.and(mediaTypeId));
                         }
-                    }
-                }
 
                 // 排序
                 if ("asc".equals(sortOrder.toLowerCase()))
@@ -91,7 +96,7 @@ public class ArticleServiceImpl implements IArticleService {
             return null;
         }
 
-        String topicArticle = articleDao.getArticleById(id);
+        TopicArticle topicArticle = articleDao.findOneById(id);
         return topicArticle;
     }
 

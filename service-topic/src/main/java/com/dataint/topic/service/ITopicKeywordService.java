@@ -1,5 +1,7 @@
 package com.dataint.topic.service;
 
+import com.dataint.topic.db.entity.Topic;
+import com.dataint.topic.db.entity.TopicKeyword;
 import com.dataint.topic.model.vo.TopicKeywordVO;
 
 import java.util.List;
@@ -20,16 +22,6 @@ public interface ITopicKeywordService {
      */
     boolean removeById(Long id);
 
-    /**
-     * 获取整个列表
-     * @param
-     * @return
-     */
-    List<TopicKeywordVO> topicKeyWordList();
 
-    /**
-     * 获取整个历史列表
-     * @return
-     */
-    List<TopicKeywordVO> delTopicList();
+    List<TopicKeyword> getKeywordListByTopicId(Integer topicId);
 }

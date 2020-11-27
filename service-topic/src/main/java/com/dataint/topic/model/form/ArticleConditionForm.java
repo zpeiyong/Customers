@@ -5,16 +5,19 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 @Getter
 @Setter
 public class ArticleConditionForm extends PageParam implements Serializable {
 
-    private int keywordId;
+    private Integer keywordId;
 
-    private int siteId;
+    private ArrayList<Integer> siteIdList;
 
-    private int mediaTypeId;
+    private ArrayList<Integer> mediaTypeIdList;
+
+    private Integer topicId;
 
     private String sortOrder = "desc";  // "desc", "asc"
 

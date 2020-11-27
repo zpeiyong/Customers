@@ -34,9 +34,8 @@ public interface IArticleDao extends JpaRepository<TopicArticle, Long>, JpaSpeci
     @Query(value = "FROM TopicArticle a WHERE a.keywordId = ?1 AND a.gmtCrawl >= ?2 AND a.gmtCrawl <= ?3")
     Page<TopicArticle> getArticlesByKeywordIdAndGmtCrawlBetween(int keywordId, Date startTime, Date endTime, Pageable pageable);
 
-//    TopicArticle getArticleByEvent(Topic event);
+    TopicArticle findOneById(Long id);
 
-    @Query(value = "SELECT title from topic_article WHERE id = 1", nativeQuery = true)
-    String getArticleById(Long id);
+//    TopicArticle getArticleByEvent(Topic event);
 
 }

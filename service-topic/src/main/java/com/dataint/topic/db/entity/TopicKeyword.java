@@ -29,5 +29,7 @@ public class TopicKeyword extends BasePO {
     private Boolean enable = true;  // 是否可用
 
     @Column(name="topic_id")
-    private Long topicId; // 所属专题组id
+    private long topicId; // 所属专题组id
+
+
 }

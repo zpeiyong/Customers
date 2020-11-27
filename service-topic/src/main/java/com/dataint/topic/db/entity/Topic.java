@@ -6,10 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.util.List;
 
 /**
@@ -24,7 +21,7 @@ import java.util.List;
 @AllArgsConstructor
 public class Topic extends BasePO {
 
-    @Column(name = "name")
+    @Column(name = "name", unique = true)
     private String name; // 专题组名称
 
     @Column(name="if_deleted", nullable = false)
@@ -40,6 +37,6 @@ public class Topic extends BasePO {
     private Boolean enable = true;  // 是否可用
 
     @Transient
-    private List<TopicKeyword> keywordList;
+    private List<String> keywordList;
 
 }

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
  * @date: 2020/10/26 5:51 下午
  */
 @RestController
-@RequestMapping(value = "/article")
+@RequestMapping(value = "/topicArticle")
 public class ArticleController {
     @Autowired
     private IArticleService articleService;

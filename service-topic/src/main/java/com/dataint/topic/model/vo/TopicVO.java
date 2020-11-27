@@ -2,14 +2,17 @@ package com.dataint.topic.model.vo;
 
 import com.dataint.topic.db.entity.Topic;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.beans.BeanUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class TopicVO {
 

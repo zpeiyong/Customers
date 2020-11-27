@@ -1,15 +1,17 @@
 package com.dataint.topic.model.form;
 
-import io.swagger.annotations.ApiModel;
+
+import com.dataint.cloud.common.model.form.BaseForm;
+import com.dataint.topic.db.entity.Application;
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.annotations.ApiOperation;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
-@ApiModel
-@Data
-public class UpdateTopicForm {
+@Getter
+@Setter
+public class ApplyForm extends BaseForm {
 
     @ApiModelProperty(value = "专题组id")
     private long id;
@@ -23,9 +25,6 @@ public class UpdateTopicForm {
     @ApiModelProperty(value = "是否删除")
     private Boolean ifDeleted;
 
-    @ApiModelProperty(value = "是否启用")
-    private Boolean enable;
-
-    @ApiModelProperty(value = "修改说明")
-    private String updateDesc;
+    @ApiModelProperty(value = "申请列表")
+    private List<Application> applicationList;
 }

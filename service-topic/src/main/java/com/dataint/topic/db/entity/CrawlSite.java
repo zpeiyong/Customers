@@ -8,7 +8,9 @@ import lombok.experimental.Accessors;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.List;
 
 /**
  * 专题爬取网站表
@@ -45,4 +47,5 @@ public class CrawlSite extends BasePO {
 
     @Column(name = "enable")
     private Boolean enable;  // 是否可用(1:可用; 2:不可用)
+
 }

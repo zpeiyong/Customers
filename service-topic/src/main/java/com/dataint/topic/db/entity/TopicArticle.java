@@ -4,9 +4,7 @@ import com.dataint.cloud.common.model.po.BasePO;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 @Data
@@ -56,4 +54,8 @@ public class TopicArticle extends BasePO {
 
     @Column(name = "media_type_id")
     private Long mediaTypeId;  // 媒体类型id
+
+    @ManyToOne
+    @JoinColumn(name = "site_id",insertable = false, updatable = false,foreignKey = @ForeignKey(name = "none", value = ConstraintMode.NO_CONSTRAINT))
+    private CrawlSite site;
 }

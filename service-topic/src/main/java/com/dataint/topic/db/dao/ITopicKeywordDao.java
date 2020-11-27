@@ -27,4 +27,11 @@ public interface ITopicKeywordDao extends JpaRepository<TopicKeyword,Long> {
             " order by created_time DESC",
             nativeQuery = true)
     List<Map<String,Object>> findAlldelList();
+
+
+    List<TopicKeyword> findAllByEnableAndTopicId(Boolean enable,Long topicId);
+
+    List<TopicKeyword> findAllByTopicId(Long topicId);
+
+
 }
