@@ -1,11 +1,11 @@
 package com.dataint.service.datapack.service;
 
 import com.dataint.cloud.common.model.param.PageParam;
-import com.dataint.service.datapack.model.ArticleBasicVO;
-import com.dataint.service.datapack.model.ArticleVO;
+import com.dataint.service.datapack.model.vo.ArticleBasicVO;
+import com.dataint.service.datapack.model.vo.ArticleVO;
 import com.dataint.service.datapack.model.form.ArticleUpdateForm;
 import com.dataint.service.datapack.model.form.StoreDataForm;
-import com.dataint.service.datapack.model.params.ArticleListQueryParam;
+import com.dataint.service.datapack.model.param.ArticleListQueryParam;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -33,7 +33,7 @@ public interface IArticleService {
      * @param articleId
      * @return
      */
-    ArticleBasicVO queryBasicById(Integer articleId);
+    ArticleBasicVO queryBasicById(Long articleId);
 
     /**
      *
@@ -42,7 +42,7 @@ public interface IArticleService {
      * @param pageParam
      * @return
      */
-    List<ArticleBasicVO> queryMapBasicList(Integer countryId, String diseaseName, PageParam pageParam);
+    List<ArticleBasicVO> queryMapBasicList(Long countryId, String diseaseName, PageParam pageParam);
 
 
     /* Web疫情讯息模块 */
@@ -58,13 +58,13 @@ public interface IArticleService {
      * @param articleId
      * @return
      */
-    ArticleVO getArticleById(Integer articleId);
+    ArticleVO getArticleById(Long articleId);
 
     /**
      *
      * @param articleId
      */
-    void delArticleById(Integer articleId);
+    void delArticleById(Long articleId);
 
     /**
      * 添加舆情关键词(单条/批量)
@@ -72,7 +72,7 @@ public interface IArticleService {
      * @param keyword
      * @return
      */
-    List<ArticleBasicVO> addKeyword(List<Integer> idList, String keyword);
+    List<ArticleBasicVO> addKeyword(List<Long> idList, String keyword);
 
     /**
      * 删除舆情关键词(仅可单条)
@@ -80,7 +80,7 @@ public interface IArticleService {
      * @param keyword
      * @return
      */
-    ArticleBasicVO delKeyword(Integer id, String keyword);
+    ArticleBasicVO delKeyword(Long id, String keyword);
 
     /**
      *
@@ -88,7 +88,7 @@ public interface IArticleService {
      * @param levelId
      * @return
      */
-    ArticleBasicVO updateLevel(Integer articleId, Integer levelId);
+    ArticleBasicVO updateLevel(Long articleId, Long levelId);
 
     /**
      *

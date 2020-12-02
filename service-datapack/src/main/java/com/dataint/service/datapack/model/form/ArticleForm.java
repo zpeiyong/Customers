@@ -1,7 +1,7 @@
 package com.dataint.service.datapack.model.form;
 
 import com.dataint.cloud.common.model.form.BaseForm;
-import com.dataint.service.datapack.dao.entity.Article;
+import com.dataint.service.datapack.db.entity.Article;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
@@ -10,7 +10,6 @@ import java.util.List;
 
 @Data
 public class ArticleForm extends BaseForm<Article> {
-//    private Integer id;  // 文章id, 请求存入时为空
 
     @NotNull
     private String articleKey; // 文章唯一性标识(中台通过此值做数据幂等), 应取mongodb的_id
@@ -41,5 +40,7 @@ public class ArticleForm extends BaseForm<Article> {
     private List<String> eventTypeList; // 文章类型(文章对应传染病类型)
 
     private List<String> countryNameList;  // 国家名称(可能中文可能英文或其他语言)
+
+    private String articleType;  // 舆情文章内容类型(statistic:报告 ; pubinfo:新闻)
 
 }

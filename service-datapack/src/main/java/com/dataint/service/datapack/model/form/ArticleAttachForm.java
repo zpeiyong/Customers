@@ -1,7 +1,6 @@
 package com.dataint.service.datapack.model.form;
 
 import com.dataint.cloud.common.model.form.BaseForm;
-import com.dataint.service.datapack.dao.entity.ArticleAttach;
 import com.dataint.service.datapack.model.enums.AttachTypeEnum;
 import lombok.Data;
 

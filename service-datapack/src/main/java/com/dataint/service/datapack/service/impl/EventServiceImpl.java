@@ -6,21 +6,21 @@ import com.dataint.cloud.common.model.Constants;
 import com.dataint.cloud.common.model.Pagination;
 import com.dataint.cloud.common.model.ResultVO;
 import com.dataint.cloud.common.model.po.BasePO;
-import com.dataint.service.datapack.dao.ICountryDao;
-import com.dataint.service.datapack.dao.IEventDao;
-import com.dataint.service.datapack.dao.IEventSourceDao;
-import com.dataint.service.datapack.dao.ISourceDao;
-import com.dataint.service.datapack.dao.entity.Country;
-import com.dataint.service.datapack.dao.entity.Event;
-import com.dataint.service.datapack.dao.entity.EventSource;
-import com.dataint.service.datapack.dao.entity.Source;
-import com.dataint.service.datapack.model.EventVO;
-import com.dataint.service.datapack.model.SourceVO;
+import com.dataint.service.datapack.db.dao.ICountryDao;
+import com.dataint.service.datapack.db.dao.IEventDao;
+import com.dataint.service.datapack.db.dao.IEventSourceDao;
+import com.dataint.service.datapack.db.dao.ISourceDao;
+import com.dataint.service.datapack.db.entity.Country;
+import com.dataint.service.datapack.db.entity.Event;
+import com.dataint.service.datapack.db.entity.EventSource;
+import com.dataint.service.datapack.db.entity.Source;
 import com.dataint.service.datapack.model.form.EventForm;
 import com.dataint.service.datapack.model.form.EventUpdateForm;
 import com.dataint.service.datapack.model.form.SourceForm;
 import com.dataint.service.datapack.model.form.SourceUpdateForm;
 import com.dataint.service.datapack.model.param.EventQueryParam;
+import com.dataint.service.datapack.model.vo.EventVO;
+import com.dataint.service.datapack.model.vo.SourceVO;
 import com.dataint.service.datapack.service.IEventService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
@@ -80,7 +80,7 @@ public class EventServiceImpl implements IEventService {
 
         // 疫情事件对应数据来源
         List<SourceForm> sourceFormList = eventForm.getSourceList();
-        List<Integer> sourceIdList = null;
+        List<Long> sourceIdList = null;
         if (!CollectionUtils.isEmpty(sourceFormList)) {
             // persist source
             List<Source> sourceList = sourceFormList.stream().map(sourceForm -> {
@@ -95,11 +95,10 @@ public class EventServiceImpl implements IEventService {
             sourceDao.saveAll(sourceList);
 
             // persist event_source
-//            sourceIdList = sourceList.stream().map(BasePO::getId).collect(Collectors.toList()); update
+            sourceIdList = sourceList.stream().map(BasePO::getId).collect(Collectors.toList());
             List<EventSource> eventSourceList = sourceIdList.stream()
                     .map(integer -> {
-//                        EventSource eventSource = new EventSource(event.getId(), integer); update
-                        EventSource eventSource =new EventSource();
+                        EventSource eventSource = new EventSource(event.getId(), integer);
                         eventSource.setCreatedTime(new Date());
 
                         return eventSource;
@@ -141,7 +140,7 @@ public class EventServiceImpl implements IEventService {
 
     @Transactional
     @Override
-    public boolean delete(Integer eventId) {
+    public boolean delete(Long eventId) {
         // check if event exist
         Optional<Event> eventOpt = eventDao.findById(eventId);
         if (!eventOpt.isPresent()) {
@@ -156,7 +155,7 @@ public class EventServiceImpl implements IEventService {
 
     @Transactional
     @Override
-    public EventVO updateEnabled(Integer eventId, String enabled) {
+    public EventVO updateEnabled(Long eventId, String enabled) {
         // verify enabled value
         if (StringUtils.isEmpty(enabled)) {
             throw new DataintBaseException("enabled值有误!", 505);
@@ -203,7 +202,7 @@ public class EventServiceImpl implements IEventService {
 
         // 疫情事件对应数据来源
         List<SourceUpdateForm> updateFormList = eventUpdateForm.getSourceList();
-        List<Integer> sourceIdList = null;
+        List<Long> sourceIdList = null;
         if (!CollectionUtils.isEmpty(updateFormList)) {
             // persist source
             List<Source> sourceList = updateFormList.stream().map(sourceUpdateForm -> {
@@ -235,11 +234,10 @@ public class EventServiceImpl implements IEventService {
             sourceDao.saveAll(sourceList);
 
             // persist event_source
-//            sourceIdList = sourceList.stream().map(BasePO::getId).collect(Collectors.toList());
+            sourceIdList = sourceList.stream().map(BasePO::getId).collect(Collectors.toList());
             List<EventSource> eventSourceList = new ArrayList<>();
-            for (Integer sourceId : sourceIdList) {
-//                EventSource eventSource = new EventSource(event.getId(), sourceId); update
-                EventSource eventSource=new EventSource();
+            for (Long sourceId : sourceIdList) {
+                EventSource eventSource = new EventSource(event.getId(), sourceId);
                 eventSource.setUpdatedTime(new Date());
                 eventSourceList.add(eventSource);
             }
@@ -258,7 +256,7 @@ public class EventServiceImpl implements IEventService {
      * @param sourceIdList
      * @return
      */
-    private EventVO map2EventVO(Event event, List<Integer> sourceIdList) {
+    private EventVO map2EventVO(Event event, List<Long> sourceIdList) {
         EventVO eventVO = new EventVO(event);
         // 若未提供sourceIdList, 则先获取对应来源id列表
         if (CollectionUtils.isEmpty(sourceIdList)) {

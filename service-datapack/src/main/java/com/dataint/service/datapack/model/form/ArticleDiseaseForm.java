@@ -12,10 +12,10 @@ import java.util.List;
 public class ArticleDiseaseForm {
     @ApiModelProperty(value = "传染病表主键Id")
     @NotNull
-    private Integer diseaseId;
+    private Long diseaseId;
 
     @ApiModelProperty(value = "国家表主键Id列表")
-    private List<Integer> countryIdList;
+    private List<Long> countryIdList;
 
     @ApiModelProperty(value = "疫情开始时间")
     private String diseaseStart;

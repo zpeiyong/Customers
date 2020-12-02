@@ -41,7 +41,7 @@ public class SourceController {
     @ApiOperation(value = "删除数据来源链接", notes = "更新数据来源链接")
     @ApiImplicitParam(name = "sourceId", value = "数据来源链接Id", required = true, dataType = "long")
     @DeleteMapping("/delete/{sourceId}")
-    public ResultVO delSource(@PathVariable Integer sourceId) {
+    public ResultVO delSource(@PathVariable Long sourceId) {
         log.debug("Name: {}", sourceId);
 
         return ResultVO.success(sourceService.delSource(sourceId));

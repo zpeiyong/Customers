@@ -7,14 +7,12 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/statistic")
 @Slf4j
+@CrossOrigin
 public class StatisticController {
 
     @Autowired
@@ -47,8 +45,116 @@ public class StatisticController {
     @GetMapping("/getMapInfoByCountry")
     public ResultVO getMapInfoByCountry(@RequestParam String startTime,
                                         @RequestParam String endTime,
-                                        @RequestParam Integer countryId) {
+                                        @RequestParam Long countryId) {
 
         return ResultVO.success(statisticService.getMapInfoByCountry(startTime, endTime, countryId));
     }
+
+
+    /**
+     * 新
+     */
+    @ApiOperation(value = "获取[首页]基本统计数据", notes = "获取[首页]基本统计数据")
+    @ApiImplicitParam(paramType = "query", name = "diseaseId", value = "传染病id", required = true, dataType = "long")
+    @GetMapping("/getStatisticBasic")
+    public ResultVO getStatisticBasic(@RequestParam Long diseaseId) {
+
+        return ResultVO.success(statisticService.getStatisticBasic(diseaseId));
+    }
+
+    @ApiOperation(value = "获取[BI大屏]基本统计数据", notes = "获取[BI大屏]基本统计数据")
+    @ApiImplicitParam(paramType = "query", name = "diseaseId", value = "传染病id", required = true, dataType = "long")
+    @GetMapping("/getStatisticBasicBI")
+    public ResultVO getStatisticBasicBI(@RequestParam Long diseaseId) {
+
+        return ResultVO.success(statisticService.getStatisticBasicBI(diseaseId));
+    }
+
+    @ApiOperation(value = "[传播国家]获取过去7天新增国家数(折线图)", notes = "获取过去7天新增国家数(折线图)")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "diseaseId", value = "传染病id", required = true, dataType = "long"),
+            @ApiImplicitParam(paramType = "query", name = "dateStr", value = "查看日期", dataType = "string")
+    })
+    @GetMapping("/country/getAddTimeLine")
+    public ResultVO getCountryAddTimeLine(@RequestParam Long diseaseId,
+                                          @RequestParam(required = false) String dateStr) {
+
+        return ResultVO.success(statisticService.getCountryAddTimeLine(diseaseId, dateStr, 7));
+    }
+
+    @ApiOperation(value = "[传播国家]获取前一天国家风险排名", notes = "获取前一天国家风险排名")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "diseaseId", value = "传染病id", required = true, dataType = "long"),
+            @ApiImplicitParam(paramType = "query", name = "dateStr", value = "查看日期", dataType = "string")
+    })
+    @GetMapping("/country/getRiskRank")
+    public ResultVO getCountryRiskRank(@RequestParam Long diseaseId,
+                                       @RequestParam(required = false) String dateStr) {
+
+        return ResultVO.success(statisticService.getCountryRiskRank(diseaseId, dateStr));
+    }
+
+    @ApiOperation(value = "[发生事件]获取过去7天新增事件数(折线图)", notes = "获取过去7天新增事件数(折线图)")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "diseaseId", value = "传染病id", required = true, dataType = "long"),
+            @ApiImplicitParam(paramType = "query", name = "dateStr", value = "查看日期", dataType = "string")
+    })
+    @GetMapping("/event/getAddTimeLine")
+    public ResultVO getEventAddTimeLine(@RequestParam Long diseaseId,
+                                        @RequestParam(required = false) String dateStr) {
+
+        return ResultVO.success(statisticService.getEventAddTimeLine(diseaseId, dateStr, 7));
+    }
+
+    @ApiOperation(value = "[发生事件]获取前一天总事件数量国家排名", notes = "获取前一天总事件数量国家排名")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "diseaseId", value = "传染病id", required = true, dataType = "long"),
+            @ApiImplicitParam(paramType = "query", name = "dateStr", value = "查看日期", dataType = "string")
+    })
+    @GetMapping("/event/getTotalCntRank")
+    public ResultVO getEventTotalCntRank(@RequestParam Long diseaseId,
+                                         @RequestParam(required = false) String dateStr) {
+
+        return ResultVO.success(statisticService.getEventTotalCntRank(diseaseId, dateStr));
+    }
+
+    @ApiOperation(value = "[舆情数量]获取过去7天新增舆情数(折线图)", notes = "获取过去7天新增舆情数(折线图)")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "diseaseId", value = "传染病id", required = true, dataType = "long"),
+            @ApiImplicitParam(paramType = "query", name = "dateStr", value = "查看日期", dataType = "string")
+    })
+    @GetMapping("/article/getAddTimeLine")
+    public ResultVO getArticleAddTimeLine(@RequestParam Long diseaseId,
+                                          @RequestParam(required = false) String dateStr) {
+
+        return ResultVO.success(statisticService.getArticleAddTimeLine(diseaseId, dateStr, 7));
+    }
+
+    @ApiOperation(value = "[舆情数量]获取前一天总舆情数量国家排名", notes = "获取前一天总舆情数量国家排名")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "diseaseId", value = "传染病id", required = true, dataType = "long"),
+            @ApiImplicitParam(paramType = "query", name = "dateStr", value = "查看日期", dataType = "string")
+    })
+    @GetMapping("/article/getTotalCntRank")
+    public ResultVO getArticleTotalCntRank(@RequestParam Long diseaseId,
+                                           @RequestParam(required = false) String dateStr) {
+
+        return ResultVO.success(statisticService.getArticleTotalCntRank(diseaseId, dateStr));
+    }
+
+    @ApiOperation(value = "获取需要在地图上标记的国家列表", notes = "获取需要在地图上标记的国家列表")
+    @GetMapping("/getMapCountryList")
+    public ResultVO getMapCountryList() {
+
+        return ResultVO.success(statisticService.getMapCountryList());
+    }
+
+    @ApiOperation(value = "[地图]获取全球传染病风险指数时间轴", notes = "[地图]获取全球传染病风险指数时间轴")
+    @ApiImplicitParam(paramType = "query", name = "dateStr", value = "查看日期", dataType = "string")
+    @GetMapping("/getGlobalRiskTimeLine")
+    public ResultVO getGlobalRiskTimeLine(@RequestParam(required = false) String dateStr) {
+
+        return ResultVO.success(statisticService.getGlobalRiskTimeLine(dateStr, 14));
+    }
+
 }

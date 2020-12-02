@@ -4,17 +4,19 @@ import com.dataint.cloud.common.model.Constants;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class DateUtil {
-
     /**
      * 获取当前时间  yyyy-MM-dd HH:mm:ss
      * @return
      */
     public static String getCurrentTime() {
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
-        return df.format(new Date());// new Date()为获取当前系统时间
+//        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+        return Constants.getDateTimeFormat().format(new Date());// new Date()为获取当前系统时间
     }
     /**
      * 获取今天 00:00:00
@@ -27,7 +29,7 @@ public class DateUtil {
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
 
-        return Constants.DateTimeSDF.format(cal.getTime());
+        return Constants.getDateTimeFormat().format(cal.getTime());
     }
 
     /**
@@ -41,7 +43,7 @@ public class DateUtil {
         cal.set(Calendar.SECOND, 59);
         cal.set(Calendar.MILLISECOND, 999);
 
-        return Constants.DateTimeSDF.format(cal.getTime());
+        return Constants.getDateTimeFormat().format(cal.getTime());
     }
 
     /**
@@ -56,7 +58,7 @@ public class DateUtil {
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
 
-        return Constants.DateTimeSDF.format(cal.getTime());
+        return Constants.getDateTimeFormat().format(cal.getTime());
     }
 
     /**
@@ -71,7 +73,7 @@ public class DateUtil {
         cal.set(Calendar.SECOND, 59);
         cal.set(Calendar.MILLISECOND, 999);
 
-        return Constants.DateTimeSDF.format(cal.getTime());
+        return Constants.getDateTimeFormat().format(cal.getTime());
     }
 
     /**
@@ -87,7 +89,7 @@ public class DateUtil {
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
 
-        return Constants.DateTimeSDF.format(cal.getTime());
+        return Constants.getDateTimeFormat().format(cal.getTime());
     }
 
     /**
@@ -103,7 +105,7 @@ public class DateUtil {
         cal.set(Calendar.SECOND, 59);
         cal.set(Calendar.MILLISECOND, 59);
 
-        return Constants.DateTimeSDF.format(cal.getTime());
+        return Constants.getDateTimeFormat().format(cal.getTime());
     }
 
     /**
@@ -119,7 +121,7 @@ public class DateUtil {
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
         cal.add(Calendar.DAY_OF_YEAR, 1);
-        return Constants.DateTimeSDF.format(cal.getTime());
+        return Constants.getDateTimeFormat().format(cal.getTime());
     }
 
     /**
@@ -129,15 +131,16 @@ public class DateUtil {
      * @throws ParseException
      */
     public static String getYesterdayStart(String timeStr) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Calendar cal = Calendar.getInstance();
-        cal.setTime(Constants.DateTimeSDF.parse(timeStr));
+        cal.setTime(sdf.parse(timeStr));
         cal.add(Calendar.DAY_OF_YEAR, -1);
         cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
 
-        return Constants.DateTimeSDF.format(cal.getTime());
+        return Constants.getDateTimeFormat().format(cal.getTime());
     }
 
     /**
@@ -148,14 +151,14 @@ public class DateUtil {
      */
     public static String getYesterdayEnd(String timeStr) throws ParseException {
         Calendar cal = Calendar.getInstance();
-        cal.setTime(Constants.DateTimeSDF.parse(timeStr));
+        cal.setTime(Constants.getDateTimeFormat().parse(timeStr));
         cal.add(Calendar.DAY_OF_YEAR, -1);
         cal.set(Calendar.HOUR_OF_DAY, 23);
         cal.set(Calendar.MINUTE, 59);
         cal.set(Calendar.SECOND, 59);
         cal.set(Calendar.MILLISECOND, 999);
 
-        return Constants.DateTimeSDF.format(cal.getTime());
+        return Constants.getDateTimeFormat().format(cal.getTime());
     }
 
     /**
@@ -174,7 +177,7 @@ public class DateUtil {
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
 
-        return Constants.DateTimeSDF.format(cal.getTime());
+        return Constants.getDateTimeFormat().format(cal.getTime());
     }
 
     /**
@@ -193,7 +196,7 @@ public class DateUtil {
         cal.set(Calendar.SECOND, 59);
         cal.set(Calendar.MILLISECOND, 59);
 
-        return Constants.DateTimeSDF.format(cal.getTime());
+        return Constants.getDateTimeFormat().format(cal.getTime());
     }
 
     /**
@@ -203,7 +206,7 @@ public class DateUtil {
      */
     public static String getWeekStart(String timeStr) throws ParseException {
         Calendar cal = Calendar.getInstance();
-        cal.setTime(Constants.DateTimeSDF.parse(timeStr));
+        cal.setTime(Constants.getDateTimeFormat().parse(timeStr));
         int day_of_week = cal.get(Calendar.DAY_OF_WEEK) - 1;
         if (day_of_week == 0)
             day_of_week = 7;
@@ -213,7 +216,7 @@ public class DateUtil {
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
 
-        return Constants.DateTimeSDF.format(cal.getTime());
+        return Constants.getDateTimeFormat().format(cal.getTime());
     }
 
     /**
@@ -223,7 +226,7 @@ public class DateUtil {
      */
     public static String getWeekEnd(String timeStr) throws ParseException {
         Calendar cal = Calendar.getInstance();
-        cal.setTime(Constants.DateTimeSDF.parse(timeStr));
+        cal.setTime(Constants.getDateTimeFormat().parse(timeStr));
         int day_of_week = cal.get(Calendar.DAY_OF_WEEK) - 1;
         if (day_of_week == 0)
             day_of_week = 7;
@@ -233,7 +236,7 @@ public class DateUtil {
         cal.set(Calendar.SECOND, 59);
         cal.set(Calendar.MILLISECOND, 59);
 
-        return Constants.DateTimeSDF.format(cal.getTime());
+        return Constants.getDateTimeFormat().format(cal.getTime());
     }
 
     /**
@@ -248,7 +251,20 @@ public class DateUtil {
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
 
-        return Constants.DateTimeSDF.format(cal.getTime());
+        return Constants.getDateTimeFormat().format(cal.getTime());
+    }
+
+    /**
+     *
+     * @return
+     */
+    public static String getStartTimeOfQuarter(){
+        LocalDate resDate = LocalDate.now();
+        Month month = resDate.getMonth();
+        Month firstMonthOfQuarter = month.firstMonthOfQuarter();
+        resDate = LocalDate.of(resDate.getYear(), firstMonthOfQuarter, 1);
+
+        return resDate.format(DateTimeFormatter.ofPattern(Constants.DateFormat));
     }
 
     /**
@@ -258,20 +274,20 @@ public class DateUtil {
      * @return
      */
     public static List<String> getBetweenDate(Date beginDateTime, Date overDateTime) {
-        String begin = Constants.DateSDF.format(beginDateTime);
-        String end = Constants.DateSDF.format(overDateTime);
+        String begin = Constants.getDateFormat().format(beginDateTime);
+        String end = Constants.getDateFormat().format(overDateTime);
 
         List<String> betweenList = new ArrayList<>();
 
         try{
             Calendar startDay = Calendar.getInstance();
-            startDay.setTime(Constants.DateSDF.parse(begin));
+            startDay.setTime(Constants.getDateFormat().parse(begin));
             startDay.add(Calendar.DATE, -1);
 
             while(true){
                 startDay.add(Calendar.DATE, 1);
                 Date newDate = startDay.getTime();
-                String newend = Constants.DateSDF.format(newDate);
+                String newend = Constants.getDateFormat().format(newDate);
                 betweenList.add(newend);
                 if(end.equals(newend)){
                     break;
@@ -303,16 +319,16 @@ public class DateUtil {
 
             while(true){
                 Map<String, String> intervalMap = new HashMap<>();
-                String start = Constants.DateTimeSDF.format(startCal.getTime());
+                String start = Constants.getDateTimeFormat().format(startCal.getTime());
                 intervalMap.put("startTime", start);
                 startCal.add(Calendar.HOUR_OF_DAY, 12);
                 startCal.add(Calendar.MILLISECOND, -1);
-                String end = Constants.DateTimeSDF.format(startCal.getTime());
+                String end = Constants.getDateTimeFormat().format(startCal.getTime());
                 intervalMap.put("endTime", end);
                 startCal.add(Calendar.MILLISECOND, 1);
 
                 intervalList.add(intervalMap);
-                if(end.equals(Constants.DateTimeSDF.format(endCal.getTime()))) {
+                if(end.equals(Constants.getDateTimeFormat().format(endCal.getTime()))) {
                     break;
                 }
             }
@@ -337,7 +353,7 @@ public class DateUtil {
             Calendar startCal = getStartTimeOfDay(beginTime);
             // add one day if Hour_of_day > 12
             Calendar cal = Calendar.getInstance();
-            cal.setTime(Constants.DateTimeSDF.parse(beginTime));
+            cal.setTime(Constants.getDateTimeFormat().parse(beginTime));
             if (cal.get(Calendar.HOUR_OF_DAY) >= 12)
                 startCal.add(Calendar.DAY_OF_YEAR, 1);
 
@@ -351,16 +367,16 @@ public class DateUtil {
 
             while(true){
                 Map<String, String> intervalMap = new HashMap<>();
-                String start = Constants.DateTimeSDF.format(startCal.getTime());
+                String start = Constants.getDateTimeFormat().format(startCal.getTime());
                 intervalMap.put("startTime", start);
                 startCal.add(Calendar.DAY_OF_YEAR, 1);
                 startCal.add(Calendar.MILLISECOND, -1);
-                String end = Constants.DateTimeSDF.format(startCal.getTime());
+                String end = Constants.getDateTimeFormat().format(startCal.getTime());
                 intervalMap.put("endTime", end);
                 startCal.add(Calendar.MILLISECOND, 1);
 
                 intervalList.add(intervalMap);
-                if(end.equals(Constants.DateTimeSDF.format(endCal.getTime()))) {
+                if(end.equals(Constants.getDateTimeFormat().format(endCal.getTime()))) {
                     break;
                 }
             }
@@ -379,7 +395,7 @@ public class DateUtil {
      */
     public static Calendar getStartTimeOfInterval(String timeStr) throws ParseException {
         Calendar timeCal = Calendar.getInstance();
-        timeCal.setTime(Constants.DateTimeSDF.parse(timeStr));
+        timeCal.setTime(Constants.getDateTimeFormat().parse(timeStr));
         if (timeCal.get(Calendar.HOUR_OF_DAY) < 12) {
             // AM, start from 00:00:00 of this day
             timeCal.set(Calendar.HOUR_OF_DAY, 0);
@@ -404,7 +420,7 @@ public class DateUtil {
      */
     public static Calendar getStartTimeOfDay(String timeStr) throws ParseException {
         Calendar dayCal = Calendar.getInstance();
-        dayCal.setTime(Constants.DateTimeSDF.parse(timeStr));
+        dayCal.setTime(Constants.getDateTimeFormat().parse(timeStr));
         dayCal.set(Calendar.HOUR_OF_DAY, 0);
         dayCal.set(Calendar.MINUTE, 0);
         dayCal.set(Calendar.SECOND, 0);
@@ -423,7 +439,7 @@ public class DateUtil {
 
         Date weekStart = null;
         try {
-            weekStart = Constants.DateTimeSDF.parse(timeStr);
+            weekStart = Constants.getDateTimeFormat().parse(timeStr);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -443,14 +459,14 @@ public class DateUtil {
      */
     public static String get1YearAgoStart(String timeStr) throws ParseException {
         Calendar cal = Calendar.getInstance();
-        cal.setTime(Constants.DateTimeSDF.parse(timeStr));
+        cal.setTime(Constants.getDateTimeFormat().parse(timeStr));
         cal.add(Calendar.YEAR, -1);
         cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
 
-        return Constants.DateTimeSDF.format(cal.getTime());
+        return Constants.getDateTimeFormat().format(cal.getTime());
     }
 
     public static void main(String[] args)  {

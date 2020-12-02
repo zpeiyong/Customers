@@ -1,32 +1,33 @@
 package com.dataint.service.datapack.service;
 
-import com.dataint.service.datapack.dao.entity.OutbreakLevel;
-import com.dataint.service.datapack.dao.entity.Region;
-import com.dataint.service.datapack.model.CountryVO;
-import com.dataint.service.datapack.model.DiseaseVO;
+import com.dataint.service.datapack.db.entity.MediaType;
+import com.dataint.service.datapack.model.vo.CountryVO;
+import com.dataint.service.datapack.model.vo.DiseaseVO;
+import com.dataint.service.datapack.model.vo.RegionVO;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IDictService {
 
-    /**
-     *
-     * @return
-     */
-    List<OutbreakLevel> queryOutbreakLevels();
+//    /**
+//     *
+//     * @return
+//     */
+//    List<OutbreakLevel> queryOutbreakLevels();
+//
+//    /**
+//     *
+//     * @param outbreakLevel
+//     * @return
+//     */
+//    OutbreakLevel addLevel(OutbreakLevel outbreakLevel);
 
     /**
      *
-     * @param outbreakLevel
      * @return
      */
-    OutbreakLevel addLevel(OutbreakLevel outbreakLevel);
-
-    /**
-     *
-     * @return
-     */
-    List<Region> queryRegions();
+    List<RegionVO> queryRegions();
 
     /**
      *
@@ -46,4 +47,16 @@ public interface IDictService {
      * @return
      */
     List<DiseaseVO> queryByNameCnFirst(String nameCnFirst);
+
+    /**
+     *
+     * @return
+     */
+    List<MediaType> queryMediaTypes();
+
+    /**
+     *
+     * @return
+     */
+    List<Map<String, Object>> queryArticleTypes();
 }

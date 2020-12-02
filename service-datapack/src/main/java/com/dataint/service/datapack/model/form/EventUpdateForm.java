@@ -1,7 +1,7 @@
 package com.dataint.service.datapack.model.form;
 
 import com.dataint.cloud.common.model.form.BaseForm;
-import com.dataint.service.datapack.dao.entity.Event;
+import com.dataint.service.datapack.db.entity.Event;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -16,7 +16,7 @@ public class EventUpdateForm extends BaseForm<Event> {
 
     @NotNull
     @ApiModelProperty(value = "疫情事件Id")
-    private Integer eventId;
+    private Long eventId;
 
     @NotBlank(message = "疫情事件名称不能为空")
     @ApiModelProperty(value = "疫情事件名称")
@@ -24,7 +24,7 @@ public class EventUpdateForm extends BaseForm<Event> {
 
     @NotNull
     @ApiModelProperty(value = "疫情类型表主键id")
-    private Integer diseaseId;
+    private Long diseaseId;
 
     @NotBlank
     @ApiModelProperty(value = "疫情事件开始时间")

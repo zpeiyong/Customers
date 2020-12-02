@@ -22,9 +22,9 @@ public class ArticleOriginController {
     @ApiOperation(value = "获取舆情源语言信息", notes = "获取舆情源语言信息")
     @ApiImplicitParam(paramType = "path", name = "id", value = "舆情ID", required = true, dataType = "long")
     @GetMapping(value = "/{id}")
-    public ResultVO get(@PathVariable Integer id) {
+    public ResultVO getOriginById(@PathVariable Long id) {
         log.debug("get with id:{}", id);
 
-        return ResultVO.success(articleOriginService.get(id));
+        return ResultVO.success(articleOriginService.getOriginById(id));
     }
 }

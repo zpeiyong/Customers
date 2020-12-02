@@ -1,9 +1,9 @@
 package com.dataint.service.datapack.service;
 
-import com.dataint.service.datapack.model.CountryVO;
+import com.dataint.service.datapack.model.vo.CountryVO;
 import com.dataint.service.datapack.model.form.CountryForm;
 import com.dataint.service.datapack.model.form.CountryUpdateForm;
-import com.dataint.service.datapack.model.params.CountryQueryParam;
+import com.dataint.service.datapack.model.param.CountryQueryParam;
 import org.springframework.data.domain.Page;
 
 public interface ICountryService {
@@ -20,7 +20,7 @@ public interface ICountryService {
      * @param status
      * @return
      */
-    CountryVO updateCountryStatus(Integer countryId, Integer status);
+    CountryVO updateCountryStatus(Long countryId, Integer status);
     /**
      *
      * @param countryUpdateForm
@@ -33,14 +33,14 @@ public interface ICountryService {
      * @param countryId
      * @return
      */
-    boolean delCountry(Integer countryId);
+    boolean delCountry(Long countryId);
 
     /**
      *
      * @param countryId
      * @return
      */
-    CountryVO getCountry(Integer countryId);
+    CountryVO getCountry(Long countryId);
 
     /**
      *

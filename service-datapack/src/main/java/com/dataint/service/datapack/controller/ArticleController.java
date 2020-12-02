@@ -5,7 +5,7 @@ import com.dataint.cloud.common.model.ResultVO;
 import com.dataint.cloud.common.model.param.PageParam;
 import com.dataint.service.datapack.model.form.ArticleUpdateForm;
 import com.dataint.service.datapack.model.form.StoreDataForm;
-import com.dataint.service.datapack.model.params.ArticleListQueryParam;
+import com.dataint.service.datapack.model.param.ArticleListQueryParam;
 import com.dataint.service.datapack.service.IArticleService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -26,7 +26,6 @@ public class ArticleController {
 
     @Autowired
     private IArticleService articleService;
-
 
     @ApiOperation(value = "保存舆情", notes = "保存一条舆情")
     @ApiImplicitParam(name = "storeDataForm", value = "保存舆情form表单", required = true, dataType = "StoreDataForm")
@@ -52,7 +51,7 @@ public class ArticleController {
     @ApiOperation(value = "根据id获取ArticleBasic", notes = "根据id获取ArticleBasic")
     @ApiImplicitParam(paramType = "path", name = "id", value = "舆情ID", required = true, dataType = "long")
     @GetMapping("/basic/{id}")
-    public ResultVO queryBasicById(@PathVariable Integer id) {
+    public ResultVO queryBasicById(@PathVariable Long id) {
 
         return ResultVO.success(articleService.queryBasicById(id));
     }
@@ -63,7 +62,7 @@ public class ArticleController {
             @ApiImplicitParam(paramType = "query", name = "diseaseName", value = "疫情名称", required = true, dataType = "string")
     })
     @GetMapping("/queryMapBasicList")
-    public ResultVO queryMapBasicList(@RequestParam Integer countryId, @RequestParam String diseaseName, @ModelAttribute PageParam pageParam) {
+    public ResultVO queryMapBasicList(@RequestParam Long countryId, @RequestParam String diseaseName, @ModelAttribute PageParam pageParam) {
 
         return ResultVO.success(articleService.queryMapBasicList(countryId, diseaseName, pageParam));
     }
@@ -82,7 +81,7 @@ public class ArticleController {
     @ApiOperation(value = "根据舆情id获取舆情信息", notes = "根据舆情id获取舆情信息")
     @ApiImplicitParam(paramType = "path", name = "id", value = "舆情ID", required = true, dataType = "long")
     @GetMapping(value = "/normal/{id}")
-    public ResultVO getArticleById(@PathVariable Integer id) {
+    public ResultVO getArticleById(@PathVariable Long id) {
         log.debug("get with id: {}", id);
 
         return ResultVO.success(articleService.getArticleById(id));
@@ -94,10 +93,10 @@ public class ArticleController {
     public ResultVO delArticles(@RequestParam String idListStr) {
         log.debug("delete with id: {}", idListStr);
 
-        List<Integer> idList = Arrays.stream(idListStr.split(Constants.SPLITTER)).map(Integer::valueOf).collect(Collectors.toList());
+        List<Long> idList = Arrays.stream(idListStr.split(Constants.SPLITTER)).map(Long::valueOf).collect(Collectors.toList());
 
         // 循环删除id列表对应数据
-        for (Integer articleId : idList) {
+        for (Long articleId : idList) {
             articleService.delArticleById(articleId);
         }
 
@@ -113,7 +112,7 @@ public class ArticleController {
     public ResultVO addKeyword(@RequestParam String idListStr, @RequestParam String keyword) {
         log.debug("add keyword with ids: {}", idListStr);
 
-        List<Integer> idList = Arrays.stream(idListStr.split(Constants.SPLITTER)).map(Integer::valueOf).collect(Collectors.toList());
+        List<Long> idList = Arrays.stream(idListStr.split(Constants.SPLITTER)).map(Long::valueOf).collect(Collectors.toList());
 
         return ResultVO.success(articleService.addKeyword(idList, keyword));
     }
@@ -124,7 +123,7 @@ public class ArticleController {
             @ApiImplicitParam(paramType = "query", name = "keyword", value = "关键词", required = true, dataType = "string")
     })
     @PutMapping(value = "/delKeyword/{id}")
-    public ResultVO delKeyword(@PathVariable Integer id, @RequestParam String keyword) {
+    public ResultVO delKeyword(@PathVariable Long id, @RequestParam String keyword) {
         log.debug("delete keyword with id: {}", id);
 
         return ResultVO.success(articleService.delKeyword(id, keyword));
@@ -136,7 +135,7 @@ public class ArticleController {
             @ApiImplicitParam(paramType = "query", name = "levelId", value = "舆情等级ID", required = true, dataType = "long")
     })
     @PutMapping(value = "/updateLevel/{id}")
-    public ResultVO updateLevel(@PathVariable Integer id, @RequestParam Integer levelId) {
+    public ResultVO updateLevel(@PathVariable Long id, @RequestParam Long levelId) {
         log.debug("update level with id: {}", id);
 
         return ResultVO.success(articleService.updateLevel(id, levelId));
