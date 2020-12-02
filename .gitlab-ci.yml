@@ -39,7 +39,7 @@ pre_app-monitor_resource:
     - scp -P 88 ./resource.zip ${USER_NAME}@${HOST}:/opt/coding/wxhg-infectDisMonitor-back/app-monitor/
     - ssh -p 88 ${USER_NAME}@${HOST} "cd /opt/coding/wxhg-infectDisMonitor-back/app-monitor ; unzip -o resource.zip ; rm resource.zip"
 
-## parent
+## build parent
 build_parent:
   stage: build_common
   only:
@@ -54,19 +54,11 @@ build_parent:
     - pwd
     - whoami
     - mvn clean install -Dmaven.test.skip=true
-
-### cloud-common
-#build_cloud-common:
-#  stage: build_common
-#  only:
-##    - master
-#    - dev
-#  script:
-#    - pwd
-#    - whoami
-#    - cd cloud-common/
-#    - mvn clean install -Dmaven.test.skip=true
-#    - cd ../
+  artifacts:
+    paths:
+      - ./app-monitor/target/app-monitor-0.0.1-SNAPSHOT.jar
+      - ./service-datapack/target/service-datapack-0.0.1-SNAPSHOT.jar
+      - ./service-topic/target/service-topic-0.0.1-SNAPSHOT.jar
 
 
 ## app-monitor
@@ -91,6 +83,8 @@ build_app-monitor:
 #    - cd ../
     - scp -P 88 ./app-monitor/target/app-monitor-0.0.1-SNAPSHOT.jar ${USER_NAME}@${HOST}:/opt/coding/wxhg-infectDisMonitor-back/app-monitor/
     - ssh -p 88 ${USER_NAME}@${HOST} "cd /opt/coding/wxhg-infectDisMonitor-back/ ; bash ./deploy/deploy.sh ${BRANCH_NAME} app-monitor 0.0.1-SNAPSHOT"
+  dependencies:
+    - build_parent
 
 ## service-datapack
 build_service-datapack:
@@ -114,6 +108,8 @@ build_service-datapack:
 #    - cd ../
     - scp -P 88 ./service-datapack/target/service-datapack-0.0.1-SNAPSHOT.jar ${USER_NAME}@${HOST}:/opt/coding/wxhg-infectDisMonitor-back/service-datapack/
     - ssh -p 88 ${USER_NAME}@${HOST} "cd /opt/coding/wxhg-infectDisMonitor-back/ ; bash ./deploy/deploy.sh ${BRANCH_NAME} service-datapack 0.0.1-SNAPSHOT"
+  dependencies:
+    - build_parent
 
 ## service-topic
 build_service-topic:
@@ -135,8 +131,10 @@ build_service-topic:
 #    - cd service-topic/
 #    - mvn clean install -Dmaven.test.skip=true
 #    - cd ../
-    - scp -P 88 ./service-datapack/target/service-topic-0.0.1-SNAPSHOT.jar ${USER_NAME}@${HOST}:/opt/coding/wxhg-infectDisMonitor-back/service-topic/
+    - scp -P 88 ./service-topic/target/service-topic-0.0.1-SNAPSHOT.jar ${USER_NAME}@${HOST}:/opt/coding/wxhg-infectDisMonitor-back/service-topic/
     - ssh -p 88 ${USER_NAME}@${HOST} "cd /opt/coding/wxhg-infectDisMonitor-back/ ; bash ./deploy/deploy.sh ${BRANCH_NAME} service-topic 0.0.1-SNAPSHOT"
+  dependencies:
+    - build_parent
 
 ### post
 #post_deploy_file:
