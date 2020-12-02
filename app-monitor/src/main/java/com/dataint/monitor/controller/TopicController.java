@@ -1,10 +1,9 @@
-package com.dataint.topic.controller;
+package com.dataint.monitor.controller;
 
-import com.dataint.cloud.common.model.ResultVO;
-import com.dataint.topic.model.form.GetTopicForm;
-import com.dataint.topic.model.form.TopicForm;
-import com.dataint.topic.model.form.UpdateTopicForm;
-import com.dataint.topic.service.ITopicService;
+import com.dataint.monitor.adapt.ITopicAdapt;
+import com.dataint.monitor.model.form.GetTopicForm;
+import com.dataint.monitor.model.form.TopicForm;
+import com.dataint.monitor.model.form.UpdateTopicForm;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -20,70 +19,66 @@ import org.springframework.web.bind.annotation.*;
 public class TopicController {
 
     @Autowired
-    private ITopicService topicService;
+    private ITopicAdapt topicAdapt;
+
 
     @ApiOperation(value = "新增专题", notes = "新增一个专题")
     @ApiImplicitParam(name = "topicForm", value = "新增专题form表单", required = true, dataType = "TopicForm")
     @PostMapping("/addTopic")
-    public ResultVO addTopic(@RequestBody TopicForm topicForm) {
+    public Object addTopic(@RequestBody TopicForm topicForm) {
         log.debug("add topicForm: {}", topicForm);
-        Object topic = topicService.addTopic(topicForm);
-        if (topic instanceof String) {
-            return  ResultVO.fail(topic);
-        }
-        return ResultVO.success(topic);
+        // 解析token获取userId
+//        Integer userId = JWTUtil.getUserId(accessToken);
+        return topicAdapt.addTopic(topicForm);
     }
 
 
     @ApiOperation(value = "删除专题", notes = "删除专题")
     @ApiImplicitParam(name = "id", value = "专题组id", required = true, dataType = "long")
     @DeleteMapping("/delTopic/{id}")
-    public ResultVO delTopic(@PathVariable Long id){
-        log.debug("delete a  topic by id",id);
+    public Object delTopic(@PathVariable Long id){
+        log.debug("delete a  topic by id:{}",id);
 
-        return ResultVO.success(topicService.delTopic(id));
+        return topicAdapt.delTopic(id);
     }
 
     @ApiOperation(value = "恢复专题", notes = "恢复专题")
     @ApiImplicitParam(name = "id", value = "专题组id", required = true, dataType = "long")
     @DeleteMapping("/recoveryTopic/{id}")
-    public ResultVO recoveryTopic(@PathVariable Long id) {
+    public Object recoveryTopic(@PathVariable Long id) {
         log.debug("recovery a topic by id:{}", id);
-        return ResultVO.success(topicService.recoveryTopic(id));
+        return topicAdapt.recoveryTopic(id);
     }
 
     @ApiOperation(value = "修改专题组" ,notes ="修改专题组")
     @ApiImplicitParams({@ApiImplicitParam(name = "id", value = "专题组ID", required = true, dataType = "long"),
             @ApiImplicitParam(name = "updateTopicForm", value = "修改专题form表单", required = true, dataType = "UpdateTopicForm")})
     @PutMapping(value = "/updateTopic/{id}")
-    public ResultVO updateTopic(@PathVariable Long id,@RequestBody UpdateTopicForm updateTopicForm){
-        log.debug("update Topic by id",id);
+    public Object updateTopic(@PathVariable Long id,@RequestBody UpdateTopicForm updateTopicForm){
+        log.debug("update Topic by id:{}",id);
         updateTopicForm.setId(id);
-        Object topic = topicService.updateTopic(updateTopicForm);
-        if (topic instanceof  String)
-            return ResultVO.fail(topic);
-        return ResultVO.success(topic);
+        return topicAdapt.updateTopic(updateTopicForm);
     }
 
     @ApiOperation(value = "获取激活专题组", notes = "获取激活专题组")
     @GetMapping("/getAllActiveTopic")
-    public ResultVO getAllActiveTopic() {
+    public Object getAllActiveTopic() {
         log.debug("get all topic");
-        return ResultVO.success(topicService.getAllActiveTopic());
+        return topicAdapt.getAllActiveTopic();
     }
 
     @ApiOperation(value = "获取历史专题组" , notes = "获取历史专题组")
     @GetMapping("/getAllDelTopic")
-    public ResultVO getAllDeleteTopic(){
-        log.debug("get all deltopic");
+    public Object getAllDeleteTopic(){
+        log.debug("get all delTopic");
 
-        return ResultVO.success(topicService.getAllDeleteTopic());
+        return topicAdapt.getAllDeleteTopic();
     }
 
     @ApiOperation(value = "获取所有专题组", notes = "获取所有专题组")
     @GetMapping("/getAllTopic")
-    public ResultVO getAllTopic (GetTopicForm topicForm) {
+    public Object getAllTopic (GetTopicForm topicForm) {
         log.debug("get all topic List by:{}", topicForm);
-        return ResultVO.success(topicService.getAllTopic(topicForm.getCurrent(), topicForm.getPageSize(), topicForm.getKeyword()));
+        return topicAdapt.getAllTopic(topicForm.getCurrent(), topicForm.getPageSize(), topicForm.getKeyword());
     }
 }
