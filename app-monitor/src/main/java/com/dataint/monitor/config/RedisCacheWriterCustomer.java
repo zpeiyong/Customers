@@ -1,12 +1,12 @@
 package com.dataint.monitor.config;
 
-import org.elasticsearch.common.Nullable;
 import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.data.redis.cache.RedisCacheWriter;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStringCommands;
 import org.springframework.data.redis.core.types.Expiration;
+import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 import java.nio.charset.StandardCharsets;
