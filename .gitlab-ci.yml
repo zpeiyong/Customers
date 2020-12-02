@@ -113,7 +113,7 @@ build_service-datapack:
 #    - mvn clean install -Dmaven.test.skip=true
 #    - cd ../
     - scp -P 88 ./service-datapack/target/service-datapack-0.0.1-SNAPSHOT.jar ${USER_NAME}@${HOST}:/opt/coding/wxhg-infectDisMonitor-back/service-datapack/
-    - ssh -p 88 ${USER_NAME}@${HOST} "cd /opt/coding/wxhg-infectDisMonitor-back/service-datapack/ ; bash ./deploy/deploy.sh ${BRANCH_NAME} service-datapack 0.0.1-SNAPSHOT"
+    - ssh -p 88 ${USER_NAME}@${HOST} "cd /opt/coding/wxhg-infectDisMonitor-back/ ; bash ./deploy/deploy.sh ${BRANCH_NAME} service-datapack 0.0.1-SNAPSHOT"
 
 ## service-topic
 build_service-topic:
@@ -136,7 +136,7 @@ build_service-topic:
 #    - mvn clean install -Dmaven.test.skip=true
 #    - cd ../
     - scp -P 88 ./service-datapack/target/service-topic-0.0.1-SNAPSHOT.jar ${USER_NAME}@${HOST}:/opt/coding/wxhg-infectDisMonitor-back/service-topic/
-    - ssh -p 88 ${USER_NAME}@${HOST} "cd /opt/coding/wxhg-infectDisMonitor-back/service-topic/ ; bash ./deploy/deploy.sh ${BRANCH_NAME} service-topic 0.0.1-SNAPSHOT"
+    - ssh -p 88 ${USER_NAME}@${HOST} "cd /opt/coding/wxhg-infectDisMonitor-back/ ; bash ./deploy/deploy.sh ${BRANCH_NAME} service-topic 0.0.1-SNAPSHOT"
 
 ### post
 #post_deploy_file:
