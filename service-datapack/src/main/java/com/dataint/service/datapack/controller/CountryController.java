@@ -3,7 +3,7 @@ package com.dataint.service.datapack.controller;
 import com.dataint.cloud.common.model.ResultVO;
 import com.dataint.service.datapack.model.form.CountryForm;
 import com.dataint.service.datapack.model.form.CountryUpdateForm;
-import com.dataint.service.datapack.model.params.CountryQueryParam;
+import com.dataint.service.datapack.model.param.CountryQueryParam;
 import com.dataint.service.datapack.service.ICountryService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -36,7 +36,7 @@ public class CountryController {
             @ApiImplicitParam(paramType = "query", name = "status", value = "国家状态", required = true, dataType = "long")
     })
     @PutMapping(value = "/status/{countryId}")
-    public ResultVO updateCountryStatus(@PathVariable Integer countryId, @RequestParam Integer status) {
+    public ResultVO updateCountryStatus(@PathVariable Long countryId, @RequestParam Integer status) {
 
         return ResultVO.success(countryService.updateCountryStatus(countryId, status));
     }
@@ -52,7 +52,7 @@ public class CountryController {
     @ApiOperation(value = "删除国家信息", notes = "根据国家Id删除信息")
     @ApiImplicitParam(paramType = "path", name = "countryId", value = "国家id", required = true, dataType = "long")
     @DeleteMapping("/{countryId}")
-    public ResultVO delCountry(@PathVariable Integer countryId) {
+    public ResultVO delCountry(@PathVariable Long countryId) {
 
         return ResultVO.success(countryService.delCountry(countryId));
     }
@@ -60,7 +60,7 @@ public class CountryController {
     @ApiOperation(value = "获取国家详细信息", notes = "根据国家Id获取详细信息")
     @ApiImplicitParam(paramType = "path", name = "countryId", value = "国家id", required = true, dataType = "long")
     @GetMapping("/{countryId}")
-    public ResultVO getCountry(@PathVariable Integer countryId) {
+    public ResultVO getCountry(@PathVariable Long countryId) {
 
         return ResultVO.success(countryService.getCountry(countryId));
     }

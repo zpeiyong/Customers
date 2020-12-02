@@ -42,7 +42,7 @@ public class EventController {
     @ApiOperation(value = "删除疫情事件", notes = "根据id指定删除疫情事件")
     @ApiImplicitParam(paramType = "path", name = "id", value = "疫情事件ID", required = true, dataType = "long")
     @DeleteMapping(value = "/{id}")
-    public ResultVO delete(@PathVariable Integer id) {
+    public ResultVO delete(@PathVariable Long id) {
 
         return ResultVO.success(eventService.delete(id));
     }
@@ -53,7 +53,7 @@ public class EventController {
             @ApiImplicitParam(paramType = "query", name = "enabled", value = "停止/开始", required = true, dataType = "string")
     })
     @PutMapping(value = "/updateEnabled/{id}")
-    public ResultVO updateEnabled(@PathVariable Integer id, @RequestParam String enabled) {
+    public ResultVO updateEnabled(@PathVariable Long id, @RequestParam String enabled) {
         log.debug("update enabled with id: {}", id);
 
         return ResultVO.success(eventService.updateEnabled(id, enabled));

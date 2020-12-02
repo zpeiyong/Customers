@@ -1,7 +1,7 @@
 package com.dataint.service.datapack.model.form;
 
 import com.dataint.cloud.common.model.form.BaseForm;
-import com.dataint.service.datapack.dao.entity.Country;
+import com.dataint.service.datapack.db.entity.Country;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -26,7 +26,7 @@ public class CountryForm extends BaseForm<Country> {
 
     @ApiModelProperty(value = "大洲Id")
     @NotNull
-    private Integer regionId;
+    private Long regionId;
 
     @ApiModelProperty(value = "国家纬度")
     private String latitude;

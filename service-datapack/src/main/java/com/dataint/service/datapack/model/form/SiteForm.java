@@ -1,7 +1,7 @@
 package com.dataint.service.datapack.model.form;
 
 import com.dataint.cloud.common.model.form.BaseForm;
-import com.dataint.service.datapack.dao.entity.Site;
+import com.dataint.service.datapack.db.entity.Site;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;

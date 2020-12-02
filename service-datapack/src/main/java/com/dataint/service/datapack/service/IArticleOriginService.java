@@ -1,8 +1,8 @@
 package com.dataint.service.datapack.service;
 
-import com.dataint.service.datapack.model.ArticleOriginVO;
+import com.dataint.service.datapack.model.vo.ArticleOriginVO;
 
 public interface IArticleOriginService {
 
-    ArticleOriginVO get(Integer id);
+    ArticleOriginVO getOriginById(Long id);
 }

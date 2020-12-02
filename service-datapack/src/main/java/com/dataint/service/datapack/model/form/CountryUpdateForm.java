@@ -1,5 +1,7 @@
 package com.dataint.service.datapack.model.form;
 
+import com.dataint.cloud.common.model.form.BaseForm;
+import com.dataint.service.datapack.db.entity.Country;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -9,10 +11,10 @@ import javax.validation.constraints.NotNull;
 
 @ApiModel
 @Data
-public class CountryUpdateForm {
+public class CountryUpdateForm extends BaseForm<Country> {
     @ApiModelProperty(value = "国家id")
     @NotNull
-    private Integer countryId;
+    private Long countryId;
 
     @ApiModelProperty(value = "国家编码")
     @NotBlank
@@ -28,7 +30,7 @@ public class CountryUpdateForm {
 
     @ApiModelProperty(value = "大洲Id")
     @NotNull
-    private Integer regionId;
+    private Long regionId;
 
     @ApiModelProperty(value = "国家纬度")
     private String latitude;

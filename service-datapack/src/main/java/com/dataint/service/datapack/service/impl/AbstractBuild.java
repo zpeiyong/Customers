@@ -1,13 +1,10 @@
 package com.dataint.service.datapack.service.impl;
 
-import com.dataint.service.datapack.dao.entity.*;
+import com.dataint.service.datapack.db.entity.*;
 import com.dataint.service.datapack.model.form.ArticleAttachForm;
 import com.dataint.service.datapack.model.form.ArticleExtForm;
 import com.dataint.service.datapack.model.form.ArticleForm;
 import com.dataint.service.datapack.model.form.ArticleOriginForm;
-import com.dataint.service.datapack.utils.Constants;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -26,7 +23,7 @@ abstract class AbstractBuild {
      * @param articleOriginForm
      * @param articleId
      */
-    ArticleOrigin buildArticleOrigin(ArticleOriginForm articleOriginForm, Integer articleId) {
+    ArticleOrigin buildArticleOrigin(ArticleOriginForm articleOriginForm, Long articleId) {
         if (articleOriginForm == null || articleOriginForm.isEmpty())
             return null;
 
@@ -50,7 +47,7 @@ abstract class AbstractBuild {
      * @param articleId
      * @return
      */
-    ArticleExt buildArticleExt(ArticleExtForm articleExtForm, Integer articleId) {
+    ArticleExt buildArticleExt(ArticleExtForm articleExtForm, Long articleId) {
         if (articleExtForm == null || articleExtForm.isEmpty())
             return null;
 
@@ -71,7 +68,7 @@ abstract class AbstractBuild {
      * @param articleId
      * @return
      */
-    List<ArticleAttach> buildArticleAttaches(List<ArticleAttachForm> attachFormList, Integer articleId) {
+    List<ArticleAttach> buildArticleAttaches(List<ArticleAttachForm> attachFormList, Long articleId) {
         if (CollectionUtils.isEmpty(attachFormList))
             return null;
 

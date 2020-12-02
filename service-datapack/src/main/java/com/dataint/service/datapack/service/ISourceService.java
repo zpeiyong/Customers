@@ -1,8 +1,8 @@
 package com.dataint.service.datapack.service;
 
-import com.dataint.service.datapack.model.SourceVO;
 import com.dataint.service.datapack.model.form.SourceForm;
 import com.dataint.service.datapack.model.form.SourceUpdateForm;
+import com.dataint.service.datapack.model.vo.SourceVO;
 
 public interface ISourceService {
 
@@ -10,5 +10,5 @@ public interface ISourceService {
 
     SourceVO updateSource(SourceUpdateForm sourceUpdateForm);
 
-    boolean delSource(Integer sourceId);
+    boolean delSource(Long sourceId);
 }

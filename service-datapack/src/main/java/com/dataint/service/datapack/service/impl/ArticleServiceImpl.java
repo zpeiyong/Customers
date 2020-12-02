@@ -5,30 +5,31 @@ import com.dataint.cloud.common.exception.DataNotExistException;
 import com.dataint.cloud.common.model.Constants;
 import com.dataint.cloud.common.model.param.PageParam;
 import com.dataint.cloud.common.utils.MD5Util;
-import com.dataint.service.datapack.dao.*;
-import com.dataint.service.datapack.dao.entity.*;
-import com.dataint.service.datapack.model.ArticleBasicVO;
-import com.dataint.service.datapack.model.ArticleEventVO;
-import com.dataint.service.datapack.model.ArticleReportVO;
-import com.dataint.service.datapack.model.ArticleVO;
+import com.dataint.service.datapack.db.dao.*;
+import com.dataint.service.datapack.db.entity.*;
 import com.dataint.service.datapack.model.form.*;
-import com.dataint.service.datapack.model.params.ArticleListQueryParam;
+import com.dataint.service.datapack.model.param.ArticleListQueryParam;
+import com.dataint.service.datapack.model.vo.ArticleBasicVO;
+import com.dataint.service.datapack.model.vo.ArticleVO;
 import com.dataint.service.datapack.service.IArticleService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
+import javax.persistence.criteria.*;
 import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class ArticleServiceImpl extends AbstractBuild implements IArticleService {
 
     @Autowired
@@ -41,13 +42,10 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
     private ICountryDao countryDao;
 
     @Autowired
-    private IArticleDiseaseDao articleDiseaseDao;
-
-    @Autowired
     private IDiseasesDao diseaseDao;
-
-    @Autowired
-    private IOutbreakLevelDao outbreakLevelDao;
+//
+//    @Autowired
+//    private IOutbreakLevelDao outbreakLevelDao;
 
     @Autowired
     private IEventDao eventDao;
@@ -66,10 +64,8 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
             siteDao.save(site);
         }
 
-        // 组装 Article 对象
+        // 组装 Article 对象, 暂不保存
         ArticleForm articleForm = storeDataForm.getArticleForm();
-        Article article = buildArticle(articleForm, site);
-
         Article ifArticleExist = articleDao.findByArticleKey(articleForm.getArticleKey());
         if (ifArticleExist != null) {
             if (md5.equals(ifArticleExist.getInputMd5()))
@@ -79,6 +75,7 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
                 // article.setId(ifArticleExist.getId());
                 throw new DataAlreadyExistException("该数据已存在");
         }
+        Article article = buildArticle(articleForm, site);
         article.setInputMd5(md5);
 
         // 组装 ArticleOrigin 对象并存储
@@ -95,12 +92,12 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
         List<ArticleAttach> attachList = buildArticleAttaches(storeDataForm.getArticleAttachFormList(), article.getId());
         article.setAttachList(attachList);
 
-        // 查询默认舆情等级(若不存在则添加)
-        OutbreakLevel outbreakLevel = outbreakLevelDao.findByLevelCode("00");  // 00(default): 未评价
-        if (outbreakLevel == null) {
-            outbreakLevelDao.save(new OutbreakLevel("未评价", "00"));
-        }
-        article.setOutbreakLevel(outbreakLevel);
+//        // 查询默认舆情等级(若不存在则添加)
+//        OutbreakLevel outbreakLevel = outbreakLevelDao.findByLevelCode("00");  // 00(default): 未评价
+//        if (outbreakLevel == null) {
+//            outbreakLevelDao.save(new OutbreakLevel("未评价", "00"));
+//        }
+//        article.setOutbreakLevel(outbreakLevel);
 
         // 舆情信息保存
         articleDao.save(article);
@@ -112,13 +109,13 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
         // siteId
         article.setSite(site);
         // countryCode
-        article.setCountryCode(convertCountryName(articleForm.getCountryNameList(), site.getLanguage()));
+//        article.setCountryCode(convertCountryName(articleForm.getCountryNameList(), site.getLanguage()));
         // keywords
         if (!CollectionUtils.isEmpty(articleForm.getKeywordList()))
             article.setKeywords(StringUtils.join(articleForm.getKeywordList(), Constants.JOINER));
         // eventType => diseaseList
         if (!CollectionUtils.isEmpty(articleForm.getEventTypeList())) {
-            List<ArticleDisease> diseaseList = new ArrayList<>();
+//            List<ArticleDisease> diseaseList = new ArrayList<>();
             for (String eventType : articleForm.getEventTypeList()) {
                 ArticleDisease articleDisease = new ArticleDisease();
                 // check if disease exist
@@ -129,16 +126,16 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
                 } else {
                     articleDisease.setDiseaseCode(eventType);
                 }
-                diseaseList.add(articleDisease);
+//                diseaseList.add(articleDisease);
             }
-            article.setDiseaseList(diseaseList);
+//            article.setDiseaseList(diseaseList);
         }
 
         /*
         若需要, 字段长度截取
          */
-        if (article.getSummary() != null && article.getSummary().length() > 1000)
-            article.setSummary(getSubString(article.getSummary(), 1000));
+        if (article.getSummary() != null && article.getSummary().length() > 2000)
+            article.setSummary(getSubString(article.getSummary(), 2000));
 
         return article;
     }
@@ -171,13 +168,13 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
 
     @Override
     public List<ArticleBasicVO> queryBasicList(PageParam pageParam) {
-        Page<Article> pageResult = articleDao.findAllByDeleted("N", pageParam.toPageRequest("gmtRelease"));
+        Page<Article> pageResult = articleDao.findAllByIfDeleted(false, pageParam.toPageRequest("gmtRelease"));
 
         return pageResult.getContent().stream().map(ArticleBasicVO::new).collect(Collectors.toList());
     }
 
     @Override
-    public ArticleBasicVO queryBasicById(Integer articleId) {
+    public ArticleBasicVO queryBasicById(Long articleId) {
         Optional<Article> articleOpt = articleDao.findById(articleId);
         if (articleOpt.isPresent())
             return new ArticleBasicVO(articleOpt.get());
@@ -186,39 +183,145 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
     }
 
     @Override
-    public List<ArticleBasicVO> queryMapBasicList(Integer countryId, String diseaseName, PageParam pageParam) {
+    public List<ArticleBasicVO> queryMapBasicList(Long countryId, String diseaseName, PageParam pageParam) {
         Optional<Country> countryOpt = countryDao.findById(countryId);
         if (!countryOpt.isPresent())
             throw new DataNotExistException();
         Country country = countryOpt.get();
-        Page<Article> pageResult = articleDao.findMapBasicListByDeleted(country.getCode(), diseaseName, "N",
+        Page<Article> pageResult = articleDao.findMapBasicListByIfDeleted(country.getCode(), diseaseName, false,
                 pageParam.toPageRequest());
 
         return pageResult.getContent().stream().map(ArticleBasicVO::new).collect(Collectors.toList());
     }
 
-
     @Override
-    public Page<Object> getArticleList(ArticleListQueryParam articleListQueryParam) {
-        Page<Article> pageResult = articleDao.findAllByDeletedAndArticleType("N", articleListQueryParam.getArticleType(), articleListQueryParam.toPageRequest("gmtRelease"));
-        if (articleListQueryParam.getArticleType().equals("article")) {
-            List<ArticleBasicVO> basicVOList = pageResult.getContent().stream().map(ArticleBasicVO::new).collect(Collectors.toList());
-            return new PageImpl(basicVOList, pageResult.getPageable(), pageResult.getTotalElements());
-        }else {
-            List<ArticleEventVO> eventVOList = pageResult.getContent().stream().map(ArticleEventVO::new).collect(Collectors.toList());
-            List<ArticleEventVO> basicVOList = new ArrayList<>();
-            for (ArticleEventVO eventVO: eventVOList
-                 ) {
-                List<Event> eventList = eventDao.findAllByArticleId(eventVO.getId());
-                eventVO.setEventList(eventList);
-                basicVOList.add(eventVO);
+    public Page<Object> getArticleList(ArticleListQueryParam queryParam) {
+
+        // 大洲对应国家列表准备
+        final List<String> countryCodeList;
+        if (!ObjectUtils.isEmpty(queryParam.getRegionId())) {
+            List<String> codeTempList;
+            if (queryParam.getRegionId() == 0) {
+                codeTempList = com.dataint.service.datapack.utils.Constants.focusCountryMap.values()
+                        .stream()
+                        .map(Country::getCode)
+                        .collect(Collectors.toList());
+            } else {
+                codeTempList = countryDao.findAllByRegionId(queryParam.getRegionId())
+                        .stream()
+                        .map(Country::getCode)
+                        .collect(Collectors.toList());
             }
-            return new PageImpl(basicVOList, pageResult.getPageable(), pageResult.getTotalElements());
+            countryCodeList = codeTempList;
+        } else {
+            countryCodeList = null;
         }
+
+        Page<Article> articlePage = articleDao.findAll(new Specification<Article>() {
+            Calendar calendar = Calendar.getInstance();
+            @Override
+            public Predicate toPredicate(Root<Article> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                List<Predicate> list = new ArrayList<>();
+
+                // 关键词
+                if (!StringUtils.isEmpty(queryParam.getKeyword())) {
+                    Predicate p1 = criteriaBuilder.like(root.get("title").as(String.class), "%"+queryParam.getKeyword()+"%");
+                    Predicate p2 = criteriaBuilder.like(root.get("content").as(String.class), "%"+queryParam.getKeyword()+"%");
+                    list.add(criteriaBuilder.or(p1, p2));
+                }
+
+                // 疫情类型id
+                if (queryParam.getDiseaseId() != 0) {
+                    Subquery<Long> subQuery = criteriaQuery.subquery(Long.class);
+                    Root<ArticleDisease> adSubRoot = subQuery.from(ArticleDisease.class);
+                    //
+                    Predicate subPredicate = criteriaBuilder.equal(adSubRoot.get("diseaseId").as(Long.class), queryParam.getDiseaseId());
+
+                    subQuery.distinct(true)
+                            .select(adSubRoot.get("articleId").as(Long.class))
+                            .where(subPredicate);
+                    list.add(criteriaBuilder.in(root.get("id")).value(subQuery));
+                }
+
+                // 来源媒体
+                if (queryParam.getMediaTypeId() != 0) {
+                    list.add(criteriaBuilder.equal(root.get("mediaTypeId").as(Long.class), queryParam.getMediaTypeId()));
+                }
+
+                // 舆情文章内容类型
+                if (!StringUtils.isEmpty(queryParam.getArticleType()) && !"all".equals(queryParam.getArticleType())) {
+                    list.add(criteriaBuilder.equal(root.get("articleType").as(String.class), queryParam.getArticleType()));
+                }
+
+                // 地区
+                if (!CollectionUtils.isEmpty(countryCodeList)) {
+                    Subquery<Long> subQuery = criteriaQuery.subquery(Long.class);
+                    Root<ArticleDisease> adSubRoot = subQuery.from(ArticleDisease.class);
+                    //
+                    Predicate subPredicate = adSubRoot.get("countryCode").as(String.class).in(countryCodeList);
+                    subQuery.distinct(true)
+                            .select(adSubRoot.get("articleId").as(Long.class))
+                            .where(subPredicate);
+                    list.add(criteriaBuilder.in(root.get("id")).value(subQuery));
+                }
+
+                // 爬取时间
+                try {
+                    if (!StringUtils.isEmpty(queryParam.getCrawlTimeStart())) {
+                        calendar.setTime(Constants.DateTimeSDF.parse(queryParam.getCrawlTimeStart()));
+                        list.add(criteriaBuilder.greaterThanOrEqualTo(root.get("gmtCrawl").as(Date.class), calendar.getTime()));
+                    }
+                    if (!StringUtils.isEmpty(queryParam.getCrawlTimeEnd())) {
+                        calendar.setTime(Constants.DateTimeSDF.parse(queryParam.getCrawlTimeEnd()));
+                        list.add(criteriaBuilder.lessThanOrEqualTo(root.get("gmtCrawl").as(Date.class), calendar.getTime()));
+                    }
+                } catch (ParseException e) {
+                    log.error("日期解析错误!", e);
+                }
+                Predicate[] p = new Predicate[list.size()];
+                return criteriaBuilder.and(list.toArray(p));
+            }
+        }, queryParam.toPageRequest( "gmtCrawl"));
+
+        // 封装为文章基础字段vo对象列表
+        List<ArticleBasicVO> basicVOList = articlePage.getContent()
+                .stream()
+                .map(article -> {
+                    ArticleBasicVO basicVO = new ArticleBasicVO(article);
+                    /*
+                    TODO: 需要返回- 当前用户是否关注, 相似文章数量; 后台管理另需要- 评审数量, 是否已加入日报, 是否有原文, 是否已关联到相似文章
+                    service-datapack:
+                        - 相似文章数量
+                        - 是否有原文
+                        - 是否已关联到相似文章
+                    app-monitor:
+                        - 当前用户是否关注
+                        - 评审数量
+                        - 是否已加入日报
+                     */
+                    // 相似文章数量, 是否已关联到相似文章
+                    if ("pubinfo".equals(article.getArticleType()) && article.getIfSimilar()) {
+                        int similarArticleCnt;
+                        if (article.getSimilarArticleId() == 0) {
+                            similarArticleCnt = articleDao.countBySimilarArticleId(article.getId());
+                        } else {
+                            similarArticleCnt = articleDao.countBySimilarArticleId(article.getSimilarArticleId());
+                        }
+                        basicVO.setIfSimilar(true);
+                        basicVO.setSimilarArticleCnt(similarArticleCnt);
+                    } else {
+                        basicVO.setIfSimilar(false);
+                        basicVO.setSimilarArticleCnt(0);
+                    }
+
+                    return basicVO;
+                }).collect(Collectors.toList());
+
+        return new PageImpl(basicVOList, articlePage.getPageable(), articlePage.getTotalElements());
     }
 
     @Override
-    public ArticleVO getArticleById(Integer articleId) {
+    public ArticleVO getArticleById(Long articleId) {
         Optional<Article> articleOpt = articleDao.findById(articleId);
         if (articleOpt.isPresent())
             return new ArticleVO(articleOpt.get());
@@ -228,23 +331,23 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
 
     @Transactional
     @Override
-    public void delArticleById(Integer articleId) {
+    public void delArticleById(Long articleId) {
         // check if article exist
         Optional<Article> articleOpt = articleDao.findById(articleId);
         if (!articleOpt.isPresent()) {
             throw new DataNotExistException();
         }
         Article article = articleOpt.get();
-        article.setDeleted("Y");
+        article.setIfDeleted(true);
         articleDao.save(article);
     }
 
     @Transactional
     @Override
-    public List<ArticleBasicVO> addKeyword(List<Integer> idList, String keyword) {
+    public List<ArticleBasicVO> addKeyword(List<Long> idList, String keyword) {
         List<ArticleBasicVO> basicVOList = new ArrayList<>();
 
-        for (Integer id : idList) {
+        for (Long id : idList) {
             Optional<Article> articleOpt = articleDao.findById(id);
             if (articleOpt.isPresent()) {
                 Article article = articleOpt.get();
@@ -274,7 +377,7 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
 
     @Transactional
     @Override
-    public ArticleBasicVO delKeyword(Integer id, String keyword) {
+    public ArticleBasicVO delKeyword(Long id, String keyword) {
         Optional<Article> articleOpt = articleDao.findById(id);
         if (!articleOpt.isPresent()) {
             throw new DataNotExistException();
@@ -301,20 +404,20 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
 
     @Transactional
     @Override
-    public ArticleBasicVO updateLevel(Integer articleId, Integer levelId) {
+    public ArticleBasicVO updateLevel(Long articleId, Long levelId) {
         // check if article exist
         Optional<Article> articleOpt = articleDao.findById(articleId);
         if (!articleOpt.isPresent()) {
             throw new DataNotExistException();
         }
         Article article = articleOpt.get();
-        // check if outbreakLevel exist
-        Optional<OutbreakLevel> levelOpt = outbreakLevelDao.findById(levelId);
-        if (!levelOpt.isPresent()) {
-            throw new DataNotExistException();
-        }
-        OutbreakLevel outbreakLevel = levelOpt.get();
-        article.setOutbreakLevel(outbreakLevel);
+//        // check if outbreakLevel exist
+//        Optional<OutbreakLevel> levelOpt = outbreakLevelDao.findById(levelId);
+//        if (!levelOpt.isPresent()) {
+//            throw new DataNotExistException();
+//        }
+//        OutbreakLevel outbreakLevel = levelOpt.get();
+//        article.setOutbreakLevel(outbreakLevel);
         articleDao.save(article);
 
         return new ArticleBasicVO(article);
@@ -349,13 +452,13 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
                     pe.printStackTrace();
                 }
                 // countries
-                List<Integer> countryIdList = diseaseForm.getCountryIdList();
+                List<Long> countryIdList = diseaseForm.getCountryIdList();
                 if (countryIdList != null && countryIdList.size()>0) {
                     List<Country> countryList = countryDao.findAllById(countryIdList);
-                    articleDisease.setCountryIds(StringUtils.join(
-                            countryIdList, Constants.JOINER));
-                    articleDisease.setCountryCodes(StringUtils.join(
-                            countryList.stream().map(Country::getCode).collect(Collectors.toList()), Constants.JOINER));
+//                    articleDisease.setCountryIds(StringUtils.join(
+//                            countryIdList, Constants.JOINER));
+//                    articleDisease.setCountryCodes(StringUtils.join(
+//                            countryList.stream().map(Country::getCode).collect(Collectors.toList()), Constants.JOINER));
                 }
 
                 // 新增病例
@@ -380,12 +483,12 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
                 }
                 diseaseList.add(articleDisease);
             }
-            article.setDiseaseList(diseaseList);
+//            article.setDiseaseList(diseaseList);
         }
         // outbreakLevel
         if (articleUpdateForm.getLevelId() != null) {
-            OutbreakLevel outbreakLevel = outbreakLevelDao.getOne(articleUpdateForm.getLevelId());
-            article.setOutbreakLevel(outbreakLevel);
+//            OutbreakLevel outbreakLevel = outbreakLevelDao.getOne(articleUpdateForm.getLevelId());
+//            article.setOutbreakLevel(outbreakLevel);
         }
         // summary
         if (!StringUtils.isEmpty(articleUpdateForm.getSummary()))
@@ -406,29 +509,29 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
 
     @Override
     public Map<String, Object> queryReportContent(String startTime, String endTime, String type) {
-        // 获取文章所有等级
-        List<OutbreakLevel> levelList = outbreakLevelDao.findAll();
+//        // 获取文章所有等级
+//        List<OutbreakLevel> levelList = outbreakLevelDao.findAll();
 
         Map<String, Object> articleMap = new HashMap<>();
-        for (OutbreakLevel level : levelList) {
-            // 00: 未评价
-            if (!"00".equals(level.getLevelCode())) {
-                String levelCode = level.getLevelCode();
-                // 生成周报时不包含一般关注
-                if ("02".equals(levelCode) && "weekly".equals(type)) {
-                    continue;
-                }
-                List<Article> articleList = articleDao.queryAllByUpdatedTime(startTime, endTime, level.getId());
-
-                /*
-                构造返回值map
-                 */
-                // 重要, 一般
-                if (!CollectionUtils.isEmpty(articleList)) {
-                    articleMap.put(levelCode, articleList.stream().map(ArticleReportVO::new).collect(Collectors.toList()));
-                }
-            }
-        }
+//        for (OutbreakLevel level : levelList) {
+//            // 00: 未评价
+//            if (!"00".equals(level.getLevelCode())) {
+//                String levelCode = level.getLevelCode();
+//                // 生成周报时不包含一般关注
+//                if ("02".equals(levelCode) && "weekly".equals(type)) {
+//                    continue;
+//                }
+//                List<Article> articleList = articleDao.queryAllByUpdatedTime(startTime, endTime, level.getId());
+//
+//                /*
+//                构造返回值map
+//                 */
+//                // 重要, 一般
+//                if (!CollectionUtils.isEmpty(articleList)) {
+//                    articleMap.put(levelCode, articleList.stream().map(ArticleReportVO::new).collect(Collectors.toList()));
+//                }
+//            }
+//        }
 
         return articleMap;
     }

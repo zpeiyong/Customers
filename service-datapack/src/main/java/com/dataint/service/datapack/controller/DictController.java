@@ -19,29 +19,29 @@ public class DictController {
     @Autowired
     private IDictService dictService;
 
-    @ApiOperation(value = "获取舆情等级列表", notes = "获取舆情等级列表")
-    @GetMapping("/outbreakLevels")
-    public ResultVO queryOutbreakLevels() {
-
-        return ResultVO.success(dictService.queryOutbreakLevels());
-    }
+//    @ApiOperation(value = "获取舆情等级列表", notes = "获取舆情等级列表")
+//    @GetMapping("/outbreakLevels")
+//    public ResultVO queryOutbreakLevels() {
+//
+//        return ResultVO.success(dictService.queryOutbreakLevels());
+//    }
 
     @ApiOperation(value = "获取大洲列表", notes = "获取大洲信息列表")
-    @GetMapping(value = "/regions")
+    @GetMapping(value = "/queryRegions")
     public ResultVO queryRegions() {
 
         return ResultVO.success(dictService.queryRegions());
     }
 
     @ApiOperation(value = "获取国家列表", notes = "获取国家列表")
-    @GetMapping("/countries")
+    @GetMapping("/queryCountries")
     public ResultVO queryCountries() {
 
         return ResultVO.success(dictService.queryCountries());
     }
 
     @ApiOperation(value = "获取传染病列表", notes = "获取传染病列表")
-    @GetMapping("/diseases")
+    @GetMapping("/queryDiseases")
     public ResultVO queryDiseases() {
 
         return ResultVO.success(dictService.queryDiseases());
@@ -53,5 +53,19 @@ public class DictController {
     public ResultVO queryByNameCnFirst(@RequestParam String nameCnFirst) {
 
         return ResultVO.success(dictService.queryByNameCnFirst(nameCnFirst));
+    }
+
+    @ApiOperation(value = "获取舆情媒体类型列表", notes = "获取舆情媒体类型列表")
+    @GetMapping("/queryMediaTypes")
+    public ResultVO queryMediaTypes() {
+
+        return ResultVO.success(dictService.queryMediaTypes());
+    }
+
+    @ApiOperation(value = "获取舆情类型列表", notes = "获取舆情内容类型列表")
+    @GetMapping("/queryArticleTypes")
+    public ResultVO queryArticleTypes() {
+
+        return ResultVO.success(dictService.queryArticleTypes());
     }
 }

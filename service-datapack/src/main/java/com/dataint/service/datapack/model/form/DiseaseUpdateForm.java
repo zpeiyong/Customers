@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 public class DiseaseUpdateForm {
     @ApiModelProperty(value = "传染病id")
     @NotNull
-    private Integer diseaseId;
+    private Long diseaseId;
 
     @ApiModelProperty(value = "传染病icd-10编码")
     private String icd10Code;

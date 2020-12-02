@@ -1,8 +1,8 @@
 package com.dataint.service.datapack.service.impl;
 
-import com.dataint.service.datapack.dao.IArticleOriginDao;
-import com.dataint.service.datapack.dao.entity.ArticleOrigin;
-import com.dataint.service.datapack.model.ArticleOriginVO;
+import com.dataint.service.datapack.db.dao.IArticleOriginDao;
+import com.dataint.service.datapack.db.entity.ArticleOrigin;
+import com.dataint.service.datapack.model.vo.ArticleOriginVO;
 import com.dataint.service.datapack.service.IArticleOriginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,7 @@ public class ArticleOriginServiceImpl implements IArticleOriginService {
     private IArticleOriginDao articleOriginDao;
 
     @Override
-    public ArticleOriginVO get(Integer id) {
+    public ArticleOriginVO getOriginById(Long id) {
         Optional<ArticleOrigin> articleOriginOpt = articleOriginDao.findById(id);
 
         if (articleOriginOpt.isPresent())

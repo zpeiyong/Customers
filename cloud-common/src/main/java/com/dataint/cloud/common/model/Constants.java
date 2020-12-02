@@ -17,13 +17,32 @@ public class Constants {
     public final static String SESSION_USER = "USER_DATAINT";
     public final static Long TOKEN_EXPIRE_TIME = 60 * 60 * 4L;  // 超时时间(分钟)
 
-    // 日期格式
-    public static SimpleDateFormat DateSDF = new SimpleDateFormat("yyyy-MM-dd");
-
-    // 时间格式
-    public static SimpleDateFormat DateTimeSDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    /* 日期格式\时间格式 */
+    private static final ThreadLocal<SimpleDateFormat> threadLocal = new ThreadLocal<>();
+    public final static String DateFormat = "yyyy-MM-dd";
+    public final static SimpleDateFormat DateSDF = new SimpleDateFormat(DateFormat);
+    public static SimpleDateFormat getDateFormat() {
+        SimpleDateFormat sdf = threadLocal.get();
+        if (sdf == null){
+            sdf = new SimpleDateFormat(DateFormat);
+        }
+        return sdf;
+    }
+    public final static String DateTimeFormat = "yyyy-MM-dd HH:mm:ss";
+    public final static SimpleDateFormat DateTimeSDF = new SimpleDateFormat(DateTimeFormat);
+    public static SimpleDateFormat getDateTimeFormat() {
+        SimpleDateFormat sdf = threadLocal.get();
+        if (sdf == null){
+            sdf = new SimpleDateFormat(DateTimeFormat);
+        }
+        return sdf;
+    }
 
     /* 多元素列表或多元素字符串分割器 */
     public static final String JOINER = "|";
+
     public static final String SPLITTER = "\\|";
+
+
+
 }

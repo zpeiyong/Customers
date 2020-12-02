@@ -2,18 +2,20 @@ package com.dataint.service.datapack.service.impl;
 
 import com.dataint.cloud.common.exception.DataAlreadyExistException;
 import com.dataint.cloud.common.exception.DataNotExistException;
-import com.dataint.service.datapack.dao.ICountryDao;
-import com.dataint.service.datapack.dao.IRegionDao;
-import com.dataint.service.datapack.dao.entity.Country;
-import com.dataint.service.datapack.dao.entity.Region;
-import com.dataint.service.datapack.model.CountryVO;
+import com.dataint.service.datapack.db.dao.ICountryDao;
+import com.dataint.service.datapack.db.dao.IFocusCountryDao;
+import com.dataint.service.datapack.db.dao.IRegionDao;
+import com.dataint.service.datapack.db.entity.Country;
+import com.dataint.service.datapack.db.entity.FocusCountry;
+import com.dataint.service.datapack.db.entity.Region;
 import com.dataint.service.datapack.model.form.CountryForm;
 import com.dataint.service.datapack.model.form.CountryUpdateForm;
-import com.dataint.service.datapack.model.params.CountryQueryParam;
+import com.dataint.service.datapack.model.param.CountryQueryParam;
+import com.dataint.service.datapack.model.vo.CountryVO;
 import com.dataint.service.datapack.service.ICountryService;
+import com.dataint.service.datapack.utils.Constants;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.LocalDateTime;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -21,6 +23,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -39,6 +42,9 @@ public class CountryServiceImpl implements ICountryService {
     @Autowired
     private IRegionDao regionDao;
 
+    @Autowired
+    private IFocusCountryDao focusCountryDao;
+
     @Override
     public CountryVO addCountry(CountryForm countryForm) {
         // verify data
@@ -53,7 +59,8 @@ public class CountryServiceImpl implements ICountryService {
         if (!regionOpt.isPresent()) {
             throw new DataNotExistException("大洲信息不存在!");
         }
-        ifExist.setRegion(regionOpt.get());
+        Region region = regionOpt.get();
+        ifExist.setRegionId(region.getId());
 
         // latitude/longitude
         if (StringUtils.isNotEmpty(countryForm.getLatitude()))
@@ -65,11 +72,14 @@ public class CountryServiceImpl implements ICountryService {
         ifExist.setCreatedTime(LocalDateTime.now().toDate());
         countryDao.save(ifExist);
 
-        return new CountryVO(ifExist);
+        CountryVO countryVO = new CountryVO(ifExist);
+        countryVO.setRegion(region);
+
+        return countryVO;
     }
 
     @Override
-    public CountryVO updateCountryStatus(Integer countryId, Integer status) {
+    public CountryVO updateCountryStatus(Long countryId, Integer status) {
         // check if country exist
         Optional<Country> countryOpt = countryDao.findById(countryId);
         if (!countryOpt.isPresent()) {
@@ -81,7 +91,13 @@ public class CountryServiceImpl implements ICountryService {
         country.setUpdatedTime(LocalDateTime.now().toDate());
         countryDao.save(country);
 
-        return new CountryVO(country);
+        // region optional
+        Optional<Region> regionOpt = regionDao.findById(country.getRegionId());
+
+        CountryVO countryVO = new CountryVO(country);
+        countryVO.setRegion(regionOpt.orElse(null));
+
+        return countryVO;
     }
 
     @Transactional
@@ -98,7 +114,7 @@ public class CountryServiceImpl implements ICountryService {
         if (ifExist != null && !ifExist.getId().equals(country.getId())) {
             throw new DataAlreadyExistException("国家名称或编码已存在!");
         }
-        BeanUtils.copyProperties(countryUpdateForm, country);
+        country = countryUpdateForm.toPo(countryUpdateForm.getCountryId(), Country.class);
 
         // latitude/longitude
         if (StringUtils.isNotEmpty(countryUpdateForm.getLatitude()))
@@ -110,11 +126,17 @@ public class CountryServiceImpl implements ICountryService {
         country.setUpdatedTime(LocalDateTime.now().toDate());
         countryDao.save(country);
 
-        return new CountryVO(country);
+        // region optional
+        Optional<Region> regionOpt = regionDao.findById(country.getRegionId());
+
+        CountryVO countryVO = new CountryVO(country);
+        countryVO.setRegion(regionOpt.orElse(null));
+
+        return countryVO;
     }
 
     @Override
-    public boolean delCountry(Integer countryId) {
+    public boolean delCountry(Long countryId) {
         // check if country exist
         Optional<Country> countryOpt = countryDao.findById(countryId);
         if (!countryOpt.isPresent()) {
@@ -126,14 +148,21 @@ public class CountryServiceImpl implements ICountryService {
     }
 
     @Override
-    public CountryVO getCountry(Integer countryId) {
+    public CountryVO getCountry(Long countryId) {
         // check if country exist
         Optional<Country> countryOpt = countryDao.findById(countryId);
         if (!countryOpt.isPresent()) {
             throw new DataNotExistException();
         }
+        Country country = countryOpt.get();
 
-        return new CountryVO(countryOpt.get());
+        // region optional
+        Optional<Region> regionOpt = regionDao.findById(country.getRegionId());
+
+        CountryVO countryVO = new CountryVO(country);
+        countryVO.setRegion(regionOpt.orElse(null));
+
+        return countryVO;
     }
 
     @Override
@@ -155,5 +184,18 @@ public class CountryServiceImpl implements ICountryService {
         List<CountryVO> countryVOList = countryPage.getContent().stream().map(CountryVO::new).collect(Collectors.toList());
 
         return new PageImpl(countryVOList, countryPage.getPageable(), countryPage.getTotalElements());
+    }
+
+    /**
+     * 预加载所有的关注国家(直航地区)信息
+     */
+    @PostConstruct
+    public void initDirectCountries() {
+        List<Long> focusIdList = focusCountryDao.findAll().stream().map(FocusCountry::getCountryId).collect(Collectors.toList());
+        List<Country> focusCountryList = countryDao.findAllByIdIn(focusIdList);
+
+        focusCountryList.forEach(country -> {
+            Constants.focusCountryMap.put(country.getId(), country);
+        });
     }
 }

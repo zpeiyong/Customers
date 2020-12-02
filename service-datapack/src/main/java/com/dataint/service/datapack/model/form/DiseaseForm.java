@@ -1,7 +1,7 @@
 package com.dataint.service.datapack.model.form;
 
 import com.dataint.cloud.common.model.form.BaseForm;
-import com.dataint.service.datapack.dao.entity.Diseases;
+import com.dataint.service.datapack.db.entity.Diseases;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
