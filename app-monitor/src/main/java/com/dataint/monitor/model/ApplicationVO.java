@@ -1,11 +1,9 @@
 package com.dataint.monitor.model;
 
 import com.dataint.cloud.common.model.BaseVO;
-import com.dataint.topic.db.entity.Application;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.beans.BeanUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
@@ -14,10 +12,6 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 public class ApplicationVO extends BaseVO {
-
-    public ApplicationVO(Application application) {
-        BeanUtils.copyProperties(application, this);
-    }
 
     private String fromPage; // 申请页面(暂时只有"专题")
 
