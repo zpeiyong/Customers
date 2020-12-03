@@ -21,7 +21,8 @@ public class DiseaseAdaptImpl implements IDiseaseAdapt {
         HashMap<String, String> map = new HashMap<>();
         map.put("current", diseaseQueryParam.getCurrent().toString());
         map.put("pageSize", diseaseQueryParam.getPageSize().toString());
-        map.put("keyword", diseaseQueryParam.getKeyword());
+        if (diseaseQueryParam.getKeyword() != null)
+            map.put("keyword", diseaseQueryParam.getKeyword());
         String url ="http://" +  baseUrl + "/disease/queryFocus";
         return GetPostUtil.sendGet(url, map);
     }
@@ -32,7 +33,8 @@ public class DiseaseAdaptImpl implements IDiseaseAdapt {
         map.put("current", pageParam.getCurrent().toString());
         map.put("pageSize", pageParam.getPageSize().toString());
         map.put("countryId", countryId.toString());
-        map.put("dateStr", dateStr);
+        if (dateStr != null)
+            map.put("dateStr", dateStr);
         String url ="http://" +  baseUrl + "/disease/getCasesByCountryId/"+ countryId.toString();
         return GetPostUtil.sendGet(url, map);
     }
@@ -42,7 +44,8 @@ public class DiseaseAdaptImpl implements IDiseaseAdapt {
         HashMap<String, String> map = new HashMap<>();
         map.put("countryId", countryId.toString());
         map.put("diseaseId", diseaseId.toString());
-        map.put("dateStr", dateStr);
+        if (dateStr != null)
+            map.put("dateStr", dateStr);
         String url ="http://" +  baseUrl + "/disease/getCasesByCidAndDid";
         return GetPostUtil.sendGet(url, map);
     }

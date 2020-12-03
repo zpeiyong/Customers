@@ -34,7 +34,8 @@ public class StatisticAdaptImpl implements IStatisticAdapt {
     public Object getCountryAddTimeLine(Long diseaseId, String dateStr) {
         HashMap<String, String> map = new HashMap<>();
         map.put("diseaseId", diseaseId.toString());
-        map.put("dateStr", dateStr);
+        if (dateStr != null)
+            map.put("dateStr", dateStr);
         String url ="http://" +  baseUrl + "/statistic/country/getAddTimeLine";
         return GetPostUtil.sendGet(url, map);
     }
@@ -43,7 +44,8 @@ public class StatisticAdaptImpl implements IStatisticAdapt {
     public Object getCountryRiskRank(Long diseaseId, String dateStr) {
         HashMap<String, String> map = new HashMap<>();
         map.put("diseaseId", diseaseId.toString());
-        map.put("dateStr", dateStr);
+        if (dateStr != null)
+            map.put("dateStr", dateStr);
         String url ="http://" +  baseUrl + "/statistic/country/getRiskRank";
         return GetPostUtil.sendGet(url, map);
     }
@@ -52,7 +54,8 @@ public class StatisticAdaptImpl implements IStatisticAdapt {
     public Object getEventAddTimeLine(Long diseaseId, String dateStr) {
         HashMap<String, String> map = new HashMap<>();
         map.put("diseaseId", diseaseId.toString());
-        map.put("dateStr", dateStr);
+        if (dateStr != null)
+            map.put("dateStr", dateStr);
         String url ="http://" +  baseUrl + "/statistic/event/getAddTimeLine";
         return GetPostUtil.sendGet(url, map);
     }
@@ -61,7 +64,8 @@ public class StatisticAdaptImpl implements IStatisticAdapt {
     public Object getEventTotalCntRank(Long diseaseId, String dateStr) {
         HashMap<String, String> map = new HashMap<>();
         map.put("diseaseId", diseaseId.toString());
-        map.put("dateStr", dateStr);
+        if (dateStr != null)
+            map.put("dateStr", dateStr);
         String url ="http://" +  baseUrl + "/statistic/event/getTotalCntRank";
         return GetPostUtil.sendGet(url, map);
     }
@@ -70,7 +74,8 @@ public class StatisticAdaptImpl implements IStatisticAdapt {
     public Object getArticleAddTimeLine(Long diseaseId, String dateStr) {
         HashMap<String, String> map = new HashMap<>();
         map.put("diseaseId", diseaseId.toString());
-        map.put("dateStr", dateStr);
+        if (dateStr != null)
+            map.put("dateStr", dateStr);
         String url ="http://" +  baseUrl + "/statistic/article/getAddTimeLine";
         return GetPostUtil.sendGet(url, map);
     }
@@ -79,7 +84,8 @@ public class StatisticAdaptImpl implements IStatisticAdapt {
     public Object getArticleTotalCntRank(Long diseaseId, String dateStr) {
         HashMap<String, String> map = new HashMap<>();
         map.put("diseaseId", diseaseId.toString());
-        map.put("dateStr", dateStr);
+        if (dateStr != null)
+            map.put("dateStr", dateStr);
         String url ="http://" +  baseUrl + "/statistic/article/getTotalCntRank";
         return GetPostUtil.sendGet(url, map);
     }
@@ -93,7 +99,8 @@ public class StatisticAdaptImpl implements IStatisticAdapt {
     @Override
     public Object getGlobalRiskTimeLine(String dateStr) {
         HashMap<String, String> map = new HashMap<>();
-        map.put("dateStr", dateStr);
+        if (dateStr != null)
+            map.put("dateStr", dateStr);
         String url ="http://" +  baseUrl + "/statistic/getGlobalRiskTimeLine";
         return GetPostUtil.sendGet(url, map);
     }
