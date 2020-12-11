@@ -43,7 +43,7 @@ public interface IDiseaseCountryCaseDao extends JpaRepository<DiseaseCountryCase
             "inner join disease_country_case t2 " +
             "left join focus_diseases fd on dcc.diseaseId = fd.id " +
             "left join country c on t2.country_id = c.id " +
-            "where dcc.diseaseId=t2.disease_id and dcc.statisticDate=t2.statistic_date " +
+            "where dcc.diseaseId=t2.disease_id and dcc.statisticDate=t2.statistic_date and t2.country_id = ?1 " +
             "order by t2.confirm_total desc", nativeQuery = true)
     List<Map<String,Object>> getLatestDiseaseCasesByCountry(Long countryId);
 }
