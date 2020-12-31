@@ -180,6 +180,27 @@ public class DateUtil {
         return Constants.getDateTimeFormat().format(cal.getTime());
     }
 
+
+    /**
+     * 获取指定时间的上周的第一天 00:00:00
+     * @return
+     */
+    public static String getLastWeekStart(String timeStr) throws ParseException {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(Constants.getDateTimeFormat().parse(timeStr));
+        cal.add(Calendar.DAY_OF_YEAR, -7);
+        int day_of_week = cal.get(Calendar.DAY_OF_WEEK) - 1;
+        if (day_of_week == 0)
+            day_of_week = 7;
+        cal.add(Calendar.DATE, -day_of_week + 1);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+
+        return Constants.getDateTimeFormat().format(cal.getTime());
+    }
+
     /**
      * 获取上周的最后一天 00:00:00
      * @return

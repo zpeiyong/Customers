@@ -102,4 +102,55 @@ public interface IStatisticService {
      * @return
      */
     List<Map<String, Object>> getGlobalRiskTimeLine(String dateStr, Integer days);
+
+    /**
+     *
+     * @param diseaseId
+     * @param dateStr
+     * @return
+     */
+    List<Map<String, Object>> getDeathTotalCntRank(Long diseaseId, String dateStr);
+
+    /**
+     *
+     * @param diseaseId
+     * @param dateStr
+     * @param i
+     * @return
+     */
+    List<Map<String, Object>> getDeathTimeLine(Long diseaseId, String dateStr, int i);
+
+    /**
+     *
+     * @param diseaseId
+     * @param dateStr
+     * @param i
+     * @return
+     */
+    List<Map<String, Object>> getConfirmedTimeLine(Long diseaseId, String dateStr, int i);
+
+    /**
+     *
+     * @param diseaseId
+     * @param dateStr
+     * @return
+     */
+    List<Map<String, Object>> getConfirmedTotalCntRank(Long diseaseId, String dateStr);
+
+    /**
+     *
+     * @param diseaseId
+     * @param dateStr
+     * @param i
+     * @return
+     */
+    List<Map<String, Object>> getCuredTimeLine(Long diseaseId, String dateStr, int i);
+
+    /**
+     *
+     * @param diseaseId
+     * @param dateStr
+     * @return
+     */
+    List<Map<String, Object>> getCuredTotalCntRank(Long diseaseId, String dateStr);
 }

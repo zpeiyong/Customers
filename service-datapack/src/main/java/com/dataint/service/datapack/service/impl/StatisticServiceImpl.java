@@ -358,6 +358,171 @@ public class StatisticServiceImpl implements IStatisticService {
         return respList;
     }
 
+    @Override
+    public List<Map<String, Object>> getDeathTimeLine(Long diseaseId, String dateStr, int i) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+        if (!StringUtils.isEmpty(dateStr)) {
+            try {
+                date = sdf.parse(dateStr);
+            } catch (ParseException e) {
+                e.printStackTrace();
+                throw new DataintBaseException("日期参数有误!", 300);
+            }
+        }
+        List<Map<String, Object>> respList = buildRespList(date, i);
+
+        List<IDayDate> dayList = diseaseCountryCaseDao.getDailyDeathAddByDiseaseId(diseaseId, i);
+        for (IDayDate item : dayList) {
+            respList.forEach((e) -> {
+                if (item.getDay().equals(e.get("day"))) {
+                    e.put("value", item.getCnt());
+                }
+            });
+        }
+        return respList;
+    }
+
+    @Override
+    public List<Map<String, Object>> getDeathTotalCntRank(Long diseaseId, String dateStr) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        List<Map<String, Object>> respList = new ArrayList<>();
+
+        // 计算前一天的统计时间
+        String dateTimeStr = DateUtil.getCurrentTime();
+        if (!StringUtils.isEmpty(dateStr)) {
+            dateTimeStr = dateStr + " 00:00:00";
+        }
+        Date yesStartDate;
+        try {
+            yesStartDate = sdf.parse(DateUtil.getYesterdayStart(dateTimeStr));
+        } catch (ParseException e) {
+            e.printStackTrace();
+            throw new DataintBaseException("日期参数有误!", 300);
+        }
+
+        List<Map<String, Object>> poList = diseaseCountryCaseDao.getDeathCntByDiseaseIdAndStatisticDate(diseaseId, yesStartDate,
+                PageRequest.of(0, 5));
+        for (Map<String, Object> poMap : poList) {
+            Map<String, Object> itemMap = new HashMap<>();
+            itemMap.put("countryNameCn", poMap.get("0"));
+            itemMap.put("deathPercent", Double.parseDouble(poMap.get("1").toString())/ 100);
+            respList.add(itemMap);
+        }
+
+        return respList;
+    }
+
+    @Override
+    public List<Map<String, Object>> getConfirmedTimeLine(Long diseaseId, String dateStr, int i) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+        if (!StringUtils.isEmpty(dateStr)) {
+            try {
+                date = sdf.parse(dateStr);
+            } catch (ParseException e) {
+                e.printStackTrace();
+                throw new DataintBaseException("日期参数有误!", 300);
+            }
+        }
+        List<Map<String, Object>> respList = buildRespList(date, i);
+
+        List<IDayDate> dayList = diseaseCountryCaseDao.getDailyConFirmedAddByDiseaseId(diseaseId, i);
+        for (IDayDate item : dayList) {
+            respList.forEach((e) -> {
+                if (item.getDay().equals(e.get("day"))) {
+                    e.put("value", item.getCnt());
+                }
+            });
+        }
+        return respList;
+    }
+
+    @Override
+    public List<Map<String, Object>> getConfirmedTotalCntRank(Long diseaseId, String dateStr) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        List<Map<String, Object>> respList = new ArrayList<>();
+
+        // 计算前一天的统计时间
+        String dateTimeStr = DateUtil.getCurrentTime();
+        if (!StringUtils.isEmpty(dateStr)) {
+            dateTimeStr = dateStr + " 00:00:00";
+        }
+        Date yesStartDate;
+        try {
+            yesStartDate = sdf.parse(DateUtil.getYesterdayStart(dateTimeStr));
+        } catch (ParseException e) {
+            e.printStackTrace();
+            throw new DataintBaseException("日期参数有误!", 300);
+        }
+
+        List<Map<String, Object>> poList = diseaseCountryCaseDao.getConfirmedCntByDiseaseIdAndStatisticDate(diseaseId, yesStartDate,
+                PageRequest.of(0, 5));
+        for (Map<String, Object> poMap : poList) {
+            Map<String, Object> itemMap = new HashMap<>();
+            itemMap.put("countryNameCn", poMap.get("0"));
+            itemMap.put("confirmedCase", poMap.get("1"));
+            respList.add(itemMap);
+        }
+
+        return respList;
+    }
+
+    @Override
+    public List<Map<String, Object>> getCuredTimeLine(Long diseaseId, String dateStr, int i) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+        if (!StringUtils.isEmpty(dateStr)) {
+            try {
+                date = sdf.parse(dateStr);
+            } catch (ParseException e) {
+                e.printStackTrace();
+                throw new DataintBaseException("日期参数有误!", 300);
+            }
+        }
+        List<Map<String, Object>> respList = buildRespList(date, i);
+
+        List<IDayDate> dayList = diseaseCountryCaseDao.getDailyCuredAddByDiseaseId(diseaseId, i);
+        for (IDayDate item : dayList) {
+            respList.forEach((e) -> {
+                if (item.getDay().equals(e.get("day"))) {
+                    e.put("value", item.getCnt());
+                }
+            });
+        }
+        return respList;
+    }
+
+    @Override
+    public List<Map<String, Object>> getCuredTotalCntRank(Long diseaseId, String dateStr) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        List<Map<String, Object>> respList = new ArrayList<>();
+
+        // 计算前一天的统计时间
+        String dateTimeStr = DateUtil.getCurrentTime();
+        if (!StringUtils.isEmpty(dateStr)) {
+            dateTimeStr = dateStr + " 00:00:00";
+        }
+        Date yesStartDate;
+        try {
+            yesStartDate = sdf.parse(DateUtil.getYesterdayStart(dateTimeStr));
+        } catch (ParseException e) {
+            e.printStackTrace();
+            throw new DataintBaseException("日期参数有误!", 300);
+        }
+
+        List<Map<String, Object>> poList = diseaseCountryCaseDao.getCuredCntByDiseaseIdAndStatisticDate(diseaseId, yesStartDate,
+                PageRequest.of(0, 5));
+        for (Map<String, Object> poMap : poList) {
+            Map<String, Object> itemMap = new HashMap<>();
+            itemMap.put("countryNameCn", poMap.get("0"));
+            itemMap.put("curedPercent", Double.parseDouble(poMap.get("1").toString())/ 100);
+            respList.add(itemMap);
+        }
+
+        return respList;
+    }
+
 
     /**
      * 构造时间线返回结构
