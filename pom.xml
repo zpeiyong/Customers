@@ -2,12 +2,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.1.5.RELEASE</version>
-        <relativePath/> <!-- lookup parent from repository -->
-    </parent>
     <groupId>com.dataint.applicataion</groupId>
     <artifactId>wxhg-infectdismonitor-back</artifactId>
     <version>0.0.1-SNAPSHOT</version>
@@ -16,89 +10,11 @@
     <description>无锡海关-全球人类传染病智慧监测预警系统</description>
 
     <modules>
+        <module>cloud-parent</module>
         <module>cloud-common</module>
         <module>app-monitor</module>
         <module>service-datapack</module>
         <module>service-topic</module>
     </modules>
 
-    <properties>
-        <!-- java -->
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>1.8</java.version>
-        <!-- spring -->
-        <spring-boot.test.version>2.1.5.RELEASE</spring-boot.test.version>
-        <!-- dependency -->
-        <springfox.swagger.version>2.9.2</springfox.swagger.version>
-        <fastjson.version>1.2.54</fastjson.version>
-        <lombok.version>1.18.10</lombok.version>
-        <log4j.version>1.2.17</log4j.version>
-        <commons-lang3.version>3.9</commons-lang3.version>
-        <!-- docker -->
-        <docker.image.prefix>dataint</docker.image.prefix>
-        <!-- dataint -->
-        <dataint.cloud-common.version>0.0.1-RELEASE</dataint.cloud-common.version>
-    </properties>
-
-    <dependencies>
-        <!-- swagger -->
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-            <version>${springfox.swagger.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>io.swagger</groupId>
-                    <artifactId>swagger-annotations</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>io.swagger</groupId>
-                    <artifactId>swagger-models</artifactId>
-                </exclusion>
-            </exclusions>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.swagger</groupId>
-            <artifactId>swagger-annotations</artifactId>
-            <version>1.5.21</version>
-        </dependency>
-        <dependency>
-            <groupId>io.swagger</groupId>
-            <artifactId>swagger-models</artifactId>
-            <version>1.5.21</version>
-        </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger-ui</artifactId>
-            <version>${springfox.swagger.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <!--自省和监控的集成功能-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
-
-        <!-- lombok -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
-        </dependency>
-
-        <!-- commons-lang3 -->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>${commons-lang3.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
-            <version>${joda-time.version}</version>
-        </dependency>
-    </dependencies>
 </project>

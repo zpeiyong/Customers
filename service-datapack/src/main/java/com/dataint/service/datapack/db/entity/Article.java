@@ -21,9 +21,6 @@ public class Article extends BasePO {
     @Column(name = "article_key", nullable = false)
     private String articleKey;  // 文章唯一性标识(中台通过此值做数据幂等), 应取mongodb的_id
 
-//    @Column(name = "event_type")
-//    private String eventType;  // 文章类型(文章对应传染病类型) - ["", "", "", ""]
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "site_id")
     private Site site;  // 网站
@@ -31,8 +28,15 @@ public class Article extends BasePO {
 //    @Column(name = "site_id")
 //    private Long siteId;  // 网站id
 
-    @Column(name = "country_code")
-    private String countryCode;  // 国家编码(多个国家用|区分)
+    /*
+    [国家|传染病]通过存在对应关系
+     */
+//    @Column(name = "country_code")
+//    private String countryCode;  // 国家编码(多个国家用|区分)
+
+//    @Column(name = "event_type")
+//    private String eventType;  // 文章类型(文章对应传染病类型) - ["", "", "", ""]
+
 
     @Column(name = "title", nullable = false)
     private String title;  // 标题
@@ -104,9 +108,9 @@ public class Article extends BasePO {
     @JoinColumn(name = "article_id")
     private List<ArticleAttach> attachList;  // 舆情附件实体列表
 
-//    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    @JoinColumn(name = "article_id")
-//    private List<ArticleDisease> diseaseList;  //  舆情对应疫情信息列表
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "article_id")
+    private List<ArticleDisease> diseaseList;  //  舆情对应疫情信息列表( [国家-传染病]存在对应关系 )
 //
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "outbreak_level_id")

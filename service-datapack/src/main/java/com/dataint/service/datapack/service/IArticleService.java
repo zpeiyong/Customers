@@ -1,11 +1,11 @@
 package com.dataint.service.datapack.service;
 
 import com.dataint.cloud.common.model.param.PageParam;
-import com.dataint.service.datapack.model.vo.ArticleBasicVO;
-import com.dataint.service.datapack.model.vo.ArticleVO;
 import com.dataint.service.datapack.model.form.ArticleUpdateForm;
 import com.dataint.service.datapack.model.form.StoreDataForm;
 import com.dataint.service.datapack.model.param.ArticleListQueryParam;
+import com.dataint.service.datapack.model.vo.ArticleBasicVO;
+import com.dataint.service.datapack.model.vo.ArticleVO;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -48,7 +48,7 @@ public interface IArticleService {
     /* Web疫情讯息模块 */
     /**
      *
-     * @param pageParam
+     * @param articleListQueryParam
      * @return
      */
     Page<Object> getArticleList(ArticleListQueryParam articleListQueryParam);

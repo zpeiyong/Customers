@@ -23,18 +23,37 @@ public class ArticleDiseaseForm {
     @ApiModelProperty(value = "疫情结束时间")
     private String diseaseEnd;
 
-    @ApiModelProperty(value = "新增病例")
-    private Integer newCases;
+    @ApiModelProperty(value = "当前时间段新增人数")
+    private Integer periodConfirm;
 
-    @ApiModelProperty(value = "累计病例")
-    private Integer cumulativeCases;
+    @ApiModelProperty(value = "当前时间段死亡人数")
+    private Integer periodDeath;
 
-    @ApiModelProperty(value = "确诊病例")
-    private Integer confirmedCases;
+    @ApiModelProperty(value = "当前时间段治愈人数")
+    private Integer periodCure;
 
-    @ApiModelProperty(value = "疑似病例")
-    private Integer suspectedCases;
+    @ApiModelProperty(value = "总确诊人数")
+    private Integer confirmCases;
 
-    @ApiModelProperty(value = "死亡病例")
-    private Integer deathToll;
+    @ApiModelProperty(value = "总死亡人数")
+    private Integer deathCases;
+
+    @ApiModelProperty(value = "总治愈人数")
+    private Integer cureCases;
+
+
+//    @ApiModelProperty(value = "新增病例")
+//    private Integer newCases;
+//
+//    @ApiModelProperty(value = "累计病例")
+//    private Integer cumulativeCases;
+//
+//    @ApiModelProperty(value = "确诊病例")
+//    private Integer confirmedCases;
+//
+//    @ApiModelProperty(value = "疑似病例")
+//    private Integer suspectedCases;
+//
+//    @ApiModelProperty(value = "死亡病例")
+//    private Integer deathToll;
 }

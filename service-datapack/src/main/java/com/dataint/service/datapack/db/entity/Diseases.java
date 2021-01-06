@@ -16,6 +16,7 @@ import javax.persistence.Table;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Deprecated  //
 public class Diseases extends BasePO {
 
     @Column(name = "icd10_code")

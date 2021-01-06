@@ -7,6 +7,7 @@ import lombok.Data;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Data
 public class ArticleForm extends BaseForm<Article> {
@@ -37,10 +38,12 @@ public class ArticleForm extends BaseForm<Article> {
 
     private Date gmtCrawl;  // 爬取时间
 
-    private List<String> eventTypeList; // 文章类型(文章对应传染病类型)
-
-    private List<String> countryNameList;  // 国家名称(可能中文可能英文或其他语言)
+//    private List<String> eventTypeList; // 文章类型(文章对应传染病类型)
+//
+//    private List<String> countryNameList;  // 国家名称(可能中文可能英文或其他语言)
 
     private String articleType;  // 舆情文章内容类型(statistic:报告 ; pubinfo:新闻)
+
+    private Map<String, String> countryDiseaseRels;  // [国家-传染病]对应关系 ({"巴西": "黄热病", "test": "123"})
 
 }
