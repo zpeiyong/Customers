@@ -49,37 +49,37 @@ public class StatisticServiceImpl implements IStatisticService {
     public JSONObject getPeriodBasic(String startTime, String endTime) {
         JSONObject periodJO = new JSONObject();
 
-        Date startTimeDate, endTimeDate;
-        try {
-            startTimeDate = Constants.getDateTimeFormat().parse(startTime);
-            endTimeDate = Constants.getDateTimeFormat().parse(endTime);
-        } catch (ParseException e) {
-            log.error("时间格式错误!");
-            e.printStackTrace();
-            return periodJO;
-        }
-
-        // 指定时间内舆情数量
-        int articleCnt = articleDao.countByGmtCrawlBetween(startTimeDate, endTimeDate);
-
-        // 指定时间内疫情类别数
-        List<Object[]> diseaseCntList = articleDao.queryDiseaseCnt(startTimeDate, endTimeDate);
-        int diseaseCnt = diseaseCntList.size();
-
-        // 指定时间内涉及国家地区数量()
-        Set<String> countrySet = new HashSet<>();
-        Set<String> aCountries = articleDao.findCountryCodeFromA(startTimeDate, endTimeDate);  // Article
-        Set<String> adCountries = articleDao.findCountryCodesFromAD(startTimeDate, endTimeDate);  // ArticleDisease
-        aCountries.addAll(adCountries);
-        for (String str : aCountries) {
-            countrySet.addAll(Arrays.stream(str.split(Constants.SPLITTER)).collect(Collectors.toSet()));
-        }
-        int countryCnt = countrySet.size();
-
-        /*  */
-        periodJO.put("articleCnt", articleCnt);
-        periodJO.put("diseaseCnt", diseaseCnt);
-        periodJO.put("countryCnt", countryCnt);
+//        Date startTimeDate, endTimeDate;
+//        try {
+//            startTimeDate = Constants.getDateTimeFormat().parse(startTime);
+//            endTimeDate = Constants.getDateTimeFormat().parse(endTime);
+//        } catch (ParseException e) {
+//            log.error("时间格式错误!");
+//            e.printStackTrace();
+//            return periodJO;
+//        }
+//
+//        // 指定时间内舆情数量
+//        int articleCnt = articleDao.countByGmtCrawlBetween(startTimeDate, endTimeDate);
+//
+//        // 指定时间内疫情类别数
+//        List<Object[]> diseaseCntList = articleDao.queryDiseaseCnt(startTimeDate, endTimeDate);
+//        int diseaseCnt = diseaseCntList.size();
+//
+//        // 指定时间内涉及国家地区数量()
+//        Set<String> countrySet = new HashSet<>();
+//        Set<String> aCountries = articleDao.findCountryCodeFromA(startTimeDate, endTimeDate);  // Article
+//        Set<String> adCountries = articleDao.findCountryCodesFromAD(startTimeDate, endTimeDate);  // ArticleDisease
+//        aCountries.addAll(adCountries);
+//        for (String str : aCountries) {
+//            countrySet.addAll(Arrays.stream(str.split(Constants.SPLITTER)).collect(Collectors.toSet()));
+//        }
+//        int countryCnt = countrySet.size();
+//
+//        /*  */
+//        periodJO.put("articleCnt", articleCnt);
+//        periodJO.put("diseaseCnt", diseaseCnt);
+//        periodJO.put("countryCnt", countryCnt);
         return periodJO;
     }
 
@@ -111,9 +111,9 @@ public class StatisticServiceImpl implements IStatisticService {
         }
         Country country = countryOpt.get();
 
-        // 统计指定国家在指定时间段内 - 舆情(Article.id)数量
-        Set<Integer> articleIdSet = articleDao.queryArticleIdsByCountry(startTimeDate, endTimeDate, country.getCode());
-        int articleCnt = articleIdSet.size();
+//        // 统计指定国家在指定时间段内 - 舆情(Article.id)数量
+//        Set<Integer> articleIdSet = articleDao.queryArticleIdsByCountry(startTimeDate, endTimeDate, country.getCode());
+//        int articleCnt = articleIdSet.size();
 
         // 统计指定国家在指定时间段内 - 疫情(ArticleDisease.diseaseCode)及数量
         List<Object[]> diseaseCntList = articleDiseaseDao.queryDiseaseCntByCountry(startTimeDate, endTimeDate, country.getCode());
@@ -129,7 +129,7 @@ public class StatisticServiceImpl implements IStatisticService {
         JSONObject jo = new JSONObject();
         jo.put("countryCode", country.getCode());
         jo.put("countryName", country.getNameCn());
-        jo.put("articleYearlyCnt", articleCnt);
+//        jo.put("articleYearlyCnt", articleCnt);
         jo.put("diseaseCntJA", diseaseCntJA);
 
         return jo;

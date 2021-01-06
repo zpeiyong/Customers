@@ -1,14 +1,12 @@
 package com.dataint.service.datapack.service.impl;
 
 import com.dataint.service.datapack.db.entity.*;
-import com.dataint.service.datapack.model.form.ArticleAttachForm;
-import com.dataint.service.datapack.model.form.ArticleExtForm;
-import com.dataint.service.datapack.model.form.ArticleForm;
-import com.dataint.service.datapack.model.form.ArticleOriginForm;
+import com.dataint.service.datapack.model.form.*;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 abstract class AbstractBuild {
     /**
@@ -87,6 +85,14 @@ abstract class AbstractBuild {
 
         return attachList;
     }
+
+    /**
+     * 组装ArticleDisease
+     * @param staDiseaseFormList
+     * @param countryDiseaseRels
+     * @return
+     */
+    abstract List<ArticleDisease> buildArticleDisease(List<StaDiseaseForm> staDiseaseFormList, Map<String, String> countryDiseaseRels);
 
     public String getSubString(String oldStr, int maxLength) {
         if (oldStr == null || oldStr.length() < maxLength) {

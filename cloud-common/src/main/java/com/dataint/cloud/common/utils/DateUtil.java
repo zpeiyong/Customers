@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 
 public class DateUtil {
@@ -255,16 +256,40 @@ public class DateUtil {
     }
 
     /**
-     *
+     * 获取当月第一天0点
      * @return
      */
-    public static String getStartTimeOfQuarter(){
-        LocalDate resDate = LocalDate.now();
-        Month month = resDate.getMonth();
-        Month firstMonthOfQuarter = month.firstMonthOfQuarter();
-        resDate = LocalDate.of(resDate.getYear(), firstMonthOfQuarter, 1);
+    public static String getStartTimeOfQuarter() {
+        LocalDate nowDate = LocalDate.now();
 
-        return resDate.format(DateTimeFormatter.ofPattern(Constants.DateFormat));
+        LocalDate firstDayOfMonth = nowDate.with(TemporalAdjusters.firstDayOfMonth());
+
+        return firstDayOfMonth.format(DateTimeFormatter.ofPattern(Constants.DateTimeFormat));
+    }
+
+    /**
+     * 获取当季第一天0点
+     * @return
+     */
+    public static String getStartTimeOfMonth(){
+        LocalDate nowDate = LocalDate.now();
+        Month firstMonthOfQuarter = nowDate.getMonth().firstMonthOfQuarter();
+
+        LocalDate firstDayOfQuarter = LocalDate.of(nowDate.getYear(), firstMonthOfQuarter, 1);
+
+        return firstDayOfQuarter.format(DateTimeFormatter.ofPattern(Constants.DateTimeFormat));
+    }
+
+    /**
+     * 获取当年第一天0点
+     * @return
+     */
+    public static String getStartTimeOfYeary() {
+        LocalDate nowDate = LocalDate.now();
+
+        LocalDate firstDayOfYear = nowDate.with(TemporalAdjusters.firstDayOfYear());
+
+        return firstDayOfYear.format(DateTimeFormatter.ofPattern(Constants.DateTimeFormat));
     }
 
     /**

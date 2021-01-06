@@ -53,12 +53,17 @@ build_parent:
   script:
     - pwd
     - whoami
+    #
+    - cd cloud-parent/
     - mvn clean install -Dmaven.test.skip=true
-  artifacts:
-    paths:
-      - ./app-monitor/target/app-monitor-0.0.1-SNAPSHOT.jar
-      - ./service-datapack/target/service-datapack-0.0.1-SNAPSHOT.jar
-      - ./service-topic/target/service-topic-0.0.1-SNAPSHOT.jar
+    - cd ../cloud-common/
+    - mvn clean install -Dmaven.test.skip=true
+    - cd ../
+#  artifacts:
+#    paths:
+#      - ./app-monitor/target/app-monitor-0.0.1-SNAPSHOT.jar
+#      - ./service-datapack/target/service-datapack-0.0.1-SNAPSHOT.jar
+#      - ./service-topic/target/service-topic-0.0.1-SNAPSHOT.jar
 
 
 ## app-monitor
@@ -78,9 +83,9 @@ build_app-monitor:
     - if [ "${CI_COMMIT_REF_NAME}" == "master" ]; then HOST=${host_master}; else HOST=${host_test}; fi
     - if [ "${CI_COMMIT_REF_NAME}" == "master" ]; then BRANCH_NAME="branch-master"; else BRANCH_NAME="branch-test"; fi
     # 后台打包部署
-#    - cd app-monitor/
-#    - mvn clean install -Dmaven.test.skip=true
-#    - cd ../
+    - cd app-monitor/
+    - mvn clean install -Dmaven.test.skip=true
+    - cd ../
     - scp -P 88 ./app-monitor/target/app-monitor-0.0.1-SNAPSHOT.jar ${USER_NAME}@${HOST}:/opt/coding/wxhg-infectDisMonitor-back/app-monitor/
     - ssh -p 88 ${USER_NAME}@${HOST} "cd /opt/coding/wxhg-infectDisMonitor-back/ ; bash ./deploy/deploy.sh ${BRANCH_NAME} app-monitor 0.0.1-SNAPSHOT"
   dependencies:
@@ -103,9 +108,9 @@ build_service-datapack:
     - if [ "${CI_COMMIT_REF_NAME}" == "master" ]; then HOST=${host_master}; else HOST=${host_test}; fi
     - if [ "${CI_COMMIT_REF_NAME}" == "master" ]; then BRANCH_NAME="branch-master"; else BRANCH_NAME="branch-test"; fi
     # 后台打包部署
-#    - cd service-datapack/
-#    - mvn clean install -Dmaven.test.skip=true
-#    - cd ../
+    - cd service-datapack/
+    - mvn clean install -Dmaven.test.skip=true
+    - cd ../
     - scp -P 88 ./service-datapack/target/service-datapack-0.0.1-SNAPSHOT.jar ${USER_NAME}@${HOST}:/opt/coding/wxhg-infectDisMonitor-back/service-datapack/
     - ssh -p 88 ${USER_NAME}@${HOST} "cd /opt/coding/wxhg-infectDisMonitor-back/ ; bash ./deploy/deploy.sh ${BRANCH_NAME} service-datapack 0.0.1-SNAPSHOT"
   dependencies:
@@ -128,9 +133,9 @@ build_service-topic:
     - if [ "${CI_COMMIT_REF_NAME}" == "master" ]; then HOST=${host_master}; else HOST=${host_test}; fi
     - if [ "${CI_COMMIT_REF_NAME}" == "master" ]; then BRANCH_NAME="branch-master"; else BRANCH_NAME="branch-test"; fi
     # 后台打包部署
-#    - cd service-topic/
-#    - mvn clean install -Dmaven.test.skip=true
-#    - cd ../
+    - cd service-topic/
+    - mvn clean install -Dmaven.test.skip=true
+    - cd ../
     - scp -P 88 ./service-topic/target/service-topic-0.0.1-SNAPSHOT.jar ${USER_NAME}@${HOST}:/opt/coding/wxhg-infectDisMonitor-back/service-topic/
     - ssh -p 88 ${USER_NAME}@${HOST} "cd /opt/coding/wxhg-infectDisMonitor-back/ ; bash ./deploy/deploy.sh ${BRANCH_NAME} service-topic 0.0.1-SNAPSHOT"
   dependencies:

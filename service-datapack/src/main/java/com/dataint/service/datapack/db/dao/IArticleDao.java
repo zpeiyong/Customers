@@ -24,16 +24,16 @@ public interface IArticleDao extends JpaRepository<Article, Long>, JpaSpecificat
 
     Page<Article> findAllByIfDeletedAndArticleType(Boolean ifDeleted, String articleType, Pageable pageable);
 
-    @Query(value = "SELECT DISTINCT a.* " +
-            "FROM article a " +
-            "LEFT JOIN article_disease ad ON ad.article_id = a.id " +
-            "WHERE (locate(?1, a.country_code) OR locate(?1, ad.country_codes)) AND ad.disease_code = ?2 AND a.if_deleted = ?3 " +
-            "ORDER BY gmt_release DESC",
-            countQuery = "SELECT COUNT(DISTINCT a.id) " +
-                    "FROM article a " +
-                    "LEFT JOIN article_disease ad ON ad.article_id = a.id " +
-                    "WHERE (locate(?1, a.country_code) OR locate(?1, ad.country_codes)) AND ad.disease_code = ?2 AND a.if_deleted = ?3", nativeQuery = true)
-    Page<Article> findMapBasicListByIfDeleted(String countryCode, String diseaseName, Boolean ifDeleted, Pageable pageable);
+//    @Query(value = "SELECT DISTINCT a.* " +
+//            "FROM article a " +
+//            "LEFT JOIN article_disease ad ON ad.article_id = a.id " +
+//            "WHERE (locate(?1, a.country_code) OR locate(?1, ad.country_codes)) AND ad.disease_code = ?2 AND a.if_deleted = ?3 " +
+//            "ORDER BY gmt_release DESC",
+//            countQuery = "SELECT COUNT(DISTINCT a.id) " +
+//                    "FROM article a " +
+//                    "LEFT JOIN article_disease ad ON ad.article_id = a.id " +
+//                    "WHERE (locate(?1, a.country_code) OR locate(?1, ad.country_codes)) AND ad.disease_code = ?2 AND a.if_deleted = ?3", nativeQuery = true)
+//    Page<Article> findMapBasicListByIfDeleted(String countryCode, String diseaseName, Boolean ifDeleted, Pageable pageable);
 
     /* Statistic */
     int countByGmtCrawlBetween(Date startTime, Date endTime);
@@ -46,10 +46,10 @@ public interface IArticleDao extends JpaRepository<Article, Long>, JpaSpecificat
             "ORDER BY diseaseCnt DESC", nativeQuery = true)
     List<Object[]> queryDiseaseCnt(Date startTime, Date endTime);
 
-    @Query(value="SELECT DISTINCT a.countryCode " +
-            "FROM Article a " +
-            "WHERE a.gmtCrawl >= ?1 AND a.gmtCrawl <= ?2 AND a.countryCode IS NOT NULL")
-    Set<String> findCountryCodeFromA(Date startTime, Date endTime);
+//    @Query(value="SELECT DISTINCT a.countryCode " +
+//            "FROM Article a " +
+//            "WHERE a.gmtCrawl >= ?1 AND a.gmtCrawl <= ?2 AND a.countryCode IS NOT NULL")
+//    Set<String> findCountryCodeFromA(Date startTime, Date endTime);
 
     @Query(value = "SELECT DISTINCT ad.country_codes " +
             "FROM article_disease ad " +
@@ -57,12 +57,12 @@ public interface IArticleDao extends JpaRepository<Article, Long>, JpaSpecificat
             "WHERE a.gmt_crawl >= ?1 AND a.gmt_crawl <= ?2 AND ad.country_codes IS NOT NULL", nativeQuery = true)
     Set<String> findCountryCodesFromAD(Date startTime, Date endTime);
 
-    @Query(value = "SELECT DISTINCT a.id " +
-            "FROM article a " +
-            "LEFT JOIN article_disease ad ON ad.article_id = a.id " +
-            "WHERE a.gmt_crawl >= ?1 AND a.gmt_crawl <= ?2 AND " +
-            "   (locate(?3, a.country_code) OR (locate(?3, ad.country_codes) AND ad.article_id IS NOT NULL))", nativeQuery = true)
-    Set<Integer> queryArticleIdsByCountry(Date startTime, Date endTime, String countryCode);
+//    @Query(value = "SELECT DISTINCT a.id " +
+//            "FROM article a " +
+//            "LEFT JOIN article_disease ad ON ad.article_id = a.id " +
+//            "WHERE a.gmt_crawl >= ?1 AND a.gmt_crawl <= ?2 AND " +
+//            "   (locate(?3, a.country_code) OR (locate(?3, ad.country_codes) AND ad.article_id IS NOT NULL))", nativeQuery = true)
+//    Set<Integer> queryArticleIdsByCountry(Date startTime, Date endTime, String countryCode);
 
     @Query(value = "SELECT DISTINCT DATE_FORMAT(a.updated_time, '%Y-%m-%d') FROM article a " +
             "WHERE a.outbreak_level_id != 1 AND a.updated_time IS NOT NULL AND a.if_deleted = false " +
