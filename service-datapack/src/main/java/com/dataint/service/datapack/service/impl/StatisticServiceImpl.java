@@ -10,7 +10,9 @@ import com.dataint.service.datapack.db.IDayDate;
 import com.dataint.service.datapack.db.IMapCountry;
 import com.dataint.service.datapack.db.dao.*;
 import com.dataint.service.datapack.db.entity.Country;
+import com.dataint.service.datapack.db.entity.DiseaseCountryCase;
 import com.dataint.service.datapack.db.entity.StatisticBasic;
+import com.dataint.service.datapack.model.vo.DiseaseCountryCaseVO;
 import com.dataint.service.datapack.model.vo.StatisticBasicBIVO;
 import com.dataint.service.datapack.model.vo.StatisticBasicVO;
 import com.dataint.service.datapack.service.IStatisticService;
@@ -21,6 +23,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -370,17 +373,38 @@ public class StatisticServiceImpl implements IStatisticService {
                 throw new DataintBaseException("日期参数有误!", 300);
             }
         }
-        List<Map<String, Object>> respList = buildRespList(date, i);
+        ArrayList<String> countryNameList = new ArrayList<>();
 
-        List<IDayDate> dayList = diseaseCountryCaseDao.getDailyDeathAddByDiseaseId(diseaseId, i);
-        for (IDayDate item : dayList) {
+        List<DiseaseCountryCase> dayList = diseaseCountryCaseDao.getDailyDeathAddByDiseaseId(diseaseId, 5, dateStr, i);
+        ArrayList<Map<String, Object>> maps = new ArrayList<>();
+        HashMap<String, Object> map = new HashMap<>();
+        List<Map<String, Object>> respList = new ArrayList<>();
+        for (DiseaseCountryCase item : dayList) {
+            if (!countryNameList.contains(item.getCountryNameCn())) {
+                if (countryNameList.size() > 0) {
+                    map.put("data", respList);
+                    HashMap<String, Object> cloneMap = new HashMap<>(map);
+                    maps.add(cloneMap);
+                    map.clear();
+                }
+                respList = buildRespList(date, i);
+                countryNameList.add(item.getCountryNameCn());
+                map.put("countryName", item.getCountryNameCn());
+            }
             respList.forEach((e) -> {
-                if (item.getDay().equals(e.get("day"))) {
-                    e.put("value", item.getCnt());
+//                System.out.println(sdf.format(item.getStatisticDate()));
+                if (sdf.format(item.getStatisticDate()).equals(e.get("day"))) {
+                    e.put("value", item.getDeathAdd());
                 }
             });
         }
-        return respList;
+        if (countryNameList.size() > 0) {
+            map.put("data", respList);
+            HashMap<String, Object> cloneMap = new HashMap<>(map);
+            maps.add(cloneMap);
+            map.clear();
+        }
+        return maps;
     }
 
     @Override
@@ -425,17 +449,39 @@ public class StatisticServiceImpl implements IStatisticService {
                 throw new DataintBaseException("日期参数有误!", 300);
             }
         }
-        List<Map<String, Object>> respList = buildRespList(date, i);
 
-        List<IDayDate> dayList = diseaseCountryCaseDao.getDailyConFirmedAddByDiseaseId(diseaseId, i);
-        for (IDayDate item : dayList) {
+        ArrayList<String> countryNameList = new ArrayList<>();
+
+        List<DiseaseCountryCase> dayList = diseaseCountryCaseDao.getDailyConFirmedAddByDiseaseId(diseaseId, 5, dateStr, i);
+        ArrayList<Map<String, Object>> maps = new ArrayList<>();
+        HashMap<String, Object> map = new HashMap<>();
+        List<Map<String, Object>> respList = new ArrayList<>();
+        for (DiseaseCountryCase item : dayList) {
+            if (!countryNameList.contains(item.getCountryNameCn())) {
+                if (countryNameList.size() > 0) {
+                    map.put("data", respList);
+                    HashMap<String, Object> cloneMap = new HashMap<>(map);
+                    maps.add(cloneMap);
+                    map.clear();
+                }
+                respList = buildRespList(date, i);
+                countryNameList.add(item.getCountryNameCn());
+                map.put("countryName", item.getCountryNameCn());
+            }
             respList.forEach((e) -> {
-                if (item.getDay().equals(e.get("day"))) {
-                    e.put("value", item.getCnt());
+//                System.out.println(sdf.format(item.getStatisticDate()));
+                if (sdf.format(item.getStatisticDate()).equals(e.get("day"))) {
+                    e.put("value", item.getConfirmAdd());
                 }
             });
         }
-        return respList;
+        if (countryNameList.size() > 0) {
+            map.put("data", respList);
+            HashMap<String, Object> cloneMap = new HashMap<>(map);
+            maps.add(cloneMap);
+            map.clear();
+        }
+        return maps;
     }
 
     @Override
@@ -480,17 +526,38 @@ public class StatisticServiceImpl implements IStatisticService {
                 throw new DataintBaseException("日期参数有误!", 300);
             }
         }
-        List<Map<String, Object>> respList = buildRespList(date, i);
+        ArrayList<String> countryNameList = new ArrayList<>();
 
-        List<IDayDate> dayList = diseaseCountryCaseDao.getDailyCuredAddByDiseaseId(diseaseId, i);
-        for (IDayDate item : dayList) {
+        List<DiseaseCountryCase> dayList = diseaseCountryCaseDao.getDailyCuredAddByDiseaseId(diseaseId, 5, dateStr, i);
+        ArrayList<Map<String, Object>> maps = new ArrayList<>();
+        HashMap<String, Object> map = new HashMap<>();
+        List<Map<String, Object>> respList = new ArrayList<>();
+        for (DiseaseCountryCase item : dayList) {
+            if (!countryNameList.contains(item.getCountryNameCn())) {
+                if (countryNameList.size() > 0) {
+                    map.put("data", respList);
+                    HashMap<String, Object> cloneMap = new HashMap<>(map);
+                    maps.add(cloneMap);
+                    map.clear();
+                }
+                respList = buildRespList(date, i);
+                countryNameList.add(item.getCountryNameCn());
+                map.put("countryName", item.getCountryNameCn());
+            }
             respList.forEach((e) -> {
-                if (item.getDay().equals(e.get("day"))) {
-                    e.put("value", item.getCnt());
+//                System.out.println(sdf.format(item.getStatisticDate()));
+                if (sdf.format(item.getStatisticDate()).equals(e.get("day"))) {
+                    e.put("value", item.getCureAdd());
                 }
             });
         }
-        return respList;
+        if (countryNameList.size() > 0) {
+            map.put("data", respList);
+            HashMap<String, Object> cloneMap = new HashMap<>(map);
+            maps.add(cloneMap);
+            map.clear();
+        }
+        return maps;
     }
 
     @Override
@@ -518,6 +585,35 @@ public class StatisticServiceImpl implements IStatisticService {
             itemMap.put("countryNameCn", poMap.get("0"));
             itemMap.put("curedPercent", Double.parseDouble(poMap.get("1").toString())/ 100);
             respList.add(itemMap);
+        }
+
+        return respList;
+    }
+
+    @Override
+    public List<Map<String, Object>> getArticleAddTimeLineByType(Long diseaseId, String dateStr, int i) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+        if (!StringUtils.isEmpty(dateStr)) {
+            try {
+                date = sdf.parse(dateStr);
+            } catch (ParseException e) {
+                e.printStackTrace();
+                throw new DataintBaseException("日期参数有误!", 300);
+            }
+        }
+
+        List<Map<String,Object>> dayList = diseaseCountryPODao.getArticleAddGroupByDiseaseIdAndStatisticDate(diseaseId,dateStr, i);
+        List<Map<String, Object>> respList = buildRespList(date, i);
+        for (Map<String,Object> item : dayList) {
+            respList.forEach((e) -> {
+//                System.out.println(sdf.format(item.get("statisticDate")));
+                if (sdf.format(item.get("statisticDate")).equals(e.get("day"))) {
+                    e.put("officialAdd", item.get("officialAdd"));
+                    e.put("mediaAdd",item.get("mediaAdd"));
+                    e.put("value",Integer.parseInt(item.get("officialAdd").toString()) + Integer.parseInt(item.get("mediaAdd").toString()));
+                }
+            });
         }
 
         return respList;

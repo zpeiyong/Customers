@@ -153,4 +153,6 @@ public interface IStatisticService {
      * @return
      */
     List<Map<String, Object>> getCuredTotalCntRank(Long diseaseId, String dateStr);
+
+    List<Map<String, Object>> getArticleAddTimeLineByType(Long diseaseId, String dateStr, int i);
 }
