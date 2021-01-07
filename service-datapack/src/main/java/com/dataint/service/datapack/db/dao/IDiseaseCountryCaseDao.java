@@ -4,6 +4,7 @@ import com.dataint.service.datapack.db.IMapCountry;
 import com.dataint.service.datapack.db.entity.DiseaseCountryCase;
 import com.dataint.service.datapack.model.vo.DiseaseCountryCaseVO;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-public interface IDiseaseCountryCaseDao extends JpaRepository<DiseaseCountryCase, Long> {
+public interface IDiseaseCountryCaseDao extends JpaRepository<DiseaseCountryCase, Long>, JpaSpecificationExecutor<DiseaseCountryCase> {
 
     @Query(value = "select distinct dcc.countryId as countryId, c.nameCn as countryNameCn " +
             "from DiseaseCountryCase dcc " +
@@ -20,7 +21,7 @@ public interface IDiseaseCountryCaseDao extends JpaRepository<DiseaseCountryCase
     List<IMapCountry> getMapCountryList();
 
 //    @Query(value = "select new com.dataint.service.datapack.model.vo.DiseaseCountryCaseVO(dcc, fd.nameCn, c.nameCn) " +
-//            "from DiseaseCountryCase dcc " +
+//            "from DiseaseCountryCase1 dcc " +
 //            "left join FocusDisease fd on dcc.diseaseId = fd.id " +
 //            "left join Country c on dcc.countryId = c.id " +
 //            "where dcc.statisticDate = ?1 and dcc.countryId = ?2")
@@ -46,4 +47,11 @@ public interface IDiseaseCountryCaseDao extends JpaRepository<DiseaseCountryCase
             "where dcc.diseaseId=t2.disease_id and dcc.statisticDate=t2.statistic_date and t2.country_id = ?1 " +
             "order by t2.confirm_total desc", nativeQuery = true)
     List<Map<String,Object>> getLatestDiseaseCasesByCountry(Long countryId);
+
+
+    @Query(value = "select  *  from  disease_country_case d where d.disease_name_cn = ?1 " +
+            "and d.country_name_cn = ?2 and d.show_type = ?3 and d.period_start = ?4",nativeQuery = true)
+
+    List<DiseaseCountryCase>  findByDiseaseNameCnAndCountryNameCnAndPeriodStart(String diseaseNameCn,String countryNameCn,Date periodStart);
+
 }
