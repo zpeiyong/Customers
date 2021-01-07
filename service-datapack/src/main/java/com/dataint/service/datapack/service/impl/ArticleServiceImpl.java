@@ -5,7 +5,10 @@ import com.dataint.cloud.common.exception.DataNotExistException;
 import com.dataint.cloud.common.model.Constants;
 import com.dataint.cloud.common.model.param.PageParam;
 import com.dataint.cloud.common.utils.MD5Util;
-import com.dataint.service.datapack.db.dao.*;
+import com.dataint.service.datapack.db.dao.IArticleDao;
+import com.dataint.service.datapack.db.dao.ICountryDao;
+import com.dataint.service.datapack.db.dao.IFocusDiseaseDao;
+import com.dataint.service.datapack.db.dao.ISiteDao;
 import com.dataint.service.datapack.db.entity.*;
 import com.dataint.service.datapack.model.form.*;
 import com.dataint.service.datapack.model.param.ArticleListQueryParam;
@@ -14,6 +17,7 @@ import com.dataint.service.datapack.model.vo.ArticleVO;
 import com.dataint.service.datapack.service.IArticleService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -42,13 +46,13 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
     private ICountryDao countryDao;
 
     @Autowired
-    private IDiseasesDao diseaseDao;
+    private IFocusDiseaseDao diseaseDao;
 //
 //    @Autowired
 //    private IOutbreakLevelDao outbreakLevelDao;
-
-    @Autowired
-    private IEventDao eventDao;
+//
+//    @Autowired
+//    private IEventDao eventDao;
 
     @Override
     public void storeData(StoreDataForm storeDataForm) {
@@ -99,6 +103,10 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
 //        }
 //        article.setOutbreakLevel(outbreakLevel);
 
+        // 组装 ArticleDisease 国家传染病对应关系
+        List<ArticleDisease> diseaseList = buildArticleDisease(storeDataForm.getStaDiseaseFormList(), articleForm.getCountryDiseaseRels());
+        article.setDiseaseList(diseaseList);
+
         // 舆情信息保存
         articleDao.save(article);
     }
@@ -108,36 +116,97 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
         Article article = articleForm.toPo(Article.class);
         // siteId
         article.setSite(site);
-        // countryCode
-//        article.setCountryCode(convertCountryName(articleForm.getCountryNameList(), site.getLanguage()));
         // keywords
-        if (!CollectionUtils.isEmpty(articleForm.getKeywordList()))
+        if (!CollectionUtils.isEmpty(articleForm.getKeywordList())) {
             article.setKeywords(StringUtils.join(articleForm.getKeywordList(), Constants.JOINER));
-        // eventType => diseaseList
-        if (!CollectionUtils.isEmpty(articleForm.getEventTypeList())) {
-//            List<ArticleDisease> diseaseList = new ArrayList<>();
-            for (String eventType : articleForm.getEventTypeList()) {
-                ArticleDisease articleDisease = new ArticleDisease();
-                // check if disease exist
-                Diseases disease = diseaseDao.findByNameCn(eventType);
-                if (disease != null) {
-                    articleDisease.setDiseaseId(disease.getId());
-                    articleDisease.setDiseaseCode(disease.getNameCn());
-                } else {
-                    articleDisease.setDiseaseCode(eventType);
-                }
-//                diseaseList.add(articleDisease);
-            }
-//            article.setDiseaseList(diseaseList);
         }
 
         /*
         若需要, 字段长度截取
          */
         if (article.getSummary() != null && article.getSummary().length() > 2000)
-            article.setSummary(getSubString(article.getSummary(), 2000));
+            article.setSummary(getSubString(article.getSummary(), 1997) + "...");
 
         return article;
+    }
+
+    @Override
+    public List<ArticleDisease> buildArticleDisease(List<StaDiseaseForm> staDiseaseFormList, Map<String, String> countryDiseaseRels) {
+        /* [国家|传染病]通过算法应存在对应关系 */
+        List<ArticleDisease> diseaseList = new ArrayList<>();
+
+        // pubinfo类型舆情才会有该字段
+        if (!CollectionUtils.isEmpty(countryDiseaseRels)) {
+            for (Map.Entry<String, String> entry : countryDiseaseRels.entrySet()) {
+                ArticleDisease articleDisease = new ArticleDisease();
+
+                // 根据预处理传过来的值获取国家和传染病信息
+                Country country = countryDao.findByNameCn(entry.getKey());
+                FocusDisease disease = diseaseDao.findByNameCn(entry.getValue());
+                if (country != null && disease != null) {
+                    //
+                    articleDisease.setCountryId(country.getId());
+                    articleDisease.setCountryCode(country.getCode());
+                    articleDisease.setDiseaseId(disease.getId());
+                    articleDisease.setDiseaseCode(disease.getCode());
+                    //
+                    diseaseList.add(articleDisease);
+                }
+            }
+        }
+
+        // statistic类型舆情才会有该字段
+        if (!CollectionUtils.isEmpty(staDiseaseFormList)) {
+            for (StaDiseaseForm staDiseaseForm : staDiseaseFormList) {
+                Country country = countryDao.findByNameCn(staDiseaseForm.getCountry());
+                FocusDisease disease = diseaseDao.findByNameCn(staDiseaseForm.getDiseaseName());
+
+                if (country != null && disease != null) {
+                    ArticleDisease articleDisease = new ArticleDisease();
+                    //
+                    articleDisease.setCountryId(country.getId());
+                    articleDisease.setCountryCode(country.getCode());
+                    articleDisease.setDiseaseId(disease.getId());
+                    articleDisease.setDiseaseCode(disease.getCode());
+
+                    //
+                    if (staDiseaseForm.getTimePeriodStart() != null) {
+                        articleDisease.setDiseaseStart(staDiseaseForm.getTimePeriodStart());
+                    }
+                    if (staDiseaseForm.getTimePeriodEnd() != null) {
+                        articleDisease.setDiseaseEnd(staDiseaseForm.getTimePeriodEnd());
+                    }
+                    if (staDiseaseForm.getPeriodConfirm() != null) {
+                        articleDisease.setPeriodConfirm(Integer.valueOf(staDiseaseForm.getPeriodConfirm()));
+                    }
+                    if (staDiseaseForm.getPeriodDeath() != null) {
+                        articleDisease.setPeriodDeath(Integer.valueOf(staDiseaseForm.getPeriodDeath()));
+                    }
+                    if (staDiseaseForm.getPeriodCure() != null) {
+                        articleDisease.setPeriodCure(Integer.valueOf(staDiseaseForm.getPeriodCure()));
+                    }
+                    if (staDiseaseForm.getConfirmCases() != null) {
+                        articleDisease.setConfirmCases(Integer.valueOf(staDiseaseForm.getConfirmCases()));
+                    }
+                    if (staDiseaseForm.getDeathCases() != null) {
+                        articleDisease.setDeathCases(Integer.valueOf(staDiseaseForm.getDeathCases()));
+                    }
+                    if (staDiseaseForm.getCureCases() != null) {
+                        articleDisease.setCureCases(Integer.valueOf(staDiseaseForm.getCureCases()));
+                    }
+
+                    //
+                    diseaseList.add(articleDisease);
+                }
+            }
+        }
+
+        //
+        if (diseaseList.size() == 0) {
+            return null;
+        }
+
+        return diseaseList;
     }
 
     @Override
@@ -188,10 +257,12 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
         if (!countryOpt.isPresent())
             throw new DataNotExistException();
         Country country = countryOpt.get();
-        Page<Article> pageResult = articleDao.findMapBasicListByIfDeleted(country.getCode(), diseaseName, false,
-                pageParam.toPageRequest());
+//        Page<Article> pageResult = articleDao.findMapBasicListByIfDeleted(country.getCode(), diseaseName, false,
+//                pageParam.toPageRequest());
+//
+//        return pageResult.getContent().stream().map(ArticleBasicVO::new).collect(Collectors.toList());
 
-        return pageResult.getContent().stream().map(ArticleBasicVO::new).collect(Collectors.toList());
+        return null;
     }
 
     @Override
@@ -438,8 +509,10 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
             List<ArticleDisease> diseaseList = new ArrayList<>();
             for (ArticleDiseaseForm diseaseForm : articleUpdateForm.getDiseaseFormList()) {
                 ArticleDisease articleDisease = new ArticleDisease();
+                BeanUtils.copyProperties(diseaseForm, articleDisease);
+
                 // diseases
-                Diseases diseases = diseaseDao.getOne(diseaseForm.getDiseaseId());
+                FocusDisease diseases = diseaseDao.getOne(diseaseForm.getDiseaseId());
                 articleDisease.setDiseaseCode(diseases.getNameCn());
                 articleDisease.setDiseaseId(diseaseForm.getDiseaseId());
                 try {
@@ -451,36 +524,16 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
                     System.out.println("时间格式有误!");
                     pe.printStackTrace();
                 }
-                // countries
-                List<Long> countryIdList = diseaseForm.getCountryIdList();
-                if (countryIdList != null && countryIdList.size()>0) {
-                    List<Country> countryList = countryDao.findAllById(countryIdList);
-//                    articleDisease.setCountryIds(StringUtils.join(
-//                            countryIdList, Constants.JOINER));
-//                    articleDisease.setCountryCodes(StringUtils.join(
-//                            countryList.stream().map(Country::getCode).collect(Collectors.toList()), Constants.JOINER));
-                }
+//                // countries
+//                List<Long> countryIdList = diseaseForm.getCountryIdList();
+//                if (countryIdList != null && countryIdList.size()>0) {
+//                    List<Country> countryList = countryDao.findAllById(countryIdList);
+////                    articleDisease.setCountryIds(StringUtils.join(
+////                            countryIdList, Constants.JOINER));
+////                    articleDisease.setCountryCodes(StringUtils.join(
+////                            countryList.stream().map(Country::getCode).collect(Collectors.toList()), Constants.JOINER));
+//                }
 
-                // 新增病例
-                if (diseaseForm.getNewCases() != null){
-                    articleDisease.setNewCases(diseaseForm.getNewCases());
-                }
-                // 累计病例
-                if (diseaseForm.getCumulativeCases() != null){
-                    articleDisease.setCumulativeCases(diseaseForm.getCumulativeCases());
-                }
-                // 确诊病例
-                if (diseaseForm.getConfirmedCases()!= null){
-                    articleDisease.setConfirmedCases(diseaseForm.getConfirmedCases());
-                }
-                // 疑似病例
-                if (diseaseForm.getSuspectedCases() != null){
-                    articleDisease.setSuspectedCases(diseaseForm.getSuspectedCases());
-                }
-                // 死亡病例
-                if (diseaseForm.getDeathToll() != null){
-                    articleDisease.setDeathToll(diseaseForm.getDeathToll());
-                }
                 diseaseList.add(articleDisease);
             }
 //            article.setDiseaseList(diseaseList);

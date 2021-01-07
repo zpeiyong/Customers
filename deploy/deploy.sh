@@ -22,7 +22,7 @@ fi
 # Environment
 export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 export PATH=$JAVA_HOME/bin:$PATH
-export BASE_HOME=/opt/coding/dataint-cloud/"$name"
+export BASE_HOME=/opt/coding/wxhg-infectDisMonitor-back
 
 # Spring Env
 SPRING_ENV="test"

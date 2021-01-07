@@ -18,6 +18,8 @@ public class StoreDataForm {
 
     private ArticleOriginForm articleOriginForm;  // 源语言文章form类
 
+    private List<StaDiseaseForm> staDiseaseFormList;  // (统计类)疫情form类
+
     private ArticleExtForm articleExtForm;  // 文章扩展form类
 
     @NotNull(message = "网站信息不能为空")

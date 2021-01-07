@@ -1,7 +1,6 @@
 package com.dataint.service.datapack.db.entity;
 
 import com.dataint.cloud.common.model.po.BasePO;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,7 +16,6 @@ import javax.persistence.Table;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties(value = { "hibernateLazyInitializer"})
 public class Region extends BasePO {
 
     @Column(name = "code", nullable = false, length = 50)
