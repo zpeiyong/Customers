@@ -1,9 +1,9 @@
-package com.dataint.service.datapack.controller;
+package com.dataint.monitor.controller;
 
 import com.dataint.cloud.common.model.ResultVO;
-import com.dataint.service.datapack.db.entity.FocusDisease;
-import com.dataint.service.datapack.model.param.FocusDiseaseParam;
-import com.dataint.service.datapack.service.IFocusDiseaseService;
+import com.dataint.monitor.model.FocusDisease;
+
+import com.dataint.monitor.service.IFocusDiseaseService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class FocusDiseaseController {
     @Autowired
-    private IFocusDiseaseService   focusDiseaseService;
+    private IFocusDiseaseService focusDiseaseService;
 
 
     @RequestMapping(value = "/focusDiseaseList",method = RequestMethod.GET)
@@ -27,10 +27,7 @@ public class FocusDiseaseController {
     })
     @ResponseBody
     public ResultVO<FocusDisease> getFoCountryList(String nameCn, String showType){
-        FocusDiseaseParam focusDiseaseParam = new FocusDiseaseParam();
-        focusDiseaseParam.setNameCn(nameCn);
-        focusDiseaseParam.setShowType(showType);
-        ResultVO  resultVO = ResultVO.success(focusDiseaseService.listFocusDisease(focusDiseaseParam));
+        ResultVO  resultVO = ResultVO.success(focusDiseaseService.listFocusDisease(nameCn, showType));
         return  resultVO;
     }
 
@@ -49,4 +46,5 @@ public class FocusDiseaseController {
         ResultVO resultVO = ResultVO.success(focusDiseaseService.addFocusDisease(focusDisease));
         return resultVO;
     }
+
 }
