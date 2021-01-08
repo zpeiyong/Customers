@@ -1,4 +1,4 @@
-package com.dataint.service.datapack.model.param;
+package com.dataint.monitor.model.param;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -20,7 +20,7 @@ public class DiseaseCountryParam {
 
     private String showType;  // 展示周期类型(与focus_disease表中show_type一致)
 
-    private String periodStart;  // 统计时间段开始时间
+    private Date periodStart;  // 统计时间段开始时间
 
     private Date periodEnd;  // 统计时间段结束时间
 

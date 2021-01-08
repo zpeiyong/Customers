@@ -1,9 +1,9 @@
-package com.dataint.service.datapack.controller;
+package com.dataint.monitor.controller;
 
+import com.dataint.cloud.common.model.Constants;
 import com.dataint.cloud.common.model.ResultVO;
-import com.dataint.service.datapack.db.entity.DiseaseCountryCase;
-import com.dataint.service.datapack.model.param.DiseaseCountryParam;
-import com.dataint.service.datapack.service.IDiseaseCountryCaseService;
+import com.dataint.monitor.model.DiseaseCountryCase;
+import com.dataint.monitor.service.IDiseaseCountryCaseService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.ParseException;
 
 
 @RestController
@@ -27,25 +26,18 @@ public class DiseaseCountryCaseController {
             @ApiImplicitParam(name = "diseaseNameCn",required = true, value = "传染病名称中文",dataType ="String",paramType = "query"),
             @ApiImplicitParam(name = "countryNameCn",required = true, value = "国家名称中文",dataType ="String",paramType = "query"),
             @ApiImplicitParam(name = "show_type",required = true, value = "展示周期类型 weekly daily",dataType ="String",paramType = "query"),
-            @ApiImplicitParam(name = "periodStart",required = false, value = "统计时间段开始时间",dataType ="String",paramType = "query")
+            @ApiImplicitParam(name = "periodStart",required = false, value = "统计时间段开始时间",dataType ="Date",paramType = "query")
     })
     @ResponseBody
-        public ResultVO<DiseaseCountryCase> getdieaseCountryList(String diseaseNameCn, String countryNameCn, String showType,String periodStart) throws  ParseException{
-
-        DiseaseCountryParam d = new DiseaseCountryParam();
-        d.setDiseaseNameCn(diseaseNameCn);
-        d.setCountryNameCn(countryNameCn);
-        d.setShowType(showType);
-        d.setPeriodStart(periodStart);
-
-        ResultVO resultVO =ResultVO.success(countryService.listDiseaseCountry(d));
+    public ResultVO<DiseaseCountryCase> getdieaseCountryList(String diseaseNameCn, String countryNameCn, String showType, String periodStart){
+        ResultVO resultVO =ResultVO.success(countryService.listDiseaseCountry(diseaseNameCn, countryNameCn, showType, periodStart));
         return   resultVO;
     }
 
     @RequestMapping(value = "/addDiseaseCountry",method = RequestMethod.POST)
     @ApiOperation(value = "增加一个病种数据", notes = "增加一个病种数据")
     @ApiImplicitParam(paramType = "query", name = "DiseaseCountryCase", value = "保存病种数据", required = true, dataType = "DiseaseCountryCase")
-    public ResultVO addDiseaseCountry(@RequestBody DiseaseCountryCase country)  {
+    public ResultVO addDiseaseCountry(@RequestBody DiseaseCountryCase country) {
 
         ResultVO resultVO = ResultVO.success(countryService.addDieaseCountry(country));
         return resultVO;
