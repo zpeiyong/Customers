@@ -11,25 +11,21 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 /**
- * 专题关键词表
+ * 专题关键词关系表
  */
 
 @Entity
-@Table ( name ="topic_keyword" )
+@Table ( name ="topic_keyword_copy1" )
 @Accessors(chain = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class TopicKeyword extends BasePO {
 
-    @Column(name="name")
-    private String name; // 关键词
-
-    @Column(name = "enable", nullable = false)
-    private Boolean enable = true;  // 是否可用
-
     @Column(name="topic_id")
-    private long topicId; // 所属专题组id
+    private Long topicId; // 所属专题组id
 
+    @Column(name="keyword_id")
+    private Long keywordId; // 关键词id
 
 }

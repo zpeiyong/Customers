@@ -15,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-
 @RestController
 @RequestMapping("/application")
 @Api("application")
@@ -30,47 +29,45 @@ public class ApplicationController {
     @PostMapping("/applyAddTopic")
     public ResultVO applyAddTopic(@RequestBody TopicForm topicForm) {
         log.debug("apply add a new topic: {}", topicForm);
-        Object topic = applicationService.applyAddTopic(topicForm);
-        if (topic instanceof String)
-            return ResultVO.fail(topic);
-        return ResultVO.success(topic);
+
+        return ResultVO.success(applicationService.applyAddTopic(topicForm));
     }
 
     @ApiOperation(value = "申请修改专题", notes = "申请修改一个专题")
     @ApiImplicitParam(name = "topicForm", value = "新增专题form表单", required = true, dataType = "TopicForm")
     @PostMapping("/applyUpdateTopic/{id}")
-    public ResultVO applyUpdateTopic(@PathVariable Long id,@RequestBody UpdateTopicForm updateTopicForm) {
+    public ResultVO applyUpdateTopic(@PathVariable Long id, @RequestBody UpdateTopicForm updateTopicForm) {
         log.debug("apply update a topic : {}", updateTopicForm);
         updateTopicForm.setId(id);
-        Object topic = applicationService.applyUpdateTopic(updateTopicForm);
-        if (topic instanceof String)
-            return ResultVO.fail(topic);
-        return  ResultVO.success(topic);
+
+        return ResultVO.success(applicationService.applyUpdateTopic(updateTopicForm));
     }
 
     @ApiOperation(value = "获取未处理申请列表", notes = "获取申请列表")
     @GetMapping("/getAllApply")
     public ResultVO getAllApply(ApplyConditionForm applyConditionForm) {
         log.debug("get all unTreated apply {}", applyConditionForm);
-        return  ResultVO.success(applicationService.getAllApply(applyConditionForm.getCurrent(), applyConditionForm.getPageSize(),applyConditionForm.getKeyword()));
+
+        return applicationService.getAllApply(applyConditionForm.getCurrent(), applyConditionForm.getPageSize(),applyConditionForm.getKeyword());
     }
 
     @ApiOperation(value = "获取处理申请列表", notes = "获取处理申请列表")
     @GetMapping("/getProcessedApply")
     public ResultVO getProcessedApply(ApplyConditionForm applyConditionForm) {
         log.debug("get processed apply {}", applyConditionForm);
+
         return ResultVO.success(applicationService.getProcessedApply(applyConditionForm.getCurrent(), applyConditionForm.getPageSize(), applyConditionForm.getKeyword()));
     }
 
-
     @ApiOperation(value = "通过id获取申请信息", notes = "通过id获取申请信息")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "topicId", value = "专题id", required = true, dataType = "int"),
-            @ApiImplicitParam(name = "id", value = "申请id", required = true, dataType = "int"),
+            @ApiImplicitParam(name = "topicId", value = "专题id", required = true, dataType = "long"),
+            @ApiImplicitParam(name = "id", value = "申请id", required = true, dataType = "long"),
     })
     @GetMapping("/getApplyInfo/{id}")
     public ResultVO getApplyInfo(@PathVariable Long id, @RequestParam(value = "topicId", name = "topicId")Long topicId) {
         log.debug("get apply information by id: {} ", id);
+
         return ResultVO.success(applicationService.getApplyInfo(id, topicId));
     }
 
@@ -79,30 +76,29 @@ public class ApplicationController {
     @PostMapping("/saveApply")
     public ResultVO saveApply(@RequestBody ApplyForm applyForm) {
         log.debug("add an apply: {}", applyForm);
-        Object object = applicationService.saveApply(applyForm);
-        if (object instanceof  String) {
-            return ResultVO.fail(object);
-        }
-        return ResultVO.success(object);
+
+        return ResultVO.success(applicationService.saveApply(applyForm));
     }
 
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "id", required = true, dataType = "int"),
+            @ApiImplicitParam(name = "id", value = "id", required = true, dataType = "long"),
             @ApiImplicitParam(name = "feedback", value = "feedback", required = true, dataType = "string")
     })
     @PostMapping("/refuseApply")
     public ResultVO refuseApply(@RequestBody JSONObject jsonObject) {
-        Integer id = jsonObject.getInteger("id");
+        Long id = jsonObject.getLong("id");
         String feedback = jsonObject.getString("feedback");
         log.debug("refuse an apply:{}", id );
+
         return  ResultVO.success(applicationService.refuseApply(id, feedback));
     }
 
     @ApiOperation(value = "申请删除主题", notes = "申请删除主题")
-    @ApiImplicitParam(name = "id", value = "id", required = true, dataType = "int")
+    @ApiImplicitParam(name = "id", value = "id", required = true, dataType = "long")
     @DeleteMapping("/applyDelTopic/{id}")
-    public ResultVO applyDelTopic(@PathVariable Integer id) {
+    public ResultVO applyDelTopic(@PathVariable Long id) {
         log.debug("apply del a topic by id: {}", id);
+
         return ResultVO.success(applicationService.applyDelTopic(id));
     }
 }

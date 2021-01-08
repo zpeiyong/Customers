@@ -1,5 +1,7 @@
 package com.dataint.topic.service;
 
+import java.util.List;
+
 public interface ISpiderService {
     /**
      * 1. http://192.168.10.78:5000/debug/test_post/save
@@ -28,7 +30,7 @@ public interface ISpiderService {
      *         - project: project name
      */
 
-    void pubDisposeProjects(String keyword);
+    void pubDisposeProjects(List<String> keywordList);
 
     void delDisposeProjects();
 }

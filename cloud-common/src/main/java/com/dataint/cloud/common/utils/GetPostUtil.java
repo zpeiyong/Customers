@@ -23,6 +23,7 @@ import org.apache.http.util.EntityUtils;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -58,8 +59,33 @@ public class GetPostUtil {
      * @return URL所代表远程资源的响应
      */
     public static JSONObject sendGet(String url) throws DataintBaseException {
+        Map<String, String> headerMap = new HashMap<>();
+//        headerMap.put(Constants.TOKEN_KEY, Constants.TOKEN);
+
+        return sendGetWithHeader(url, headerMap);
+    }
+
+    public static JSONObject sendGetWithHeader(String url, Map<String, String> headerMap) throws DataintBaseException {
         url = url.replaceAll(" ", "%20");
         HttpGet httpGet = new HttpGet(url);
+        // headers
+        if (headerMap.size() == 1) {
+            for (Map.Entry<String, String> entry : headerMap.entrySet()) {
+                httpGet.setHeader(entry.getKey(), entry.getValue());
+                break;
+            }
+        } else if (headerMap.size() > 1) {
+            int flag = 1;
+            for (Map.Entry<String, String> entry : headerMap.entrySet()) {
+                if (flag == 1)
+                    httpGet.setHeader(entry.getKey(), entry.getValue());
+                else
+                    httpGet.addHeader(entry.getKey(), entry.getValue());
+
+                flag += 1;
+            }
+        }
+//        httpGet.setHeader(Constants.TOKEN_KEY, Constants.TOKEN);
         CloseableHttpClient client = HttpClients.createDefault();
         String result = null;
         HttpResponse resp;
@@ -149,7 +175,31 @@ public class GetPostUtil {
      * @throws DataintBaseException
      */
     public static String sendPost(String url, List list) throws DataintBaseException {
+        Map<String, String> headerMap = new HashMap<>();
+//        headerMap.put(Constants.TOKEN_KEY, Constants.TOKEN);
+
+        return sendPost(url, headerMap, list);
+    }
+
+    public static String sendPost(String url, Map<String, String> headerMap, List list) throws DataintBaseException {
         HttpPost httpPost = new HttpPost(url);
+        // headers
+        if (headerMap.size() == 1) {
+            for (Map.Entry<String, String> entry : headerMap.entrySet()) {
+                httpPost.setHeader(entry.getKey(), entry.getValue());
+                break;
+            }
+        } else if (headerMap.size() > 1) {
+            int flag = 1;
+            for (Map.Entry<String, String> entry : headerMap.entrySet()) {
+                if (flag == 1)
+                    httpPost.setHeader(entry.getKey(), entry.getValue());
+                else
+                    httpPost.addHeader(entry.getKey(), entry.getValue());
+
+                flag += 1;
+            }
+        }
         CloseableHttpClient client = HttpClients.createDefault();
         String result = null;
 

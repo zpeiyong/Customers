@@ -35,6 +35,7 @@ public class TopicVO {
     public TopicVO(Topic topic) {
         BeanUtils.copyProperties(topic, this);
     }
+
 //    public TopicVO(Topic topic,){
 //        this.setId(topic.getId());
 //        this.setName(topic.getName());
