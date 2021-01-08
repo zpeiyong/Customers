@@ -8,7 +8,7 @@ import com.dataint.monitor.service.IDiseaseCountryCaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+
 
 @Service
 public class DiseaseCountryCaseSericeImpl implements IDiseaseCountryCaseService {
@@ -16,7 +16,7 @@ public class DiseaseCountryCaseSericeImpl implements IDiseaseCountryCaseService 
     IDiseaseCountryCaseAdapt caseProvider;
 
     @Override
-    public Object listDiseaseCountry(String diseaseNameCn, String countryNameCn, String showType, Date periodStart) {
+    public Object listDiseaseCountry(String diseaseNameCn, String countryNameCn, String showType, String periodStart) {
         Object resultVO = caseProvider.listDiseaseCountry(diseaseNameCn, countryNameCn, showType, periodStart);
         return resultVO;
 

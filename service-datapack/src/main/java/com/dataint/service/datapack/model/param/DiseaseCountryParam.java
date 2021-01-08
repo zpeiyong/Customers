@@ -20,7 +20,7 @@ public class DiseaseCountryParam {
 
     private String showType;  // 展示周期类型(与focus_disease表中show_type一致)
 
-    private Date periodStart;  // 统计时间段开始时间
+    private String periodStart;  // 统计时间段开始时间
 
     private Date periodEnd;  // 统计时间段结束时间
 

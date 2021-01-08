@@ -12,8 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
-import java.util.Date;
-import java.util.List;
+
 
 @RestController
 @RequestMapping(value = "/countryCase")
@@ -28,10 +27,11 @@ public class DiseaseCountryCaseController {
             @ApiImplicitParam(name = "diseaseNameCn",required = true, value = "传染病名称中文",dataType ="String",paramType = "query"),
             @ApiImplicitParam(name = "countryNameCn",required = true, value = "国家名称中文",dataType ="String",paramType = "query"),
             @ApiImplicitParam(name = "show_type",required = true, value = "展示周期类型 weekly daily",dataType ="String",paramType = "query"),
-            @ApiImplicitParam(name = "periodStart",required = false, value = "统计时间段开始时间",dataType ="Date",paramType = "query")
+            @ApiImplicitParam(name = "periodStart",required = false, value = "统计时间段开始时间",dataType ="String",paramType = "query")
     })
     @ResponseBody
-        public ResultVO<DiseaseCountryCase> getdieaseCountryList(String diseaseNameCn, String countryNameCn, String showType,Date periodStart){
+        public ResultVO<DiseaseCountryCase> getdieaseCountryList(String diseaseNameCn, String countryNameCn, String showType,String periodStart) throws  ParseException{
+
         DiseaseCountryParam d = new DiseaseCountryParam();
         d.setDiseaseNameCn(diseaseNameCn);
         d.setCountryNameCn(countryNameCn);

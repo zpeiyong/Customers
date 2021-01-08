@@ -44,7 +44,7 @@ public class DiseaseCountryCaseServiceImpl implements IDiseaseCountryCaseService
                 }
                 //periodStart
                 if (diseaseCountryParam.getPeriodStart()!=null){
-                    list.add(criteriaBuilder.equal(root.get("periodStart").as(Date.class), diseaseCountryParam.getPeriodStart()));
+                    list.add(criteriaBuilder.equal(root.get("periodStart").as(String.class), diseaseCountryParam.getPeriodStart()));
                 }
                 Predicate[] p = new Predicate[list.size()];
                 return criteriaBuilder.and(list.toArray(p));

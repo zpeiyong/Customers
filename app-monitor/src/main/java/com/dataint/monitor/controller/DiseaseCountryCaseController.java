@@ -1,5 +1,6 @@
 package com.dataint.monitor.controller;
 
+import com.dataint.cloud.common.model.Constants;
 import com.dataint.cloud.common.model.ResultVO;
 import com.dataint.monitor.model.DiseaseCountryCase;
 import com.dataint.monitor.service.IDiseaseCountryCaseService;
@@ -10,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
+
 
 @RestController
 @RequestMapping(value = "/countryCase")
@@ -28,7 +29,7 @@ public class DiseaseCountryCaseController {
             @ApiImplicitParam(name = "periodStart",required = false, value = "统计时间段开始时间",dataType ="Date",paramType = "query")
     })
     @ResponseBody
-    public ResultVO<DiseaseCountryCase> getdieaseCountryList(String diseaseNameCn, String countryNameCn, String showType, Date periodStart){
+    public ResultVO<DiseaseCountryCase> getdieaseCountryList(String diseaseNameCn, String countryNameCn, String showType, String periodStart){
         ResultVO resultVO =ResultVO.success(countryService.listDiseaseCountry(diseaseNameCn, countryNameCn, showType, periodStart));
         return   resultVO;
     }
