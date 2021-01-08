@@ -1,7 +1,7 @@
 package com.dataint.topic.controller;
 
 import com.dataint.cloud.common.model.ResultVO;
-import com.dataint.topic.service.ITopicKeywordService;
+import com.dataint.topic.service.IKeywordService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -18,13 +18,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class TopicKeywordController {
 
     @Autowired
-    private ITopicKeywordService topicKeywordService;
+    private IKeywordService keywordService;
 
     @ApiOperation(value = "根据专题id获取关键词", notes = "根据专题id获取关键词")
     @GetMapping("/getKeywordListByTopicId/{topicId}")
-    public ResultVO getAllTopic(@PathVariable Integer topicId) {
+    public ResultVO getAllTopic(@PathVariable Long topicId) {
         log.debug("get all keyword by topicId");
-        return ResultVO.success(topicKeywordService.getKeywordListByTopicId(topicId));
+
+        return ResultVO.success(keywordService.getKeywordListByTopicId(topicId));
     }
 
 }

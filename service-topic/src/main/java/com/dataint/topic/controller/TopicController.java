@@ -1,9 +1,9 @@
 package com.dataint.topic.controller;
 
 import com.dataint.cloud.common.model.ResultVO;
-import com.dataint.topic.model.form.GetTopicForm;
 import com.dataint.topic.model.form.TopicForm;
 import com.dataint.topic.model.form.UpdateTopicForm;
+import com.dataint.topic.model.param.GetTopicParam;
 import com.dataint.topic.service.ITopicService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -27,13 +27,9 @@ public class TopicController {
     @PostMapping("/addTopic")
     public ResultVO addTopic(@RequestBody TopicForm topicForm) {
         log.debug("add topicForm: {}", topicForm);
-        Object topic = topicService.addTopic(topicForm);
-        if (topic instanceof String) {
-            return  ResultVO.fail(topic);
-        }
-        return ResultVO.success(topic);
-    }
 
+        return ResultVO.success(topicService.addTopic(topicForm));
+    }
 
     @ApiOperation(value = "删除专题", notes = "删除专题")
     @ApiImplicitParam(name = "id", value = "专题组id", required = true, dataType = "long")
@@ -46,7 +42,7 @@ public class TopicController {
 
     @ApiOperation(value = "恢复专题", notes = "恢复专题")
     @ApiImplicitParam(name = "id", value = "专题组id", required = true, dataType = "long")
-    @DeleteMapping("/recoveryTopic/{id}")
+    @PutMapping("/recoveryTopic/{id}")
     public ResultVO recoveryTopic(@PathVariable Long id) {
         log.debug("recovery a topic by id:{}", id);
         return ResultVO.success(topicService.recoveryTopic(id));
@@ -56,34 +52,33 @@ public class TopicController {
     @ApiImplicitParams({@ApiImplicitParam(name = "id", value = "专题组ID", required = true, dataType = "long"),
             @ApiImplicitParam(name = "updateTopicForm", value = "修改专题form表单", required = true, dataType = "UpdateTopicForm")})
     @PutMapping(value = "/updateTopic/{id}")
-    public ResultVO updateTopic(@PathVariable Long id,@RequestBody UpdateTopicForm updateTopicForm){
+    public ResultVO updateTopic(@PathVariable Long id, @RequestBody UpdateTopicForm updateTopicForm){
         log.debug("update Topic by id",id);
         updateTopicForm.setId(id);
-        Object topic = topicService.updateTopic(updateTopicForm);
-        if (topic instanceof  String)
-            return ResultVO.fail(topic);
-        return ResultVO.success(topic);
+
+        return ResultVO.success(topicService.updateTopic(updateTopicForm));
     }
 
     @ApiOperation(value = "获取激活专题组", notes = "获取激活专题组")
     @GetMapping("/getAllActiveTopic")
     public ResultVO getAllActiveTopic() {
-        log.debug("get all topic");
+        log.debug("get all active topics");
         return ResultVO.success(topicService.getAllActiveTopic());
     }
 
     @ApiOperation(value = "获取历史专题组" , notes = "获取历史专题组")
     @GetMapping("/getAllDelTopic")
     public ResultVO getAllDeleteTopic(){
-        log.debug("get all deltopic");
+        log.debug("get all deleted topics");
 
         return ResultVO.success(topicService.getAllDeleteTopic());
     }
 
     @ApiOperation(value = "获取所有专题组", notes = "获取所有专题组")
     @GetMapping("/getAllTopic")
-    public ResultVO getAllTopic (GetTopicForm topicForm) {
+    public ResultVO getAllTopic (GetTopicParam topicForm) {
         log.debug("get all topic List by:{}", topicForm);
-        return ResultVO.success(topicService.getAllTopic(topicForm.getCurrent(), topicForm.getPageSize(), topicForm.getKeyword()));
+
+        return topicService.getAllTopic(topicForm.getCurrent(), topicForm.getPageSize(), topicForm.getKeyword());
     }
 }
