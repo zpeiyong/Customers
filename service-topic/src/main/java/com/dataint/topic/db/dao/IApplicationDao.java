@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public interface IApplicationDao extends JpaRepository<Application, Long> {
 
-    List<Application> findAllByTopicIdAndStatus(Integer topicId, Integer status);
+    List<Application> findAllByTopicIdAndStatus(Long topicId, Integer status);
 
     Page<Application> findAllByStatusAndTopicNameContainingOrderByCreatedTimeDesc(Integer status, String keyword, Pageable pageable);
 

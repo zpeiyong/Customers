@@ -151,11 +151,9 @@ public class TopicServiceImpl implements ITopicService {
         }
 
         // check if topic exist
-        Optional<Topic> topicOpt = topicDao.findById(updateTopicForm.getId());
-        if (!topicOpt.isPresent()) {
+        if (topic == null) {
             throw new DataNotExistException("专题组不存在!");
         }
-        topic = topicOpt.get();
 
         // 更新并保存topic数据
         topic.setUpdatedTime(new Date());
