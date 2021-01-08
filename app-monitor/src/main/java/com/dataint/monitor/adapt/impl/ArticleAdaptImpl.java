@@ -40,17 +40,28 @@ public class ArticleAdaptImpl implements IArticleAdapt {
 
     @Override
     public Object queryBasicList(PageParam pageParam) {
-        return null;
+        String url = "http://" +  baseUrl + "/article/queryBasicList";
+        HashMap<String, String> map = new HashMap<>();
+        map.put("current", pageParam.getCurrent().toString());
+        map.put("pageSize", pageParam.getPageSize().toString());
+        return GetPostUtil.sendGet(url,map);
     }
 
     @Override
     public Object queryBasicById(Long id) {
-        return null;
+        String url = "http://" +  baseUrl + "/article/basic/" + id.toString();
+        return GetPostUtil.sendGet(url);
     }
 
     @Override
     public Object queryMapBasicList(Long countryId, String diseaseName, PageParam pageParam) {
-        return null;
+        String url = "http://" +  baseUrl + "/article/queryMapBasicList";
+        HashMap<String, String> map = new HashMap<>();
+        map.put("countryId", countryId.toString());
+        map.put("diseaseName", diseaseName);
+        map.put("current",pageParam.getCurrent().toString());
+        map.put("pageSize", pageParam.getPageSize().toString());
+        return GetPostUtil.sendGet(url, map);
     }
 
     @Override
@@ -98,41 +109,61 @@ public class ArticleAdaptImpl implements IArticleAdapt {
 
     @Override
     public Object getArticleById(Long id) {
-        return null;
+        String url = "http://" +  baseUrl + "/article/normal/" + id.toString();
+        return GetPostUtil.sendGet(url);
     }
 
     @Override
     public Object delArticles(String idListStr) {
-        return null;
+        String url = "http://" +  baseUrl + "/normal/delArticles?idListStr=" + idListStr;
+        return GetPostUtil.sendDelete(url);
     }
 
     @Override
     public Object addKeyword(String idListStr, String keyword) {
-        return null;
+        String url = "http://" +  baseUrl + "/addKeyword";
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("idListStr", idListStr);
+        jsonObject.put("keyword", keyword);
+        String jsonString = jsonObject.toJSONString();
+        return GetPostUtil.sendPut(url, jsonString, 3000);
     }
 
     @Override
     public Object delKeyword(Long id, String keyword) {
-        return null;
+        String url = "http://" +  baseUrl + "/delKeyword/" + id.toString()+"?keyword="+keyword;
+        return GetPostUtil.sendDelete(url);
     }
 
     @Override
     public Object updateLevel(Long id, Long levelId) {
-        return null;
+        String url = "http://" + baseUrl + "/updateLevel/" + id.toString() + "?levelId=" + levelId.toString();
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("levelId", levelId);
+        String jsonString = jsonObject.toJSONString();
+        return GetPostUtil.sendPut(url, jsonString, 3000);
     }
 
     @Override
     public Object updateArticle(ArticleUpdateForm articleUpdateForm) {
-        return null;
+        String url = "http://" + baseUrl + "/updateArticle";
+        String jsonString = JSONObject.toJSONString(articleUpdateForm);
+        return GetPostUtil.sendPut(url, jsonString, 3000);
     }
 
     @Override
     public Object searchByKeyword(String keyword) {
-        return null;
+        String url = "http://" + baseUrl + "/searchByKeyword" + "?keyword=" + keyword;
+        return GetPostUtil.sendGet(url);
     }
 
     @Override
     public Object queryReportContent(String startTime, String endTime, String type) {
-        return null;
+        String url = "http://" + baseUrl + "/queryReport";
+        HashMap<String, String> map = new HashMap<>();
+        map.put("startTime", startTime);
+        map.put("endTime", endTime);
+        map.put("type", type);
+        return GetPostUtil.sendGet(url, map);
     }
 }
