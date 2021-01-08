@@ -6,6 +6,7 @@ import com.dataint.service.datapack.db.entity.DiseaseCountryCase;
 import com.dataint.service.datapack.model.vo.DiseaseCountryCaseVO;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-public interface IDiseaseCountryCaseDao extends JpaRepository<DiseaseCountryCase, Long> {
+public interface IDiseaseCountryCaseDao extends JpaRepository<DiseaseCountryCase, Long>, JpaSpecificationExecutor<DiseaseCountryCase> {
 
     @Query(value = "select distinct dcc.countryId as countryId, c.nameCn as countryNameCn " +
             "from DiseaseCountryCase dcc " +
@@ -22,7 +23,7 @@ public interface IDiseaseCountryCaseDao extends JpaRepository<DiseaseCountryCase
     List<IMapCountry> getMapCountryList();
 
 //    @Query(value = "select new com.dataint.service.datapack.model.vo.DiseaseCountryCaseVO(dcc, fd.nameCn, c.nameCn) " +
-//            "from DiseaseCountryCase dcc " +
+//            "from DiseaseCountryCase1 dcc " +
 //            "left join FocusDisease fd on dcc.diseaseId = fd.id " +
 //            "left join Country c on dcc.countryId = c.id " +
 //            "where dcc.statisticDate = ?1 and dcc.countryId = ?2")
@@ -99,4 +100,6 @@ public interface IDiseaseCountryCaseDao extends JpaRepository<DiseaseCountryCase
             "where dcc.diseaseId = ?1 and dcc.statisticDate = ?2 " +
             "order by dcc.cureTotal/dcc.confirmTotal desc")
     List<Map<String, Object>> getCuredCntByDiseaseIdAndStatisticDate(Long diseaseId, Date yesStartDate, PageRequest of);
+
+    List<DiseaseCountryCase>  findByDiseaseNameCnAndCountryNameCnAndPeriodStart(String diseaseNameCn,String countryNameCn,Date periodStart);
 }

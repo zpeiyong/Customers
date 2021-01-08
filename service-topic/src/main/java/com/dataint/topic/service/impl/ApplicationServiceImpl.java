@@ -1,25 +1,31 @@
 package com.dataint.topic.service.impl;
 
+import com.dataint.cloud.common.exception.DataNotExistException;
 import com.dataint.cloud.common.model.Pagination;
+import com.dataint.cloud.common.model.ResultVO;
 import com.dataint.topic.db.dao.IApplicationDao;
 import com.dataint.topic.db.dao.ITopicDao;
-import com.dataint.topic.db.dao.ITopicKeywordDao;
 import com.dataint.topic.db.entity.Application;
 import com.dataint.topic.db.entity.Topic;
-import com.dataint.topic.db.entity.TopicKeyword;
 import com.dataint.topic.model.form.ApplyForm;
 import com.dataint.topic.model.form.TopicForm;
 import com.dataint.topic.model.form.UpdateTopicForm;
 import com.dataint.topic.model.vo.ApplicationVO;
 import com.dataint.topic.model.vo.ApplyVO;
+import com.dataint.topic.model.vo.TopicVO;
 import com.dataint.topic.service.IApplicationService;
+import com.dataint.topic.service.ITopicService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,10 +38,10 @@ public class ApplicationServiceImpl implements IApplicationService {
     private ITopicDao topicDao;
 
     @Autowired
-    private ITopicKeywordDao topicKeywordDao;
+    private ITopicService topicService;
 
     @Override
-    public Object applyAddTopic(TopicForm topicForm) {
+    public ApplicationVO applyAddTopic(TopicForm topicForm) {
         Application application = new Application();
         application.setTopicName(topicForm.getName());
         if (topicForm.getKeywordNames() != null)
@@ -43,125 +49,75 @@ public class ApplicationServiceImpl implements IApplicationService {
         if (topicForm.getUsername() != null)
             application.setCreatedBy(topicForm.getUsername());
         application.setOperation("add");
-        Application save = applicationDao.save(application);
-        return save;
+        applicationDao.save(application);
+
+        return new ApplicationVO(application);
     }
 
     @Override
-    public Object applyUpdateTopic(UpdateTopicForm updateTopicForm) {
+    public ApplicationVO applyUpdateTopic(UpdateTopicForm updateTopicForm) {
         Application application = new Application();
         if (updateTopicForm.getIfDeleted() != null) {
             if (updateTopicForm.getIfDeleted()) {
                 application.setOperation("delete");
-            }else {
+            } else {
                 application.setOperation("update");
             }
-        }else{
+        } else {
             application.setOperation("update");
             if (updateTopicForm.getKeywordNames() != null)
                 application.setKeywords(StringUtils.join(updateTopicForm.getKeywordNames(),"|"));
         }
-        application.setTopicId((int) updateTopicForm.getId());
+        application.setTopicId(updateTopicForm.getId());
         application.setTopicName(updateTopicForm.getName());
         if (updateTopicForm.getUpdateDesc() != null)
             application.setUpdateDesc(updateTopicForm.getUpdateDesc());
-        return applicationDao.save(application);
+        applicationDao.save(application);
+
+        return new ApplicationVO(application);
     }
 
     @Override
-    public Object saveApply(ApplyForm applyForm) {
-        //判断专题名称是否已经存在
-        List<Topic> topicList = topicDao.findAll();
-        boolean flag = false;
-        for (Topic topic: topicList) {
-            if (topic.getName().equals(applyForm.getName())){
-                if (applyForm.getId() == 0)
-                    flag = true;
-                else if (!topic.getId().equals(applyForm.getId()))
-                    flag = true;
-            }
-        }
-        if (flag) {
-            return "专题名称重复了，请重新提交！";
-        }
-        //判断是新增专题还是修改专题
+    public TopicVO saveApply(ApplyForm applyForm) {
+        TopicVO topicVO;
+
+        // 判断是新增专题还是修改专题
         if (applyForm.getId() == 0) {
             // 新增专题
-            Topic topic = new Topic();
-            topic.setName(applyForm.getName());
-            topic.setIfDeleted(applyForm.getIfDeleted());
-            topic.setEnable(true);
-            Topic topic1 = topicDao.save(topic);
-            if (applyForm.getKeywordNames() != null && applyForm.getKeywordNames().size() > 0) {
-               for (String keywordName: applyForm.getKeywordNames()) {
-                   TopicKeyword topicKeyword = new TopicKeyword();
-                   topicKeyword.setEnable(true);
-                   topicKeyword.setTopicId(topic1.getId());
-                   topicKeyword.setName(keywordName);
-                   topicKeywordDao.save(topicKeyword);
-               }
-            }
-            if (applyForm.getApplicationList() != null && applyForm.getApplicationList().size() > 0){
+            TopicForm topicForm = new TopicForm();
+            topicForm.setName(applyForm.getName());
+            topicForm.setKeywordNames(applyForm.getKeywordNames());
+            topicVO = topicService.addTopic(topicForm);
+
+            // 维护申请表
+            if (!CollectionUtils.isEmpty(applyForm.getApplicationList())) {
                 Application application = applyForm.getApplicationList().get(0);
                 application.setStatus(1);
-                application.setTopicId(topic1.getId().intValue());
+                application.setTopicId(topicVO.getId());
                 application.setUpdatedTime(new Date());
                 applicationDao.save(application);
             }
-            return topic1;
-        }else{
-            Topic topic = topicDao.findById(applyForm.getId()).get();
-            topic.setIfDeleted(applyForm.getIfDeleted());
-            topic.setName(applyForm.getName());
-            topic.setUpdatedTime(new Date());
-            Topic topic1 = topicDao.save(topic);
-            List<TopicKeyword> topicKeywordList = topicKeywordDao.findAllByTopicId(topic1.getId());
-            if (applyForm.getKeywordNames() != null && applyForm.getKeywordNames().size() > 0) {
-                for (TopicKeyword topicKeyword: topicKeywordList) {
-                    boolean boo = applyForm.getKeywordNames().contains(topicKeyword.getName());
-                    if (boo) {
-                        topicKeyword.setEnable(true);
-                    }else{
-                        topicKeyword.setEnable(false);
-                    }
-                    topicKeywordDao.save(topicKeyword);
-                }
-                List<String> list = new ArrayList<>();
-                for (TopicKeyword topicKeyword : topicKeywordList) {
-                    String name = topicKeyword.getName();
-                    list.add(name);
-                }
-                for(String keywordName:applyForm.getKeywordNames()){
-                    int i = list.indexOf(keywordName);
-                    if (i == -1) {
-                        TopicKeyword topicKeyword = new TopicKeyword();
-                        topicKeyword.setEnable(true);
-                        topicKeyword.setTopicId(topic1.getId());
-                        topicKeyword.setName(keywordName);
-                        topicKeywordDao.save(topicKeyword);
-                    }else{
-                        TopicKeyword topicKeyword = topicKeywordList.get(i);
-                        topicKeyword.setEnable(true);
-                        topicKeywordDao.save(topicKeyword);
-                    }
-                }
-            }else{
-                for (TopicKeyword topicKeyword: topicKeywordList) {
-                    topicKeyword.setEnable(false);
-                    topicKeywordDao.save(topicKeyword);
-                }
-            }
-            if (applyForm.getApplicationList() != null && applyForm.getApplicationList().size() > 0){
+        } else {
+            UpdateTopicForm updateTopicForm = new UpdateTopicForm();
+            updateTopicForm.setId(applyForm.getId());
+            updateTopicForm.setName(applyForm.getName());
+            updateTopicForm.setKeywordNames(applyForm.getKeywordNames());
+            updateTopicForm.setIfDeleted(applyForm.getIfDeleted());
+            updateTopicForm.setKeywordNames(applyForm.getKeywordNames());
+
+            topicVO = topicService.updateTopic(updateTopicForm);
+
+            // 维护申请表
+            if (!CollectionUtils.isEmpty(applyForm.getApplicationList())) {
                 applyForm.getApplicationList().forEach(application -> {
-                    if (topic1.getKeywordList() != null && topic1.getKeywordList().size() > 0)
-                        application.setKeywords(StringUtils.join(topic1.getKeywordList(),"|"));
                     application.setStatus(1);
                     application.setUpdatedTime(new Date());
                     applicationDao.save(application);
                 });
             }
-            return  topic1;
         }
+
+        return topicVO;
     }
 
     @Override
@@ -176,7 +132,7 @@ public class ApplicationServiceImpl implements IApplicationService {
             applyVO.setIfDeleted(false);
             applyVO.setApplicationList((Arrays.asList(new ApplicationVO(application))));
         }else{
-            List<Application> applicationList = applicationDao.findAllByTopicIdAndStatus(topicId.intValue(), 0);
+            List<Application> applicationList = applicationDao.findAllByTopicIdAndStatus(topicId, 0);
             Topic topic = topicDao.getOne(topicId);
             if (applicationList.size() > 0) {
                 List<ApplicationVO> voList = applicationList.stream().map(ApplicationVO::new).collect(Collectors.toList());
@@ -184,60 +140,74 @@ public class ApplicationServiceImpl implements IApplicationService {
             }
             applyVO.setIfDeleted(topic.getIfDeleted());
         }
+
         return applyVO;
     }
 
-
     @Override
-    public Map<String, Object> getAllApply(Integer current, Integer pageSize, String keyword) {
+    public ResultVO getAllApply(Integer current, Integer pageSize, String keyword) {
         Page<Application> applicationPage = applicationDao.findAllByStatusAndTopicNameContainingOrderByCreatedTimeDesc(0, keyword, PageRequest.of(current - 1, pageSize));
-        return getStringObjectMap(current, pageSize, applicationPage);
+
+        Pagination pagination = new Pagination();
+        pagination.setCurrent(current);
+        pagination.setPageSize(pageSize);
+        pagination.setTotal(applicationPage.getTotalElements());
+
+        return ResultVO.success(applicationPage.getContent(), pagination);
     }
 
     @Override
-    public Map<String, Object> getProcessedApply(Integer current, Integer pageSize, String keyword) {
+    public ResultVO getProcessedApply(Integer current, Integer pageSize, String keyword) {
         Page<Application> applicationPage = applicationDao.findAllByStatusIsNotAndTopicNameContainingOrderByUpdatedTimeDesc(0, keyword, PageRequest.of(current - 1, pageSize));
-        return getStringObjectMap(current, pageSize, applicationPage);
+
+        Pagination pagination = new Pagination();
+        pagination.setCurrent(current);
+        pagination.setPageSize(pageSize);
+        pagination.setTotal(applicationPage.getTotalElements());
+
+        return ResultVO.success(applicationPage.getContent(), pagination);
     }
 
     @Override
-    public ApplicationVO refuseApply(Integer id, String feedback) {
-        Application application = applicationDao.findById((long) id).get();
+    public ApplicationVO refuseApply(Long id, String feedback) {
+        // check if application exist
+        Optional<Application> applicationOpt = applicationDao.findById(id);
+        if (!applicationOpt.isPresent()) {
+            throw new DataNotExistException("申请不存在!");
+        }
+        Application application = applicationOpt.get();
+
+        //
         application.setFeedback(feedback);
         application.setUpdatedTime(new Date());
         application.setStatus(2);
-        Application save = applicationDao.save(application);
-        return new ApplicationVO(save);
+        applicationDao.save(application);
+
+        return new ApplicationVO(application);
     }
 
     @Override
-    public ApplicationVO applyDelTopic(Integer id) {
-        Topic topic = topicDao.findById((long)id).get();
+    public ApplicationVO applyDelTopic(Long id) {
+        // check if topic exist
+        Optional<Topic> topicOpt = topicDao.findById(id);
+        if (!topicOpt.isPresent()) {
+            throw new DataNotExistException("专题不存在!");
+        }
+        Topic topic = topicOpt.get();
+
+        //
         Application application = new Application();
         application.setTopicId(id);
         application.setTopicName(topic.getName());
         if (topic.getIfDeleted()) {
             application.setOperation("update");
             application.setUpdateDesc("恢复专题");
-        }
-        else {
+        } else {
             application.setOperation("delete");
             application.setUpdateDesc("删除专题");
         }
-        Application save = applicationDao.save(application);
-        ApplicationVO applicationVO = new ApplicationVO(save);
-        return applicationVO;
-    }
+        applicationDao.save(application);
 
-    private Map<String, Object> getStringObjectMap(Integer current, Integer pageSize, Page<Application> applicationPage) {
-        List<ApplicationVO> applicationVOList = applicationPage.getContent().stream().map(ApplicationVO::new).collect(Collectors.toList());
-        Pagination pagination = new Pagination();
-        pagination.setCurrent(current);
-        pagination.setPageSize(pageSize);
-        pagination.setTotal(applicationPage.getTotalElements());
-        Map<String, Object> stringObjectMap = new HashMap<>();
-        stringObjectMap.put("list", applicationVOList);
-        stringObjectMap.put("pagination", pagination);
-        return stringObjectMap;
+        return new ApplicationVO(application);
     }
 }

@@ -2,7 +2,6 @@ package com.dataint.topic.model.form;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.annotations.ApiOperation;
 import lombok.Data;
 
 import java.util.List;
@@ -12,7 +11,7 @@ import java.util.List;
 public class UpdateTopicForm {
 
     @ApiModelProperty(value = "专题组id")
-    private long id;
+    private Long id;
 
     @ApiModelProperty(value = "专题组名称")
     private String name;

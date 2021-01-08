@@ -1,6 +1,5 @@
 package com.dataint.topic.model.form;
 
-
 import com.dataint.cloud.common.model.form.BaseForm;
 import com.dataint.topic.db.entity.Application;
 import io.swagger.annotations.ApiModelProperty;
@@ -14,7 +13,7 @@ import java.util.List;
 public class ApplyForm extends BaseForm {
 
     @ApiModelProperty(value = "专题组id")
-    private long id;
+    private Long id;
 
     @ApiModelProperty(value = "专题组名称")
     private String name;

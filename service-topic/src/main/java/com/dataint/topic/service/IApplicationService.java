@@ -1,29 +1,27 @@
 package com.dataint.topic.service;
 
-
-import com.dataint.cloud.common.model.param.PageParam;
+import com.dataint.cloud.common.model.ResultVO;
 import com.dataint.topic.model.form.ApplyForm;
 import com.dataint.topic.model.form.TopicForm;
 import com.dataint.topic.model.form.UpdateTopicForm;
 import com.dataint.topic.model.vo.ApplicationVO;
 import com.dataint.topic.model.vo.ApplyVO;
-
-import java.util.Map;
+import com.dataint.topic.model.vo.TopicVO;
 
 public interface IApplicationService {
-    Object applyAddTopic(TopicForm topicForm);
+    ApplicationVO applyAddTopic(TopicForm topicForm);
 
-    Object applyUpdateTopic(UpdateTopicForm updateTopicForm);
+    ApplicationVO applyUpdateTopic(UpdateTopicForm updateTopicForm);
 
-    Object saveApply(ApplyForm applyForm);
+    TopicVO saveApply(ApplyForm applyForm);
 
     ApplyVO getApplyInfo(Long id, Long topicId);
 
-    Map<String, Object> getAllApply(Integer current, Integer pageSize, String keyword);
+    ResultVO getAllApply(Integer current, Integer pageSize, String keyword);
 
-    Map<String, Object> getProcessedApply(Integer current, Integer pageSize, String keyword);
+    ResultVO getProcessedApply(Integer current, Integer pageSize, String keyword);
 
-    ApplicationVO refuseApply(Integer id, String feedback);
+    ApplicationVO refuseApply(Long id, String feedback);
 
-    ApplicationVO applyDelTopic(Integer id);
+    ApplicationVO applyDelTopic(Long id);
 }

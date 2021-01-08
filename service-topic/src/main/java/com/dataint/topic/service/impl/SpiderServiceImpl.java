@@ -1,7 +1,10 @@
 package com.dataint.topic.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.dataint.cloud.common.exception.DataintBaseException;
+import com.dataint.cloud.common.utils.GetPostUtil;
+import com.dataint.topic.db.entity.CrawlSite;
 import com.dataint.topic.model.po.SpiderProject;
 import com.dataint.topic.service.ICrawlSiteService;
 import com.dataint.topic.service.ISpiderService;
@@ -19,63 +22,75 @@ public class SpiderServiceImpl implements ISpiderService {
     @Autowired
     private ICrawlSiteService crawlSiteService;
 
-//    private static JSONObject mongodbJO = JSONObject.parseObject(ServiceConfig.getServiceConfig(Constants.apiBasicService,"spider.mongodb"));
-    private static JSONObject mongodbJO = new JSONObject();
     @Value("${spider.spiderServer.serverUrl}")
-    private static String spiderBaseUrl = "";
+    private String spiderBaseUrl = "";
     @Value("${spider.spiderServer.serverAuth}")
-    private static String spiderAuth;
+    private String spiderAuth;
+    @Value("${spider.spiderServer.mongodb.host}")
+    private String mongoHost;
+    @Value("${spider.spiderServer.mongodb.port}")
+    private String mongoPort;
+    @Value("${spider.spiderServer.mongodb.database}")
+    private String mongoDatabase;
+    @Value("${spider.spiderServer.mongodb.user}")
+    private String mongoUser;
+    @Value("${spider.spiderServer.mongodb.password}")
+    private String mongoPassword;
+    @Value("${spider.spiderServer.mongodb.table_po}")
+    private String mongoTablePo;  // 舆情表
+    @Value("${spider.spiderServer.mongodb.table_cnt}")
+    private String mongoTableCnt;  // 动态表
 
     private static int oneDay = 86400;
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     @Override
-    public void pubDisposeProjects(String poKeyword) {
-//        List<CrawlSite> crawlList = crawlSiteService.getEnableCrawlSiteList();
-//
-//        for (CrawlSite crawlSite : crawlList) {
-//            String projectName = crawlSite.getProjectName() + "_" + UUID.randomUUID().toString().replace("-", "");
-//            // check if script exist
-//            if (crawlSite.getScript() == null)
-//                continue;
-//
-//            String script = genScript(projectName, poKeyword, crawlSite.getScript());
-//
-//            boolean ifSuccess = false;
-//            try {
-//                // 提交爬虫任务
-//                ifSuccess = saveScript(projectName, script);
-//                if (ifSuccess) {
-//                    Thread.sleep(500);
-//
-//                    // 更改爬虫任务组别 "disposable"
-//                    ifSuccess = updateProject(projectName, "group", "disposable");
-//                }
-//                if (ifSuccess) {
-//                    String rateBurst = crawlSite.getRateBurst();
-//                    if (rateBurst != null && !rateBurst.isEmpty()) {
-//                        Thread.sleep(500);
-//
-//                        // 更改爬虫速率
-//                        ifSuccess = updateProject(projectName, "rate", rateBurst);
-//                    }
-//                }
-//                if (ifSuccess) {
-//                    Thread.sleep(500);
-//
-//                    // 更改爬虫任务状态 "RUNNING"
-//                    ifSuccess = updateProject(projectName, "status", "RUNNING");
-//                }
-//                if (ifSuccess) {
-//                    Thread.sleep(500);
-//
-//                    // 执行爬虫任务
-//                    ifSuccess = runProject(projectName);
-//                }
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        }
+    public void pubDisposeProjects(List<String> keywordList) {
+        List<CrawlSite> crawlList = crawlSiteService.getEnableCrawlSiteList();
+
+        for (CrawlSite crawlSite : crawlList) {
+            String projectName = crawlSite.getProjectName() + "_" + UUID.randomUUID().toString().replace("-", "");
+            // check if script exist
+            if (crawlSite.getScript() == null)
+                continue;
+
+            String script = genScript(projectName, keywordList, crawlSite.getScript());
+
+            boolean ifSuccess = false;
+            try {
+                // 提交爬虫任务
+                ifSuccess = saveScript(projectName, script);
+                if (ifSuccess) {
+                    Thread.sleep(500);
+
+                    // 更改爬虫任务组别 "disposable"
+                    ifSuccess = updateProject(projectName, "group", "disposable");
+                }
+                if (ifSuccess) {
+                    String rateBurst = crawlSite.getRateBurst();
+                    if (rateBurst != null && !rateBurst.isEmpty()) {
+                        Thread.sleep(500);
+
+                        // 更改爬虫速率
+                        ifSuccess = updateProject(projectName, "rate", rateBurst);
+                    }
+                }
+                if (ifSuccess) {
+                    Thread.sleep(500);
+
+                    // 更改爬虫任务状态 "RUNNING"
+                    ifSuccess = updateProject(projectName, "status", "RUNNING");
+                }
+                if (ifSuccess) {
+                    Thread.sleep(500);
+
+                    // 执行爬虫任务
+                    ifSuccess = runProject(projectName);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -106,22 +121,32 @@ public class SpiderServiceImpl implements ISpiderService {
      * 生成爬虫脚本
      *
      * @param projectName
-     * @param keyword
+     * @param keywordList
      * @param defScript
      * @return
      */
-    private String genScript(String projectName, String keyword, String defScript) {
+    private String genScript(String projectName, List<String> keywordList, String defScript) {
 
-        return defScript.replace("__PROJECT_NAME__", projectName)
+        String generatedScript = defScript.replace("__PROJECT_NAME__", projectName)
                 .replace("__CREATE_TIME__", dateFormat.format(new Date()))
-                .replace("__SEARCH_KEYWORD__", keyword)
-                .replace("__MONGO_HOST__", mongodbJO.getString("host"))
-                .replace("__MONGO_PORT__", mongodbJO.getString("port"))
-                .replace("__MONGO_DATABASE__", mongodbJO.getString("database"))
-                .replace("__MONGO_USER__", mongodbJO.getString("user"))
-                .replace("__MONGO_PASSWORD__", mongodbJO.getString("password"))
-                .replace("__MONGO_TABLE__", mongodbJO.getString("table"))
-                .replace("__MONGO_TABLE_2__", mongodbJO.getString("table2"));
+                .replace("__MONGO_HOST__", mongoHost)
+                .replace("__MONGO_PORT__", mongoPort)
+                .replace("__MONGO_DATABASE__", mongoDatabase)
+                .replace("__MONGO_USER__", mongoUser)
+                .replace("__MONGO_PASSWORD__", mongoPassword)
+                .replace("__MONGO_TABLE__", mongoTablePo)
+                .replace("__MONGO_TABLE_2__", mongoTableCnt);
+
+        StringBuilder sb = new StringBuilder();
+        for (String keyword : keywordList) {
+            sb.append("'").append(keyword).append("'");
+            sb.append(", ");
+        }
+        if (sb.lastIndexOf(",") == sb.length()-2) {
+            sb.delete(sb.length()-2, sb.length());
+        }
+
+        return generatedScript.replace("__SEARCH_KEYWORD__", sb.toString());
     }
 
     /**
@@ -144,8 +169,8 @@ public class SpiderServiceImpl implements ISpiderService {
 
         boolean ifSuccess = false;
         try {
-//            if ("ok".equals(GetPostUtil.sendPost(url, headerMap, nameValuePairList)))
-//                ifSuccess = true;
+            if ("ok".equals(GetPostUtil.sendPost(url, headerMap, nameValuePairList)))
+                ifSuccess = true;
         } catch (DataintBaseException tbe) {
             tbe.printStackTrace();
         }
@@ -176,8 +201,8 @@ public class SpiderServiceImpl implements ISpiderService {
 
         boolean ifSuccess = false;
         try {
-//            if ("ok".equals(GetPostUtil.sendPost(url, headerMap, nameValuePairList)))
-//                ifSuccess = true;
+            if ("ok".equals(GetPostUtil.sendPost(url, headerMap, nameValuePairList)))
+                ifSuccess = true;
         } catch (DataintBaseException tbe) {
             tbe.printStackTrace();
         }
@@ -204,9 +229,9 @@ public class SpiderServiceImpl implements ISpiderService {
 
         boolean ifSuccess = false;
         try {
-//            String result = GetPostUtil.sendPost(url, headerMap, nameValuePairList);
-//            if (result != null && !result.isEmpty())
-//                ifSuccess = JSONObject.parseObject(result).getBoolean("result");
+            String result = GetPostUtil.sendPost(url, headerMap, nameValuePairList);
+            if (result != null && !result.isEmpty())
+                ifSuccess = JSONObject.parseObject(result).getBoolean("result");
         } catch (DataintBaseException tbe) {
             tbe.printStackTrace();
         }
@@ -223,12 +248,12 @@ public class SpiderServiceImpl implements ISpiderService {
 
         List<SpiderProject> projectList = new ArrayList<>();
         try {
-//            JSONArray jsonArray = GetPostUtil.sendGetWithHeader(url, headerMap).getJSONArray("result");
-//            for (Object object : jsonArray) {
-//                SpiderProject spiderProject = JSONObject.parseObject(((JSONObject) object).toJSONString(), SpiderProject.class);
-//
-//                projectList.add(spiderProject);
-//            }
+            JSONArray jsonArray = GetPostUtil.sendGetWithHeader(url, headerMap).getJSONArray("result");
+            for (Object object : jsonArray) {
+                SpiderProject spiderProject = JSONObject.parseObject(((JSONObject) object).toJSONString(), SpiderProject.class);
+
+                projectList.add(spiderProject);
+            }
         } catch (DataintBaseException tbe) {
             tbe.printStackTrace();
         }
