@@ -15,7 +15,7 @@ import javax.persistence.Table;
  */
 
 @Entity
-@Table ( name ="topic_keyword_copy1" )
+@Table ( name ="topic_keyword" )
 @Accessors(chain = true)
 @Data
 @NoArgsConstructor
