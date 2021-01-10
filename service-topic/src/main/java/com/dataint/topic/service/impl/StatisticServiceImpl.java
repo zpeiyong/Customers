@@ -33,13 +33,7 @@ public class StatisticServiceImpl implements IStatisticService {
     private IMediaTypeDao mediaTypeDao;
 
     @Autowired
-    private IEventDao eventDao;
-
-    @Autowired
     private IStatisticDao statisticDao;
-
-//    @Autowired
-//    private IPoKeywordDao poKeywordDao;
 
     private static String HOURLY = "hourly";
     private static String DAILY = "daily";
