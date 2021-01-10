@@ -1,17 +1,13 @@
 package com.dataint.monitor.service.impl;
 
-
 import com.dataint.monitor.adapt.IDiseaseCountryCaseAdapt;
 import com.dataint.monitor.model.DiseaseCountryCase;
-
 import com.dataint.monitor.service.IDiseaseCountryCaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
-
 @Service
-public class DiseaseCountryCaseSericeImpl implements IDiseaseCountryCaseService {
+public class DiseaseCountryCaseServiceImpl implements IDiseaseCountryCaseService {
     @Autowired
     IDiseaseCountryCaseAdapt caseProvider;
 

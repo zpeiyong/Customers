@@ -13,7 +13,6 @@ import com.dataint.monitor.model.ReportArticle;
 import com.dataint.monitor.model.ReportBaseModel;
 import com.dataint.monitor.model.ReportVO;
 import com.dataint.monitor.model.param.ReportQueryParam;
-import com.dataint.monitor.provider.ArticleProvider;
 import com.dataint.monitor.service.IReportService;
 import freemarker.cache.FileTemplateLoader;
 import freemarker.cache.TemplateLoader;
@@ -87,8 +86,8 @@ public class ReportServiceImpl implements IReportService {
         reportTypeMap.put("monthly", "月报");
     }
 
-    @Autowired
-    private ArticleProvider articleProvider;
+//    @Autowired
+//    private ArticleProvider articleProvider;
 
     @Autowired
     private IReportDao reportDao;
@@ -122,31 +121,31 @@ public class ReportServiceImpl implements IReportService {
             // keyword条件存在时, 通过数据库匹配并推算出对应简报标题
             else {
                 // 返回结果为发布日期列表(List<String> gmtReleaseList)
-                ResultVO<List<String>> retVO = articleProvider.searchByKeyword(reportQueryParam.getKeyword());
-                if (!ObjectUtils.isEmpty(retVO)) {
-                    List<String> titleList = retVO.getData().stream().map(dateStr -> {
-                        String date = dateStr.replace("-", ".");
-                        // 日报标题为: YYYY.MM.DD-日报
-                        if ("daily".equals(reportQueryParam.getReportType())) {
-                            return date + "-" + reportTypeMap.get(reportQueryParam.getReportType());
-                        }
-                        // TODO: 周报标题为: YYYY第X周-周报
-                        else if ("weekly".equals(reportQueryParam.getReportType())) {
-                            return "weekly";
-                        }
-                        // TODO: 月报标题为: YYYY.MM-月报
-                        else if ("monthly".equals(reportQueryParam.getReportType())) {
-                            return "monthly";
-                        }
-                        // TODO:
-                        else {
-                            return "yearly";
-                        }
-                    }).collect(Collectors.toList());
-
-                    pageResult = reportDao.findAllByReportTypeAndTitleIn(reportQueryParam.getReportType(), titleList,
-                            pageParam.toPageRequest("gmtStart"));
-                }
+//                ResultVO<List<String>> retVO = articleProvider.searchByKeyword(reportQueryParam.getKeyword());
+//                if (!ObjectUtils.isEmpty(retVO)) {
+//                    List<String> titleList = retVO.getData().stream().map(dateStr -> {
+//                        String date = dateStr.replace("-", ".");
+//                        // 日报标题为: YYYY.MM.DD-日报
+//                        if ("daily".equals(reportQueryParam.getReportType())) {
+//                            return date + "-" + reportTypeMap.get(reportQueryParam.getReportType());
+//                        }
+//                        // TODO: 周报标题为: YYYY第X周-周报
+//                        else if ("weekly".equals(reportQueryParam.getReportType())) {
+//                            return "weekly";
+//                        }
+//                        // TODO: 月报标题为: YYYY.MM-月报
+//                        else if ("monthly".equals(reportQueryParam.getReportType())) {
+//                            return "monthly";
+//                        }
+//                        // TODO:
+//                        else {
+//                            return "yearly";
+//                        }
+//                    }).collect(Collectors.toList());
+//
+//                    pageResult = reportDao.findAllByReportTypeAndTitleIn(reportQueryParam.getReportType(), titleList,
+//                            pageParam.toPageRequest("gmtStart"));
+//                }
             }
         }
 
@@ -334,27 +333,29 @@ public class ReportServiceImpl implements IReportService {
      * @param endTime
      */
     private void getData(ReportBaseModel reportBaseModel, String startTime, String endTime, String type) {
-        ResultVO<JSONObject> rstVO = articleProvider.queryDailyReport(startTime, endTime, type);
-        JSONObject reportJO = rstVO.getData();
 
-        if (!ObjectUtils.isEmpty(reportJO)) {
-            if (reportJO.containsKey("01")) {  // concernList - 重要
-                List<ReportArticle> concernList = JSONArray.parseArray(reportJO.getJSONArray("01").toJSONString(), ReportArticle.class);
-                // transform escape characters
-                for (ReportArticle reportArticle : concernList) {
-                    transReportArticle(reportArticle);
-                }
-                reportBaseModel.setConcernList(concernList);
-            }
-            if (reportJO.containsKey("02")) {  // moreInfoList - 一般
-                List<ReportArticle> concernList = JSONArray.parseArray(reportJO.getJSONArray("02").toJSONString(), ReportArticle.class);
-                // transform escape characters
-                for (ReportArticle reportArticle : concernList) {
-                    transReportArticle(reportArticle);
-                }
-                reportBaseModel.setMoreInfoList(concernList);
-            }
-        }
+        return;
+//        ResultVO<JSONObject> rstVO = articleProvider.queryDailyReport(startTime, endTime, type);
+//        JSONObject reportJO = rstVO.getData();
+//
+//        if (!ObjectUtils.isEmpty(reportJO)) {
+//            if (reportJO.containsKey("01")) {  // concernList - 重要
+//                List<ReportArticle> concernList = JSONArray.parseArray(reportJO.getJSONArray("01").toJSONString(), ReportArticle.class);
+//                // transform escape characters
+//                for (ReportArticle reportArticle : concernList) {
+//                    transReportArticle(reportArticle);
+//                }
+//                reportBaseModel.setConcernList(concernList);
+//            }
+//            if (reportJO.containsKey("02")) {  // moreInfoList - 一般
+//                List<ReportArticle> concernList = JSONArray.parseArray(reportJO.getJSONArray("02").toJSONString(), ReportArticle.class);
+//                // transform escape characters
+//                for (ReportArticle reportArticle : concernList) {
+//                    transReportArticle(reportArticle);
+//                }
+//                reportBaseModel.setMoreInfoList(concernList);
+//            }
+//        }
     }
 
 

@@ -1,7 +1,6 @@
 package com.dataint.monitor.service.impl;
 
 import com.dataint.cloud.common.model.ResultVO;
-import com.dataint.monitor.provider.DictProvider;
 import com.dataint.monitor.service.IDictService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,31 +8,36 @@ import org.springframework.stereotype.Service;
 @Service
 public class DictServiceImpl implements IDictService {
 
-    @Autowired
-    private DictProvider dictProvider;
+//    @Autowired
+//    private DictProvider dictProvider;
 
     @Override
     public ResultVO queryOutbreakLevels() {
-        return dictProvider.queryOutbreakLevels();
+        return null;
+//        return dictProvider.queryOutbreakLevels();
     }
 
     @Override
     public ResultVO queryRegions() {
-        return dictProvider.queryRegions();
+        return null;
+//        return dictProvider.queryRegions();
     }
 
     @Override
     public ResultVO queryCountries() {
-        return dictProvider.queryCountries();
+        return null;
+//        return dictProvider.queryCountries();
     }
 
     @Override
     public ResultVO queryDiseases() {
-        return dictProvider.queryDiseases();
+        return null;
+//        return dictProvider.queryDiseases();
     }
 
     @Override
     public ResultVO queryByNameCnFirst(String nameCnFirst) {
-        return dictProvider.queryByNameCnFirst(nameCnFirst);
+        return null;
+//        return dictProvider.queryByNameCnFirst(nameCnFirst);
     }
 }

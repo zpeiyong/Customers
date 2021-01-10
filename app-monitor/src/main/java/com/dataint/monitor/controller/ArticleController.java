@@ -1,8 +1,6 @@
 package com.dataint.monitor.controller;
 
-import com.dataint.cloud.common.model.ResultVO;
 import com.dataint.cloud.common.model.param.PageParam;
-import com.dataint.cloud.common.utils.JWTUtil;
 import com.dataint.monitor.adapt.IArticleAdapt;
 import com.dataint.monitor.model.form.ArticleUpdateForm;
 import com.dataint.monitor.model.form.StoreDataForm;
@@ -23,18 +21,6 @@ public class ArticleController {
 
     @Autowired
     private IArticleAdapt articleAdapt;
-
-    /**
-     * Web疫情讯息模块
-     */
-    @ApiOperation(value = "获取舆情列表", notes = "获取舆情信息列表")
-    @GetMapping("/normal/getArticleList")
-    public Object getArticleList(@ModelAttribute ArticleListQueryParam articleListQueryParam, @CookieValue("access_token") String accessToken ) {
-        Integer userId = JWTUtil.getUserId(accessToken);
-        articleListQueryParam.setUserId(userId);
-        log.debug("get articleList by Condition：{}", articleListQueryParam);
-        return articleAdapt.getArticleList(articleListQueryParam);
-    }
 
     @ApiOperation(value = "保存舆情", notes = "保存一条舆情")
     @ApiImplicitParam(name = "storeDataForm", value = "保存舆情form表单", required = true, dataType = "StoreDataForm")

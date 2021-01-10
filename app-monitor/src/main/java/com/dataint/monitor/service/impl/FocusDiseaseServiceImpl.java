@@ -6,7 +6,6 @@ import com.dataint.monitor.service.IFocusDiseaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
 @Service
 public class FocusDiseaseServiceImpl implements IFocusDiseaseService {
     @Autowired
