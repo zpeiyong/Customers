@@ -194,11 +194,24 @@ public class DiseaseServiceImpl implements IDiseaseService {
     @Override
     public List<DiseaseCountryCaseVO> getCasesByCountryId(Long countryId, String dateStr, PageParam pageParam) {
         // 用于过滤传染病是否展示在前端
-        String dailyStartStr = DateUtil.getYesterdayStart();
+        String dateTimeStr = DateUtil.getCurrentTime();
+        if (!StringUtils.isEmpty(dateStr)) {
+            dateTimeStr = dateStr + " 00:00:00";
+        }
+        String dailyStartStr = DateUtil.getCurrentTime();;
         String weeklyStartStr = DateUtil.getLastWeekStart();
         String quarterlyStartStr = DateUtil.getStartTimeOfQuarter();
+        try {
+            dailyStartStr = DateUtil.getYesterdayStart(dateTimeStr);
+            weeklyStartStr = DateUtil.getWeekStart(dateTimeStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
 
         List<Map<String,Object>> latestCaseList = diseaseCountryCaseDao.getLatestDiseaseCasesByCountry(countryId);
+        String finalDailyStartStr = dailyStartStr;
+        String finalWeeklyStartStr = weeklyStartStr;
         List<DiseaseCountryCaseVO> latestCaseVOList = latestCaseList.stream()
                 .map((e) -> JSON.parseObject(JSON.toJSONString(e), DiseaseCountryCaseVO.class))
                 // 根据不同传染病的不同统计周期, 过滤前一周期内没有数据更新的数据
@@ -207,9 +220,9 @@ public class DiseaseServiceImpl implements IDiseaseService {
                         String showType = e.getShowType();
                         String startTimeStr;
                         if ("daily".equals(showType)) {
-                            startTimeStr = dailyStartStr;
+                            startTimeStr = finalDailyStartStr;
                         } else if ("weekly".equals(showType)) {
-                            startTimeStr = weeklyStartStr;
+                            startTimeStr = finalWeeklyStartStr;
                         } else if ("quarterly".equals(showType)) {
                             startTimeStr = quarterlyStartStr;
                         } else {

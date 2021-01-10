@@ -46,6 +46,8 @@ public class ApplicationServiceImpl implements IApplicationService {
         application.setTopicName(topicForm.getName());
         if (topicForm.getKeywordNames() != null)
             application.setKeywords(StringUtils.join(topicForm.getKeywordNames(),"|"));
+        if (topicForm.getUsername() != null)
+            application.setCreatedBy(topicForm.getUsername());
         application.setOperation("add");
         applicationDao.save(application);
 

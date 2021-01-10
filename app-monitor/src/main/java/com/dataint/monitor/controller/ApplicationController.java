@@ -1,6 +1,7 @@
 package com.dataint.monitor.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.dataint.cloud.common.utils.JWTUtil;
 import com.dataint.monitor.adapt.IApplicationAdapt;
 import com.dataint.monitor.model.form.ApplyConditionForm;
 import com.dataint.monitor.model.form.ApplyForm;
@@ -13,6 +14,8 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 
 @RestController
@@ -27,8 +30,13 @@ public class ApplicationController {
     @ApiOperation(value = "申请新增专题", notes = "申请新增一个专题")
     @ApiImplicitParam(name = "topicForm", value = "新增专题form表单", required = true, dataType = "TopicForm")
     @PostMapping("/applyAddTopic")
-    public Object applyAddTopic(@RequestBody TopicForm topicForm) {
+    public Object applyAddTopic(@RequestBody TopicForm topicForm, @CookieValue("access_token") String accessToken ) {
         log.debug("apply add a new topic: {}", topicForm);
+        Map<String, Object> map = JWTUtil.getUserIdAndName(accessToken);
+        if (map.get("userId")!= null)
+            topicForm.setUserId((Integer) map.get("userId"));
+        if (map.get("username") != null)
+            topicForm.setUsername((String) map.get("username"));
         return applicationAdapt.applyAddTopic(topicForm);
     }
 
