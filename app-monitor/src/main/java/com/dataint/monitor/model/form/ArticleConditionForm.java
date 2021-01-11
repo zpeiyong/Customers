@@ -11,13 +11,13 @@ import java.util.ArrayList;
 @Setter
 public class ArticleConditionForm extends PageParam implements Serializable {
 
-    private Integer keywordId;
+    private Long keywordId;
 
-    private ArrayList<Integer> siteIdList;
+    private ArrayList<Long> siteIdList;
 
-    private ArrayList<Integer> mediaTypeIdList;
+    private ArrayList<Long> mediaTypeIdList;
 
-    private Integer topicId;
+    private Long topicId;
 
     private String sortOrder = "desc";  // "desc", "asc"
 

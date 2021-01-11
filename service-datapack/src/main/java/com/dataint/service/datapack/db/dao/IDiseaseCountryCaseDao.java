@@ -1,8 +1,10 @@
 package com.dataint.service.datapack.db.dao;
 
+import com.dataint.service.datapack.db.IDayDate;
 import com.dataint.service.datapack.db.IMapCountry;
 import com.dataint.service.datapack.db.entity.DiseaseCountryCase;
 import com.dataint.service.datapack.model.vo.DiseaseCountryCaseVO;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -48,9 +50,58 @@ public interface IDiseaseCountryCaseDao extends JpaRepository<DiseaseCountryCase
             "order by t2.confirm_total desc", nativeQuery = true)
     List<Map<String,Object>> getLatestDiseaseCasesByCountry(Long countryId);
 
+    @Query(value = "SELECT * FROM disease_country_case d " +
+            "RIGHT JOIN (SELECT country_name_cn  FROM ( " +
+            "SELECT * FROM disease_country_case WHERE " +
+            "statistic_date > DATE_SUB(?3,INTERVAL ?4 DAY) AND statistic_date <= ?3 " +
+            ")as dis GROUP BY country_name_cn,disease_id " +
+            "HAVING disease_id = ?1 " +
+            "ORDER BY MAX(confirm_add) DESC LIMIT ?2) d1  " +
+            "on d.country_name_cn = d1.country_name_cn " +
+            "ORDER BY d.country_name_cn DESC;", nativeQuery = true)
+    List<DiseaseCountryCase> getDailyConFirmedAddByDiseaseId(Long diseaseId,int limit,String dateStr, int i);
 
     List<DiseaseCountryCase>  findByDiseaseIdAndCountryNameCnAndPeriodStart(Long diseaseId,String countryNameCn,Date periodStart);
 
-List<DiseaseCountryCase>  findByDiseaseIdAndShowTypeAndPeriodStart(Long diseaseId,String showType,Date periodStart);
+    List<DiseaseCountryCase>  findByDiseaseIdAndShowTypeAndPeriodStart(Long diseaseId,String showType,Date periodStart);
 
+    @Query(value = "SELECT * FROM disease_country_case d " +
+            "RIGHT JOIN (SELECT country_name_cn  FROM ( " +
+            "SELECT * FROM disease_country_case WHERE " +
+            "statistic_date > DATE_SUB(?3,INTERVAL ?4 DAY) AND statistic_date <= ?3 " +
+            ")as dis GROUP BY country_name_cn,disease_id " +
+            "HAVING disease_id = ?1 " +
+            "ORDER BY MAX(cure_add) DESC LIMIT ?2) d1  " +
+            "on d.country_name_cn = d1.country_name_cn " +
+            "ORDER BY d.country_name_cn DESC;", nativeQuery = true)
+    List<DiseaseCountryCase> getDailyCuredAddByDiseaseId(Long diseaseId, int limit,String dateStr, int i);
+
+    @Query(value = "SELECT * FROM disease_country_case d " +
+            "RIGHT JOIN (SELECT country_name_cn  FROM ( " +
+            "SELECT * FROM disease_country_case WHERE " +
+            "statistic_date > DATE_SUB(?3,INTERVAL ?4 DAY) AND statistic_date <= ?3 " +
+            ")as dis GROUP BY country_name_cn,disease_id " +
+            "HAVING disease_id = ?1 " +
+            "ORDER BY MAX(death_add) DESC LIMIT ?2) d1  " +
+            "on d.country_name_cn = d1.country_name_cn " +
+            "ORDER BY d.country_name_cn DESC;", nativeQuery = true)
+    List<DiseaseCountryCase> getDailyDeathAddByDiseaseId(Long diseaseId, int limit,String dateStr, int i);
+
+    @Query(value = "select new map(dcc.countryNameCn, dcc.deathTotal * 10000  / dcc.confirmTotal) " +
+            "from DiseaseCountryCase dcc " +
+            "where dcc.diseaseId = ?1 and dcc.statisticDate = ?2 " +
+            "order by dcc.deathTotal/dcc.confirmTotal desc")
+    List<Map<String, Object>> getDeathCntByDiseaseIdAndStatisticDate(Long diseaseId, Date yesStartDate, PageRequest articleTotal);
+
+    @Query(value = "select new map(dcc.countryNameCn, dcc.confirmAdd) " +
+            "from DiseaseCountryCase dcc " +
+            "where dcc.diseaseId = ?1 and dcc.statisticDate = ?2 " +
+            "order by dcc.confirmAdd desc")
+    List<Map<String, Object>> getConfirmedCntByDiseaseIdAndStatisticDate(Long diseaseId, Date yesStartDate, PageRequest of);
+
+    @Query(value = "select new map(dcc.countryNameCn, dcc.cureTotal * 10000 / dcc.confirmTotal) " +
+            "from DiseaseCountryCase dcc " +
+            "where dcc.diseaseId = ?1 and dcc.statisticDate = ?2 " +
+            "order by dcc.cureTotal/dcc.confirmTotal desc")
+    List<Map<String, Object>> getCuredCntByDiseaseIdAndStatisticDate(Long diseaseId, Date yesStartDate, PageRequest of);
 }

@@ -8,4 +8,6 @@ public interface IDayDate {
     String getDay();
 
     Integer getCnt();
+
+    String countryNameCn();
 }

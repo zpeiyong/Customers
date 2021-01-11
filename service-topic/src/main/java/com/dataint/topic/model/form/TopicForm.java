@@ -15,4 +15,11 @@ public class TopicForm  {
     @ApiModelProperty(value = "专题组拥有的关键词列表")
     private List<String> keywordNames;
 
+
+    @ApiModelProperty(value = "用户")
+    private Integer userId;
+
+    @ApiModelProperty(value = "用户名称")
+    private String username;
+
 }

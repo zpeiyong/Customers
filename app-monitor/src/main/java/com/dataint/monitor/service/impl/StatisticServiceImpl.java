@@ -8,8 +8,6 @@ import com.dataint.cloud.common.utils.DateUtil;
 import com.dataint.monitor.dao.*;
 import com.dataint.monitor.dao.entity.*;
 import com.dataint.monitor.model.*;
-import com.dataint.monitor.provider.ArticleProvider;
-import com.dataint.monitor.provider.StatisticProvider;
 import com.dataint.monitor.service.IStatisticService;
 import com.dataint.monitor.utils.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,8 +38,8 @@ public class StatisticServiceImpl implements IStatisticService {
     @Autowired
     private IStatisticBasicDao statisticBasicDao;
 
-    @Autowired
-    private StatisticProvider statisticProvider;
+//    @Autowired
+//    private StatisticProvider statisticProvider;
 
     @Autowired
     private IStatisticMapDao statisticMapDao;
@@ -49,8 +47,8 @@ public class StatisticServiceImpl implements IStatisticService {
     @Autowired
     private IFocusCountryDao focusCountryDao;
 
-    @Autowired
-    private ArticleProvider articleProvider;
+//    @Autowired
+//    private ArticleProvider articleProvider;
 
     @Override
     public BasicInfoVO getBasicInfo() {
@@ -71,12 +69,12 @@ public class StatisticServiceImpl implements IStatisticService {
             String todayStart = DateUtil.getTodayStart();
             String todayEnd = DateUtil.getTodayEnd();
 
-            JSONObject retJO = statisticProvider.getPeriodBasic(todayStart, todayEnd).getData();
-            if (retJO != null) {
-                ifExist.setDiseaseDailyCnt(retJO.getInteger("articleCnt"));
-                ifExist.setTypeDailyCnt(retJO.getInteger("diseaseCnt"));
-                ifExist.setCountryDailyCnt(retJO.getInteger("countryCnt"));
-            }
+//            JSONObject retJO = statisticProvider.getPeriodBasic(todayStart, todayEnd).getData();
+////            if (retJO != null) {
+////                ifExist.setDiseaseDailyCnt(retJO.getInteger("articleCnt"));
+////                ifExist.setTypeDailyCnt(retJO.getInteger("diseaseCnt"));
+////                ifExist.setCountryDailyCnt(retJO.getInteger("countryCnt"));
+//            }
         }
 
         return new BasicInfoVO(ifExist);
@@ -181,10 +179,10 @@ public class StatisticServiceImpl implements IStatisticService {
         MapDetailVO mapDetailVO = new MapDetailVO();
         mapDetailVO.setDiseaseName(diseaseName);
 
-        ResultVO<JSONArray> resultVO = articleProvider.queryMapBasicList(countryId, diseaseName, pageParam.getCurrent(), pageParam.getPageSize());
-        if (!ObjectUtils.isEmpty(resultVO)) {
-            mapDetailVO.setArticleList(resultVO.getData());
-        }
+//        ResultVO<JSONArray> resultVO = articleProvider.queryMapBasicList(countryId, diseaseName, pageParam.getCurrent(), pageParam.getPageSize());
+//        if (!ObjectUtils.isEmpty(resultVO)) {
+//            mapDetailVO.setArticleList(resultVO.getData());
+//        }
 
         // TODO: 病例数 死亡数
         mapDetailVO.setCaseCnt(0);
@@ -208,22 +206,22 @@ public class StatisticServiceImpl implements IStatisticService {
          * Basic Counts
          */
         StatisticBasic basic = new StatisticBasic();
-        // 前一天基础数据统计(舆情数, 涉及疫情数, 涉及国家(地区)数)
-        JSONObject dailyBasicJO = statisticProvider.getPeriodBasic(dailyStartTime, dailyEndTime).getData();
-        if (dailyBasicJO != null) {
-            basic.setDiseaseDailyCnt(dailyBasicJO.getInteger("articleCnt"));
-            basic.setTypeDailyCnt(dailyBasicJO.getInteger("diseaseCnt"));
-            basic.setCountryDailyCnt(dailyBasicJO.getInteger("countryCnt"));
-        }
-        // 今年(昨天的一年前)基础数据统计(涉及疫情数, 涉及国家(地区)数)
-        JSONObject yearlyBasicJO = statisticProvider.getPeriodBasic(year1AgoStartTime, dailyEndTime).getData();
-        if (dailyBasicJO != null) {
-            basic.setTypeYearlyCnt(yearlyBasicJO.getInteger("diseaseCnt"));
-            basic.setCountryYearlyCnt(yearlyBasicJO.getInteger("countryCnt"));
-        }
-        // 舆情总数统计
-        Integer totalCnt = statisticProvider.getArticleTotal().getData();
-        basic.setDiseaseTotalCnt(totalCnt);
+//        // 前一天基础数据统计(舆情数, 涉及疫情数, 涉及国家(地区)数)
+//        JSONObject dailyBasicJO = statisticProvider.getPeriodBasic(dailyStartTime, dailyEndTime).getData();
+//        if (dailyBasicJO != null) {
+//            basic.setDiseaseDailyCnt(dailyBasicJO.getInteger("articleCnt"));
+//            basic.setTypeDailyCnt(dailyBasicJO.getInteger("diseaseCnt"));
+//            basic.setCountryDailyCnt(dailyBasicJO.getInteger("countryCnt"));
+//        }
+//        // 今年(昨天的一年前)基础数据统计(涉及疫情数, 涉及国家(地区)数)
+//        JSONObject yearlyBasicJO = statisticProvider.getPeriodBasic(year1AgoStartTime, dailyEndTime).getData();
+//        if (dailyBasicJO != null) {
+//            basic.setTypeYearlyCnt(yearlyBasicJO.getInteger("diseaseCnt"));
+//            basic.setCountryYearlyCnt(yearlyBasicJO.getInteger("countryCnt"));
+//        }
+//        // 舆情总数统计
+//        Integer totalCnt = statisticProvider.getArticleTotal().getData();
+//        basic.setDiseaseTotalCnt(totalCnt);
 
         // TODO: 今年(昨天的一年前)病例个数, 死亡人数
         basic.setCaseYearlyCnt(274256);
@@ -246,31 +244,31 @@ public class StatisticServiceImpl implements IStatisticService {
         //
         List<FocusCountry> focusCountryList = focusCountryDao.findAll();
         for (FocusCountry focusCountry : focusCountryList) {
-            JSONObject mapInfoJO = statisticProvider.getMapInfoByCountry(year1AgoStartTime, dailyStartTime, focusCountry.getCountryId()).getData();
-            if (mapInfoJO != null) {
-                MapBasic mapBasic = new MapBasic();
-                mapBasic.setCountryId(focusCountry.getCountryId());
-                mapBasic.setCountryCode(mapInfoJO.getString("countryCode"));
-                mapBasic.setCountryName(mapInfoJO.getString("countryName"));
-                mapBasic.setDiseaseYearlyCnt(mapInfoJO.getInteger("articleYearlyCnt"));
-                // statisticMapDetails
-                if (!ObjectUtils.isEmpty(mapInfoJO.getJSONArray("diseaseCntJA"))) {
-                    List<MapDisease> detailList = mapInfoJO.getJSONArray("diseaseCntJA").stream().map(object-> {
-                        Map detailMap = (Map)object;
-                        MapDisease mapDisease = new MapDisease();
-                        mapDisease.setDiseaseName((String) detailMap.get("diseaseName"));
-                        mapDisease.setDiseaseCnt((Integer) detailMap.get("diseaseCnt"));
-                        // TODO: 国家对应疫情病例数死亡数统计
-
-                        return mapDisease;
-                    }).collect(Collectors.toList());
-                    mapBasic.setDetailList(detailList);
-                }
-                mapBasic.setCreatedTime(new Date());
-                mapBasic.setLatest("Y");
-
-                mapBasicList.add(mapBasic);
-            }
+//            JSONObject mapInfoJO = statisticProvider.getMapInfoByCountry(year1AgoStartTime, dailyStartTime, focusCountry.getCountryId()).getData();
+//            if (mapInfoJO != null) {
+//                MapBasic mapBasic = new MapBasic();
+//                mapBasic.setCountryId(focusCountry.getCountryId());
+//                mapBasic.setCountryCode(mapInfoJO.getString("countryCode"));
+//                mapBasic.setCountryName(mapInfoJO.getString("countryName"));
+//                mapBasic.setDiseaseYearlyCnt(mapInfoJO.getInteger("articleYearlyCnt"));
+//                // statisticMapDetails
+//                if (!ObjectUtils.isEmpty(mapInfoJO.getJSONArray("diseaseCntJA"))) {
+//                    List<MapDisease> detailList = mapInfoJO.getJSONArray("diseaseCntJA").stream().map(object-> {
+//                        Map detailMap = (Map)object;
+//                        MapDisease mapDisease = new MapDisease();
+//                        mapDisease.setDiseaseName((String) detailMap.get("diseaseName"));
+//                        mapDisease.setDiseaseCnt((Integer) detailMap.get("diseaseCnt"));
+//                        // TODO: 国家对应疫情病例数死亡数统计
+//
+//                        return mapDisease;
+//                    }).collect(Collectors.toList());
+//                    mapBasic.setDetailList(detailList);
+//                }
+//                mapBasic.setCreatedTime(new Date());
+//                mapBasic.setLatest("Y");
+//
+//                mapBasicList.add(mapBasic);
+//            }
         }
         // 持久化
         statisticMapDao.updateLatest();

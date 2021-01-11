@@ -5,7 +5,7 @@ import com.dataint.cloud.common.model.Constants;
 import com.dataint.cloud.common.utils.DateUtil;
 import com.dataint.topic.db.*;
 import com.dataint.topic.db.dao.*;
-import com.dataint.topic.db.entity.PoKeyword;
+//import com.dataint.topic.db.entity.PoKeyword;
 import com.dataint.topic.db.entity.Statistic;
 import com.dataint.topic.model.po.SendModelStatistic;
 import com.dataint.topic.model.vo.StatisticRangeVO;
@@ -33,13 +33,7 @@ public class StatisticServiceImpl implements IStatisticService {
     private IMediaTypeDao mediaTypeDao;
 
     @Autowired
-    private IEventDao eventDao;
-
-    @Autowired
     private IStatisticDao statisticDao;
-
-    @Autowired
-    private IPoKeywordDao poKeywordDao;
 
     private static String HOURLY = "hourly";
     private static String DAILY = "daily";
@@ -410,10 +404,10 @@ public class StatisticServiceImpl implements IStatisticService {
     // StatisticTasks.sendData()
     @Override
     public void sendHotPODetails(String startTime, String endTime) {
-        List<PoKeyword> poKeywordList = poKeywordDao.findAllByIfSend("1");
-        // 构建将要发送的数据JO
-        JSONObject sendDataJO = new JSONObject();
-        sendDataJO.put("type", "CUSTOMS_YQ_ARTICLEINFO");
+//        List<PoKeyword> poKeywordList = poKeywordDao.findAllByIfSend("1");
+//        // 构建将要发送的数据JO
+//        JSONObject sendDataJO = new JSONObject();
+//        sendDataJO.put("type", "CUSTOMS_YQ_ARTICLEINFO");
 
 //        for (PoKeyword poKeyword : poKeywordList) {
 //            JSONObject jsonObject = new JSONObject();

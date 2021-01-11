@@ -32,7 +32,7 @@ public class TopicAdaptImpl implements ITopicAdapt {
     @Override
     public Object recoveryTopic(Long id) {
         String url ="http://" +  baseUrl + "/topic/recoveryTopic/" + id.toString();
-        return GetPostUtil.sendDelete(url);
+        return GetPostUtil.sendPut(url, "", 3000);
     }
 
     @Override

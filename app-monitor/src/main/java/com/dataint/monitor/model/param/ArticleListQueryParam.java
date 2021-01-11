@@ -8,5 +8,19 @@ import lombok.Setter;
 @Setter
 public class ArticleListQueryParam extends PageParam {
 
-    private  String articleType;
+    private String keyword;  // 关键词
+
+    private Long diseaseId;  // 疫情类型id
+
+    private Long mediaTypeId;  // 来源媒体类型id
+
+    private String crawlTimeStart;  // 爬取时间start
+
+    private String crawlTimeEnd;  // 爬取时间end
+
+    private String articleType;  // 舆情文章内容类型
+
+    private Long regionId;  // 大洲id(直航地区id=0)
+
+    private Long userId; //用户id
 }

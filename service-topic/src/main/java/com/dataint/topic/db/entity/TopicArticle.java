@@ -34,9 +34,6 @@ public class TopicArticle extends BasePO {
     @Column(name = "summary", length = 2000)
     private String  summary;  // 摘要
 
-    @Column(name = "topic_id", nullable = false)
-    private Long topicId;  // 专题id
-
     @Column(name = "keyword_id", nullable = false)
     private Long keywordId;  // 关键词id
 

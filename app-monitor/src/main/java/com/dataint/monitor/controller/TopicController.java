@@ -44,7 +44,7 @@ public class TopicController {
 
     @ApiOperation(value = "恢复专题", notes = "恢复专题")
     @ApiImplicitParam(name = "id", value = "专题组id", required = true, dataType = "long")
-    @DeleteMapping("/recoveryTopic/{id}")
+    @PutMapping("/recoveryTopic/{id}")
     public Object recoveryTopic(@PathVariable Long id) {
         log.debug("recovery a topic by id:{}", id);
         return topicAdapt.recoveryTopic(id);

@@ -11,7 +11,6 @@ import com.dataint.monitor.dao.entity.ArticleAudit;
 import com.dataint.monitor.dao.entity.ArticleUser;
 import com.dataint.monitor.model.form.ArticleUpdateForm;
 import com.dataint.monitor.model.param.ArticleListQueryParam;
-import com.dataint.monitor.provider.ArticleProvider;
 import com.dataint.monitor.service.IArticleService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +21,8 @@ import java.util.*;
 @Service
 public class ArticleServiceImpl implements IArticleService {
 
-    @Autowired
-    private ArticleProvider articleProvider;
+//    @Autowired
+//    private ArticleProvider articleProvider;
 
     @Autowired
     private IArticleUserDao articleUserDao;
@@ -34,44 +33,51 @@ public class ArticleServiceImpl implements IArticleService {
     @Override
     public ResultVO getLatestList(PageParam pageParam) {
 
-        return articleProvider.getLatestList(pageParam.getCurrent(), pageParam.getPageSize());
+        return null;
+//        return articleProvider.getLatestList(pageParam.getCurrent(), pageParam.getPageSize());
     }
 
     @Override
     public ResultVO getArticleBasicById(Integer articleId) {
 
-        return articleProvider.getArticleBasicById(articleId);
+        return null;
+//        return articleProvider.getArticleBasicById(articleId);
     }
 
     @Override
     public JSONObject getArticleList(Integer userId, ArticleListQueryParam articleListQueryParam) {
-        JSONObject retJO = articleProvider.getArticleList(articleListQueryParam.getCurrent(), articleListQueryParam.getPageSize(), articleListQueryParam.getArticleType()).getData();
 
-        JSONArray rebuildJA = new JSONArray();
-        for (Object object : retJO.getJSONArray("content")) {
-            JSONObject rebuildJO = rebuildArticle(userId, (Map)object);
-
-            rebuildJA.add(rebuildJO);
-        }
-        retJO.put("content", rebuildJA);
-
-        return retJO;
+        return null;
+//        JSONObject retJO = articleProvider.getArticleList(articleListQueryParam.getCurrent(), articleListQueryParam.getPageSize(), articleListQueryParam.getArticleType()).getData();
+//
+//        JSONArray rebuildJA = new JSONArray();
+//        for (Object object : retJO.getJSONArray("content")) {
+//            JSONObject rebuildJO = rebuildArticle(userId, (Map)object);
+//
+//            rebuildJA.add(rebuildJO);
+//        }
+//        retJO.put("content", rebuildJA);
+//
+//        return retJO;
     }
 
     @Override
     public JSONObject getArticleById(Integer userId, Integer id) {
-        JSONObject retJO = (JSONObject) articleProvider.getArticleById(id).getData();
 
-        if (retJO != null)
-            return rebuildArticle(userId, retJO);
-
-        return new JSONObject();
+        return null;
+//        JSONObject retJO = (JSONObject) articleProvider.getArticleById(id).getData();
+//
+//        if (retJO != null)
+//            return rebuildArticle(userId, retJO);
+//
+//        return new JSONObject();
     }
 
     @Override
     public ResultVO delArticles(List<Integer> idList) {
 
-        return articleProvider.delArticle(StringUtils.join(idList, Constants.JOINER));
+        return null;
+//        return articleProvider.delArticle(StringUtils.join(idList, Constants.JOINER));
     }
 
     @Override
@@ -101,56 +107,63 @@ public class ArticleServiceImpl implements IArticleService {
 
     @Override
     public JSONArray addKeyword(Integer userId, List<Integer> idList, String keyword) {
-        JSONArray retJA = articleProvider.addKeyword(StringUtils.join(idList, Constants.JOINER), keyword).getData();
 
-        JSONArray rebuildJA = new JSONArray();
-        if (retJA != null) {
-            for (Object object : retJA) {
-                JSONObject rebuildJO = rebuildArticle(userId, (Map)object);
-
-                rebuildJA.add(rebuildJO);
-            }
-        }
-
-        return rebuildJA;
+        return null;
+//        JSONArray retJA = articleProvider.addKeyword(StringUtils.join(idList, Constants.JOINER), keyword).getData();
+//
+//        JSONArray rebuildJA = new JSONArray();
+//        if (retJA != null) {
+//            for (Object object : retJA) {
+//                JSONObject rebuildJO = rebuildArticle(userId, (Map)object);
+//
+//                rebuildJA.add(rebuildJO);
+//            }
+//        }
+//
+//        return rebuildJA;
     }
 
     @Override
     public JSONObject delKeyword(Integer userId, Integer id, String keyword) {
-        JSONObject retJO = articleProvider.delKeyword(id, keyword).getData();
 
-        if (retJO != null)
-            return rebuildArticle(userId, retJO);
-
-        return new JSONObject();
+        return null;
+//        JSONObject retJO = articleProvider.delKeyword(id, keyword).getData();
+//
+//        if (retJO != null)
+//            return rebuildArticle(userId, retJO);
+//
+//        return new JSONObject();
     }
 
     @Override
     public ResultVO updateLevel(Integer id, Integer levelId) {
 
-        return articleProvider.updateLevel(id, levelId);
+        return null;
+//        return articleProvider.updateLevel(id, levelId);
     }
 
     @Override
     public JSONObject updateArticle(int userId, ArticleUpdateForm articleUpdateForm) {
-        ResultVO<JSONObject> retVO = articleProvider.updateArticle(articleUpdateForm);
-        if (retVO.getCode() == 200) {
-            ArticleAudit ifExist = articleAuditDao.findByArticleId(articleUpdateForm.getArticleId());
-            if (ifExist != null) {
-                ifExist.setUpdatedTime(new Date());
-            } else {
-                ifExist = new ArticleAudit(articleUpdateForm.getArticleId());
-                ifExist.setCreatedTime(new Date());
-            }
 
-            articleAuditDao.save(ifExist);
-        }
-
-        JSONObject retJO = retVO.getData();
-        if (retJO != null)
-            return rebuildArticle(userId, retJO);
-
-        return new JSONObject();
+        return null;
+//        ResultVO<JSONObject> retVO = articleProvider.updateArticle(articleUpdateForm);
+//        if (retVO.getCode() == 200) {
+//            ArticleAudit ifExist = articleAuditDao.findByArticleId(articleUpdateForm.getArticleId());
+//            if (ifExist != null) {
+//                ifExist.setUpdatedTime(new Date());
+//            } else {
+//                ifExist = new ArticleAudit(articleUpdateForm.getArticleId());
+//                ifExist.setCreatedTime(new Date());
+//            }
+//
+//            articleAuditDao.save(ifExist);
+//        }
+//
+//        JSONObject retJO = retVO.getData();
+//        if (retJO != null)
+//            return rebuildArticle(userId, retJO);
+//
+//        return new JSONObject();
     }
 
 
