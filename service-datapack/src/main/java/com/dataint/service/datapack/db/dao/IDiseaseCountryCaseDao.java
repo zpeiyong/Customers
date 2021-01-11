@@ -61,6 +61,10 @@ public interface IDiseaseCountryCaseDao extends JpaRepository<DiseaseCountryCase
             "ORDER BY d.country_name_cn DESC;", nativeQuery = true)
     List<DiseaseCountryCase> getDailyConFirmedAddByDiseaseId(Long diseaseId,int limit,String dateStr, int i);
 
+    List<DiseaseCountryCase>  findByDiseaseIdAndCountryNameCnAndPeriodStart(Long diseaseId,String countryNameCn,Date periodStart);
+
+    List<DiseaseCountryCase>  findByDiseaseIdAndShowTypeAndPeriodStart(Long diseaseId,String showType,Date periodStart);
+
     @Query(value = "SELECT * FROM disease_country_case d " +
             "RIGHT JOIN (SELECT country_name_cn  FROM ( " +
             "SELECT * FROM disease_country_case WHERE " +
@@ -100,6 +104,4 @@ public interface IDiseaseCountryCaseDao extends JpaRepository<DiseaseCountryCase
             "where dcc.diseaseId = ?1 and dcc.statisticDate = ?2 " +
             "order by dcc.cureTotal/dcc.confirmTotal desc")
     List<Map<String, Object>> getCuredCntByDiseaseIdAndStatisticDate(Long diseaseId, Date yesStartDate, PageRequest of);
-
-    List<DiseaseCountryCase>  findByDiseaseNameCnAndCountryNameCnAndPeriodStart(String diseaseNameCn,String countryNameCn,Date periodStart);
 }

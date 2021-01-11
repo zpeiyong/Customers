@@ -15,10 +15,10 @@ public class FocusDiseaseAdaptImpl implements IFocusDiseaseAdapt {
     @Value("${service.datapack.baseUrl}")
     private String baseUrl;
     @Override
-    public Object listFocusDisease(String nameCn, String showType) {
+    public Object listFocusDisease(Long id, String showType) {
         HashMap<String, String> map = new HashMap<>();
-        if (nameCn!=null) {
-            map.put("nameCn", nameCn);
+        if (id!=null) {
+            map.put("id", id.toString());
         }
         if (showType!=null) {
             map.put("showType", showType);

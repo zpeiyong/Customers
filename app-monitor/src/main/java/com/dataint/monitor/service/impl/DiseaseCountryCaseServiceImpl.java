@@ -2,6 +2,7 @@ package com.dataint.monitor.service.impl;
 
 import com.dataint.monitor.adapt.IDiseaseCountryCaseAdapt;
 import com.dataint.monitor.model.DiseaseCountryCase;
+import com.dataint.monitor.model.param.DiseaseCountryParam;
 import com.dataint.monitor.service.IDiseaseCountryCaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,8 +13,8 @@ public class DiseaseCountryCaseServiceImpl implements IDiseaseCountryCaseService
     IDiseaseCountryCaseAdapt caseProvider;
 
     @Override
-    public Object listDiseaseCountry(String diseaseNameCn, String countryNameCn, String showType, String periodStart) {
-        Object resultVO = caseProvider.listDiseaseCountry(diseaseNameCn, countryNameCn, showType, periodStart);
+    public Object listDiseaseCountry(DiseaseCountryParam diseaseCountryParam) {
+        Object resultVO = caseProvider.listDiseaseCountry(diseaseCountryParam);
         return resultVO;
 
     }
@@ -22,5 +23,11 @@ public class DiseaseCountryCaseServiceImpl implements IDiseaseCountryCaseService
     public Object addDieaseCountry(DiseaseCountryCase countryCase) {
         Object resultVO = caseProvider.addDieaseCountry(countryCase);
         return resultVO;
+    }
+
+    @Override
+    public Object getCountriesByParam(Long diseaseId, String showType,String periodStart) {
+        Object countriesByParam = caseProvider.getCountriesByParam(diseaseId, showType,periodStart);
+        return countriesByParam;
     }
 }

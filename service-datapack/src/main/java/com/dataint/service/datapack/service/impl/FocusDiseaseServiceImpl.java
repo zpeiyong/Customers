@@ -28,8 +28,8 @@ public class FocusDiseaseServiceImpl implements IFocusDiseaseService {
             public Predicate toPredicate(Root<FocusDisease> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
                 List<Predicate>  list = new ArrayList<>();
                 //nameCn
-                if (!StringUtils.isEmpty(focusDiseaseParam.getNameCn())){
-                    list.add(criteriaBuilder.equal(root.get("nameCn").as(String.class),focusDiseaseParam.getNameCn() ));
+                if (focusDiseaseParam.getId()!=null){
+                    list.add(criteriaBuilder.equal(root.get("id").as(String.class),focusDiseaseParam.getId() ));
                 }
                 //showType
                 if (!StringUtils.isEmpty(focusDiseaseParam.getShowType())){

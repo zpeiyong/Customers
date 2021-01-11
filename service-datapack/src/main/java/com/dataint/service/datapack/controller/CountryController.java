@@ -68,7 +68,7 @@ public class CountryController {
     @ApiOperation(value = "获取国家列表", notes = "获取国家列表")
     @ApiImplicitParam(paramType = "query", name = "countryQueryParam", value = "国家查询参数列表", required = true, dataType = "CountryQueryParam")
     @GetMapping(value = "/all")
-    public ResultVO getCountries(@ModelAttribute CountryQueryParam countryQueryParam) {
+    public ResultVO getCountries( CountryQueryParam countryQueryParam) {
 
         return ResultVO.success(countryService.getCountries(countryQueryParam));
     }

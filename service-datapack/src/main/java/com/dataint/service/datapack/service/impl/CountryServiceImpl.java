@@ -17,8 +17,6 @@ import com.dataint.service.datapack.utils.Constants;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -166,25 +164,30 @@ public class CountryServiceImpl implements ICountryService {
     }
 
     @Override
-    public Page<CountryVO> getCountries(CountryQueryParam countryQueryParam) {
-        Page<Country> countryPage = countryDao.findAll(new Specification<Country>() {
+    public List<Country> getCountries(CountryQueryParam countryQueryParam) {
+        List<Country> countryDaoAll = countryDao.findAll(new Specification<Country>() {
             @Override
             public Predicate toPredicate(Root<Country> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
                 List<Predicate> list = new ArrayList<>();
                 if (StringUtils.isNotEmpty(countryQueryParam.getKeyword())) {
-                    Predicate p1 = criteriaBuilder.like(root.get("code").as(String.class), "%"+countryQueryParam.getKeyword()+"%");
-                    Predicate p2 = criteriaBuilder.like(root.get("nameCn").as(String.class), "%"+countryQueryParam.getKeyword()+"%");
+                    Predicate p1 = criteriaBuilder.like(root.get("code").as(String.class), "%" + countryQueryParam.getKeyword() + "%");
+                    Predicate p2 = criteriaBuilder.like(root.get("nameCn").as(String.class), "%" + countryQueryParam.getKeyword() + "%");
                     list.add(criteriaBuilder.or(p1, p2));
                 }
 
                 Predicate[] p = new Predicate[list.size()];
                 return criteriaBuilder.and(list.toArray(p));
             }
-        }, countryQueryParam.toPageRequest());
-        List<CountryVO> countryVOList = countryPage.getContent().stream().map(CountryVO::new).collect(Collectors.toList());
-
-        return new PageImpl(countryVOList, countryPage.getPageable(), countryPage.getTotalElements());
+        });
+        return  countryDaoAll;
     }
+
+    @Override
+    public List<Country> ListCountries() {
+        List<Country> countryList = countryDao.findAll();
+        return  countryList;
+    }
+
 
     /**
      * 预加载所有的关注国家(直航地区)信息

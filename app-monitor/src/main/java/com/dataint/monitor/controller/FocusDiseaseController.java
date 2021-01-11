@@ -22,12 +22,12 @@ public class FocusDiseaseController {
     @RequestMapping(value = "/focusDiseaseList",method = RequestMethod.GET)
     @ApiOperation(value = "病种周期查询",notes = "病种周期查询")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "diseaseNameCn",required = true, value = "传染病中文",dataType ="String",paramType = "query"),
+            @ApiImplicitParam(name = "id",required = true, value = "传染病中文",dataType ="long",paramType = "query"),
             @ApiImplicitParam(name = "showType",required = true, value = "周期类型",dataType ="String",paramType = "query"),
     })
     @ResponseBody
-    public ResultVO<FocusDisease> getFoCountryList(String nameCn, String showType){
-        ResultVO  resultVO = ResultVO.success(focusDiseaseService.listFocusDisease(nameCn, showType));
+    public ResultVO<FocusDisease> getFoCountryList(Long id, String showType){
+        ResultVO  resultVO = ResultVO.success(focusDiseaseService.listFocusDisease(id, showType));
         return  resultVO;
     }
 
