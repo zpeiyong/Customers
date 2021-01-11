@@ -1,5 +1,6 @@
 package com.dataint.service.datapack.model.param;
 
+import com.dataint.cloud.common.model.param.PageParam;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,7 +8,7 @@ import java.util.Date;
 
 @Getter
 @Setter
-public class DiseaseCountryParam {
+public class DiseaseCountryParam extends PageParam {
     private Long diseaseId;  // 传染病id(暂对应focus_disease表)
 
     private String diseaseNameCn;  // 传染病名称中文

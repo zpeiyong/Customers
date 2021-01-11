@@ -13,8 +13,8 @@ public class FocusDiseaseServiceImpl implements IFocusDiseaseService {
     IFocusDiseaseAdapt focusDiseaseAdapt;
 
     @Override
-    public Object listFocusDisease(String nameCn, String showType) {
-        Object listFocusDisease = focusDiseaseAdapt.listFocusDisease(nameCn, showType);
+    public Object listFocusDisease(Long id, String showType) {
+        Object listFocusDisease = focusDiseaseAdapt.listFocusDisease(id, showType);
         return listFocusDisease;
     }
 

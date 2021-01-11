@@ -1,12 +1,13 @@
 package com.dataint.monitor.service;
 
 import com.dataint.monitor.model.DiseaseCountryCase;
-
-
+import com.dataint.monitor.model.param.DiseaseCountryParam;
 
 public interface IDiseaseCountryCaseService {
-    Object listDiseaseCountry(String diseaseNameCn, String countryNameCn, String showType, String periodStart);
+    Object listDiseaseCountry(DiseaseCountryParam diseaseCountryParam);
 
 
     Object addDieaseCountry(DiseaseCountryCase countryCase);
+
+    Object  getCountriesByParam(Long  diseaseId, String showType, String periodStart);
 }

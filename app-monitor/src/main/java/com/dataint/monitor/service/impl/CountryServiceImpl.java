@@ -1,6 +1,7 @@
 package com.dataint.monitor.service.impl;
 
 import com.dataint.cloud.common.model.ResultVO;
+import com.dataint.monitor.adapt.ICountryAdapt;
 import com.dataint.monitor.model.form.CountryForm;
 import com.dataint.monitor.model.form.CountryUpdateForm;
 import com.dataint.monitor.model.param.CountryQueryParam;
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Service;
 public class CountryServiceImpl implements ICountryService {
     @Autowired
     private CountryProvider countryProvider;
+    @Autowired
+    private ICountryAdapt countryAdapt;
 
     @Override
     public ResultVO addCountry(CountryForm countryForm) {
@@ -41,6 +44,7 @@ public class CountryServiceImpl implements ICountryService {
 
     @Override
     public ResultVO getCountries(CountryQueryParam countryQueryParam) {
-        return countryProvider.getCountries(countryQueryParam.getKeyword(), countryQueryParam.getCurrent(), countryQueryParam.getPageSize());
+        ResultVO countries = countryAdapt.getCountries(countryQueryParam.getKeyword());
+        return  countries;
     }
 }

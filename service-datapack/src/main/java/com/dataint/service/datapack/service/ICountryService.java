@@ -1,10 +1,12 @@
 package com.dataint.service.datapack.service;
 
-import com.dataint.service.datapack.model.vo.CountryVO;
+import com.dataint.service.datapack.db.entity.Country;
 import com.dataint.service.datapack.model.form.CountryForm;
 import com.dataint.service.datapack.model.form.CountryUpdateForm;
 import com.dataint.service.datapack.model.param.CountryQueryParam;
-import org.springframework.data.domain.Page;
+import com.dataint.service.datapack.model.vo.CountryVO;
+
+import java.util.List;
 
 public interface ICountryService {
     /**
@@ -47,5 +49,7 @@ public interface ICountryService {
      * @param countryQueryParam
      * @return
      */
-    Page<CountryVO> getCountries(CountryQueryParam countryQueryParam);
+    List<Country> getCountries(CountryQueryParam countryQueryParam);
+
+    List<Country>  ListCountries();
 }

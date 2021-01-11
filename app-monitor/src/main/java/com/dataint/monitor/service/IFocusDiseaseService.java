@@ -5,7 +5,7 @@ import com.dataint.monitor.model.FocusDisease;
 
 
 public interface IFocusDiseaseService {
-    Object listFocusDisease(String nameCn, String showType);
+    Object listFocusDisease(Long id, String showType);
     Object addFocusDisease(FocusDisease focusDisease);
     Object  listFocusDiseaseDefault();
 }

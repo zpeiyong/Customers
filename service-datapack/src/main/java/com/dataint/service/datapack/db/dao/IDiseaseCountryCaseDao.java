@@ -49,6 +49,8 @@ public interface IDiseaseCountryCaseDao extends JpaRepository<DiseaseCountryCase
     List<Map<String,Object>> getLatestDiseaseCasesByCountry(Long countryId);
 
 
-    List<DiseaseCountryCase>  findByDiseaseNameCnAndCountryNameCnAndPeriodStart(String diseaseNameCn,String countryNameCn,Date periodStart);
+    List<DiseaseCountryCase>  findByDiseaseIdAndCountryNameCnAndPeriodStart(Long diseaseId,String countryNameCn,Date periodStart);
+
+List<DiseaseCountryCase>  findByDiseaseIdAndShowTypeAndPeriodStart(Long diseaseId,String showType,Date periodStart);
 
 }

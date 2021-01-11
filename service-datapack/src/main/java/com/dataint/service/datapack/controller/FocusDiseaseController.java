@@ -26,9 +26,9 @@ public class FocusDiseaseController {
             @ApiImplicitParam(name = "showType",required = true, value = "周期类型",dataType ="String",paramType = "query"),
     })
     @ResponseBody
-    public ResultVO<FocusDisease> getFoCountryList(String nameCn, String showType){
+    public ResultVO<FocusDisease> getFoCountryList(Long id, String showType){
         FocusDiseaseParam focusDiseaseParam = new FocusDiseaseParam();
-        focusDiseaseParam.setNameCn(nameCn);
+        focusDiseaseParam.setId(id);
         focusDiseaseParam.setShowType(showType);
         ResultVO  resultVO = ResultVO.success(focusDiseaseService.listFocusDisease(focusDiseaseParam));
         return  resultVO;

@@ -6,6 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class FocusDiseaseParam {
+    private  Long  id;
     private String nameCn;
 
     private String nameEn;
