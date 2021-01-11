@@ -22,5 +22,5 @@ public class ArticleListQueryParam extends PageParam {
 
     private Long regionId;  // 大洲id(直航地区id=0)
 
-    private Integer userId; //用户id
+    private Long userId; //用户id
 }

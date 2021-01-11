@@ -1,18 +1,17 @@
 package com.dataint.topic.service;
 
-import com.dataint.topic.db.entity.TopicArticle;
+import com.dataint.cloud.common.model.ResultVO;
 import com.dataint.topic.model.form.ArticleConditionForm;
-
 
 public interface IArticleService {
 
-    Object queryArticlesByCondition(ArticleConditionForm acReq);
+    ResultVO queryArticlesByCondition(ArticleConditionForm acReq);
 
     /**
      * 根据id查询专题详情
      * @param id
      */
-    Object getArticleById(Long id);
+    ResultVO getArticleById(Long id);
 
 //    Object updateArticle(UpdateArticleReq poReq);
 //

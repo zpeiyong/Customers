@@ -90,11 +90,11 @@ public class ArticleAdaptImpl implements IArticleAdapt {
         List content = (ArrayList) data.get("content");
         ArrayList<ArticleBasicVO> articleBasicVOArrayList = new ArrayList<>();
         if (content.size() > 0) {
-            Integer userId = articleListQueryParam.getUserId();
-            List<Integer> idList = articleLikeDao.findArticleIdByUserId(userId);
+            Long userId = articleListQueryParam.getUserId();
+            List<Long> idList = articleLikeDao.findArticleIdByUserId(userId);
             for (Object ob: content){
                 ArticleBasicVO articleBasicVO = new ObjectMapper().convertValue(ob, ArticleBasicVO.class);
-                boolean flag = idList.contains(articleBasicVO.getId().intValue());
+                boolean flag = idList.contains(articleBasicVO.getId());
                 if (flag)
                     articleBasicVO.setIfLike(true);
                 Integer i = commentDao.countByArticleId(articleBasicVO.getId().intValue());

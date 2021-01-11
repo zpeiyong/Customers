@@ -29,7 +29,7 @@ public class ArticleController {
     @GetMapping("/getArticleList")
     public ResultVO getArticleList(ArticleConditionForm acReq) {
 
-        return ResultVO.success(articleService.queryArticlesByCondition(acReq));
+        return articleService.queryArticlesByCondition(acReq);
     }
 
     /**
@@ -43,7 +43,7 @@ public class ArticleController {
     @GetMapping("/getArticleById")
     public ResultVO getArticleById(@RequestParam(value = "id", required = true) Long id) {
 
-        return ResultVO.success(articleService.getArticleById(id));
+        return articleService.getArticleById(id);
     }
 
 }

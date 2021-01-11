@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface IArticleLikeDao extends JpaRepository<ArticleLike, Long> {
 
-   List<Integer> findArticleIdByUserId(Integer userId);
+   List<Long> findArticleIdByUserId(Long userId);
 }
