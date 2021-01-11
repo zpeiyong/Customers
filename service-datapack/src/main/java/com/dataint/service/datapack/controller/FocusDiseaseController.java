@@ -3,6 +3,7 @@ package com.dataint.service.datapack.controller;
 import com.dataint.cloud.common.model.ResultVO;
 import com.dataint.service.datapack.db.entity.FocusDisease;
 import com.dataint.service.datapack.model.param.FocusDiseaseParam;
+import com.dataint.service.datapack.model.vo.FocusDiseaseVO;
 import com.dataint.service.datapack.service.IFocusDiseaseService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -26,7 +27,7 @@ public class FocusDiseaseController {
             @ApiImplicitParam(name = "showType",required = true, value = "周期类型",dataType ="String",paramType = "query"),
     })
     @ResponseBody
-    public ResultVO<FocusDisease> getFoCountryList(Long id, String showType){
+    public ResultVO<FocusDiseaseVO> getFoCountryList(Long id, String showType){
         FocusDiseaseParam focusDiseaseParam = new FocusDiseaseParam();
         focusDiseaseParam.setId(id);
         focusDiseaseParam.setShowType(showType);

@@ -19,8 +19,7 @@ public class DiseaseCountryCaseAdaptImpl implements IDiseaseCountryCaseAdapt {
     public Object listDiseaseCountry(DiseaseCountryParam diseaseCountryParam) {
 
         String url ="http://" +  baseUrl + "/countryCase/diseaseCountryCaseList";
-        JSONObject jsonObject = GetPostUtil.sendGet(url);
-        return ResultVO.success(jsonObject);
+        return GetPostUtil.sendGet(url);
     }
 
     @Override

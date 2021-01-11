@@ -30,12 +30,10 @@ public class DiseaseCountryCaseController {
             @ApiImplicitParam(name = "periodStart",required = false, value = "统计时间段开始时间",dataType ="String",paramType = "query")
     })
     @ResponseBody
-    public ResultVO<String> getCountryByparam(Long diseaseId, String showType,String periodStart) throws ParseException {
+    public Object getCountryByparam(Long diseaseId, String showType,String periodStart) throws ParseException {
        Object countriesByParamList = countryService.getCountriesByParam(diseaseId, showType, periodStart);
 
-        ResultVO resultVO =ResultVO.success(countriesByParamList);
-
-        return   resultVO;
+        return   countriesByParamList;
     }
 
     @RequestMapping(value = "/diseaseCountryCaseList",method = RequestMethod.GET)
@@ -43,17 +41,18 @@ public class DiseaseCountryCaseController {
     @ApiImplicitParam(paramType = "query", name = "diseaseCountryParam", value = "病情数据查询参数列表", required = true, dataType = "diseaseCountryParam")
 
     @ResponseBody
-    public ResultVO<DiseaseCountryCase> getdieaseCountryList(DiseaseCountryParam  diseaseCountryParam){
-        ResultVO resultVO =ResultVO.success(countryService.listDiseaseCountry(diseaseCountryParam));
-        return   resultVO;
+    public Object getdieaseCountryList(DiseaseCountryParam  diseaseCountryParam){
+        Object listDiseaseCountry = countryService.listDiseaseCountry(diseaseCountryParam);
+        return   listDiseaseCountry;
     }
 
     @RequestMapping(value = "/addDiseaseCountry",method = RequestMethod.POST)
     @ApiOperation(value = "增加一个病种数据", notes = "增加一个病种数据")
     @ApiImplicitParam(paramType = "query", name = "DiseaseCountryCase", value = "保存病种数据", required = true, dataType = "DiseaseCountryCase")
-    public ResultVO addDiseaseCountry(@RequestBody DiseaseCountryCase country) {
+    public Object addDiseaseCountry(@RequestBody DiseaseCountryCase country) {
 
-        ResultVO resultVO = ResultVO.success(countryService.addDieaseCountry(country));
-        return resultVO;
+        Object addDieaseCountry = countryService.addDieaseCountry(country);
+
+        return addDieaseCountry;
     }
 }

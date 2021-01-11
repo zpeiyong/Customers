@@ -4,6 +4,8 @@ import com.dataint.cloud.common.exception.DataAlreadyExistException;
 import com.dataint.service.datapack.db.dao.IFocusDiseaseDao;
 import com.dataint.service.datapack.db.entity.FocusDisease;
 import com.dataint.service.datapack.model.param.FocusDiseaseParam;
+import com.dataint.service.datapack.model.vo.CountryVO;
+import com.dataint.service.datapack.model.vo.FocusDiseaseVO;
 import com.dataint.service.datapack.service.IFocusDiseaseService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,9 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class FocusDiseaseServiceImpl implements IFocusDiseaseService {
@@ -57,8 +62,9 @@ public class FocusDiseaseServiceImpl implements IFocusDiseaseService {
     }
 
     @Override
-    public List<FocusDisease> listFocusDiseaseDefault() {
+    public List<FocusDiseaseVO> listFocusDiseaseDefault() {
         List<FocusDisease> all = focusDiseaseDao.findAll();
-        return all;
+        List<FocusDiseaseVO>    focusDiseaseVOList  =  all.stream().map(FocusDiseaseVO::new).collect(Collectors.toList());
+        return   focusDiseaseVOList;
     }
 }
