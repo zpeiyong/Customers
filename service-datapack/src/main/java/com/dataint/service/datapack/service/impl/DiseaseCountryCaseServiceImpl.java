@@ -78,17 +78,52 @@ public class DiseaseCountryCaseServiceImpl implements IDiseaseCountryCaseService
 
     @Override
     public DiseaseCountryCase addDieaseCountry(DiseaseCountryForm countryCase) {
-        DiseaseCountryCase diseaseCountryCase = countryCase.toPo(DiseaseCountryCase.class);
-        Long diseaseId = countryCase.getDiseaseId();
-        Long countryId = countryCase.getCountryId();
-        Date start = countryCase.getPeriodStart();
-        List<DiseaseCountryCase> caseList = caseDao.findByDiseaseIdAndCountryIdAndPeriodStart(diseaseId, countryId, start);
-        if (caseList .size()>0 ){
-            throw  new DataAlreadyExistException("国家名称或者病例数据在此时间段内已经存在");
+        Long id = countryCase.getId();
+        if (id==null){
+            DiseaseCountryCase diseaseCountryCase = countryCase.toPo(DiseaseCountryCase.class);
+            Long diseaseId = countryCase.getDiseaseId();
+            Long countryId = countryCase.getCountryId();
+            Date start = countryCase.getPeriodStart();
+
+            List<DiseaseCountryCase> caseList = caseDao.findByDiseaseIdAndCountryIdAndPeriodStart(diseaseId, countryId, start);
+            if (caseList .size()>0 &&id ==null){
+                throw  new DataAlreadyExistException("国家名称或者病例数据在此时间段内已经存在");
+            }
+            else{
+                DiseaseCountryCase CountryCaseSave = caseDao.save(diseaseCountryCase);
+                return CountryCaseSave;
+            }
         }
-        else{
+        //修改
+        else {
+            Optional<DiseaseCountryCase> caseDaoById = caseDao.findById(id);
+            if (!caseDaoById.isPresent()){
+
+            }
+            DiseaseCountryCase diseaseCountryCase = caseDaoById.get();
+
+                //数据库传过来的值和 前台接受的值进行比较
+            if (diseaseCountryCase.getConfirmAdd()!=countryCase.getConfirmAdd()){
+                diseaseCountryCase.setConfirmAdd(countryCase.getConfirmAdd());
+            }
+            if (diseaseCountryCase.getCureAdd()!=countryCase.getCureAdd()){
+                diseaseCountryCase.setCureAdd(countryCase.getCureAdd());
+            }
+            if (diseaseCountryCase.getDeathAdd()!=countryCase.getDeathAdd()){
+                diseaseCountryCase.setDeathAdd(countryCase.getDeathAdd());
+            }
+            if (diseaseCountryCase.getCureTotal()!=countryCase.getCureTotal()){
+                diseaseCountryCase.setCureTotal(countryCase.getCureTotal());
+            }
+            if (diseaseCountryCase.getDeathTotal()!=countryCase.getDeathTotal()){
+                diseaseCountryCase.setDeathTotal(countryCase.getDeathTotal());
+            }
+            if (diseaseCountryCase.getConfirmTotal()!=countryCase.getConfirmTotal()){
+                diseaseCountryCase.setConfirmTotal(countryCase.getConfirmTotal());
+            }
             DiseaseCountryCase CountryCaseSave = caseDao.save(diseaseCountryCase);
             return CountryCaseSave;
+
         }
     }
 
