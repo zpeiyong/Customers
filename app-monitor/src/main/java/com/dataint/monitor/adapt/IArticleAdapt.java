@@ -1,12 +1,14 @@
 package com.dataint.monitor.adapt;
 
+import com.alibaba.fastjson.JSONObject;
 import com.dataint.cloud.common.model.param.PageParam;
 import com.dataint.monitor.model.form.ArticleUpdateForm;
 import com.dataint.monitor.model.form.StoreDataForm;
 import com.dataint.monitor.model.param.ArticleListQueryParam;
 
+import java.util.List;
+
 public interface IArticleAdapt {
-    Object storeData(StoreDataForm storeDataForm);
 
     Object queryBasicList(PageParam pageParam);
 
@@ -28,7 +30,8 @@ public interface IArticleAdapt {
 
     Object updateArticle(ArticleUpdateForm articleUpdateForm);
 
-    Object searchByKeyword(String keyword);
-
     Object queryReportContent(String startTime, String endTime, String type);
+
+
+    JSONObject queryArticlesByIdList(List<Long> articleIdList);
 }

@@ -4,7 +4,6 @@ import com.dataint.cloud.common.model.Constants;
 import com.dataint.cloud.common.utils.DateUtil;
 import com.dataint.monitor.service.IReportService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -13,7 +12,7 @@ public class ReportTasks {
     @Autowired
     private IReportService reportService;
 
-    @Scheduled(cron = "0 5 0 * * ?")
+//    @Scheduled(cron = "0 5 0 * * ?")
     public void generateDailyReport() {
         Long currentTimestamps=System.currentTimeMillis();
         System.out.println("----- [crontab]generateDailyReport(" + Constants.DateTimeSDF.format(currentTimestamps) + ") -----");

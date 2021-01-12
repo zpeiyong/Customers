@@ -22,15 +22,6 @@ public class ArticleController {
     @Autowired
     private IArticleAdapt articleAdapt;
 
-    @ApiOperation(value = "保存舆情", notes = "保存一条舆情")
-    @ApiImplicitParam(name = "storeDataForm", value = "保存舆情form表单", required = true, dataType = "StoreDataForm")
-    @PostMapping("/store")
-    public Object store(@Valid @RequestBody StoreDataForm storeDataForm) {
-        log.debug("Name: {}", storeDataForm);
-        return  articleAdapt.storeData(storeDataForm);
-    }
-
-
     /**
      * BI展示模块
      */
@@ -131,30 +122,4 @@ public class ArticleController {
     public Object updateArticle(@RequestBody ArticleUpdateForm articleUpdateForm) {
         return articleAdapt.updateArticle(articleUpdateForm);
     }
-
-
-
-    /**
-     * 统计/分析模块
-     */
-    @ApiOperation(value = "获取gmtRelease列表", notes = "根据关键词查询gmtRelease列表")
-    @ApiImplicitParam(paramType = "query", name = "keyword", value = "关键词", required = true, dataType = "string")
-    @GetMapping("/searchByKeyword")
-    public Object searchByKeyword(@RequestParam String keyword) {
-
-        return articleAdapt.searchByKeyword(keyword);
-    }
-
-    @ApiOperation(value = "获取报告所需舆情数据", notes = "根据起始时间段, 获取报告所需舆情数据内容")
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", name = "startTime", value = "舆情起始时间", required = true, dataType = "string"),
-            @ApiImplicitParam(paramType = "query", name = "endTime", value = "舆情结束时间", required = true, dataType = "string"),
-            @ApiImplicitParam(paramType = "query", name = "type", value = "舆情报告类型", required = true, dataType = "string")
-    })
-    @GetMapping("/queryReport")
-    public Object queryDailyReport(@RequestParam("startTime") String startTime, @RequestParam("endTime") String endTime, @RequestParam(value = "type") String type) {
-
-        return articleAdapt.queryReportContent(startTime, endTime, type);
-    }
-
 }

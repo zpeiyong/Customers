@@ -8,9 +8,9 @@ import com.dataint.monitor.dao.IArticleLikeDao;
 import com.dataint.monitor.dao.ICommentDao;
 import com.dataint.monitor.model.ArticleBasicVO;
 import com.dataint.monitor.model.form.ArticleUpdateForm;
-import com.dataint.monitor.model.form.StoreDataForm;
 import com.dataint.monitor.model.param.ArticleListQueryParam;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -30,13 +30,6 @@ public class ArticleAdaptImpl implements IArticleAdapt {
 
     @Autowired
     private ICommentDao commentDao;
-
-    @Override
-    public Object storeData(StoreDataForm storeDataForm) {
-        String url ="http://" +  baseUrl + "/article/store";
-        String jsonString = JSONObject.toJSONString(storeDataForm);
-        return GetPostUtil.sendPost(url, jsonString);
-    }
 
     @Override
     public Object queryBasicList(PageParam pageParam) {
@@ -152,18 +145,22 @@ public class ArticleAdaptImpl implements IArticleAdapt {
     }
 
     @Override
-    public Object searchByKeyword(String keyword) {
-        String url = "http://" + baseUrl + "/searchByKeyword" + "?keyword=" + keyword;
-        return GetPostUtil.sendGet(url);
-    }
-
-    @Override
     public Object queryReportContent(String startTime, String endTime, String type) {
         String url = "http://" + baseUrl + "/queryReport";
         HashMap<String, String> map = new HashMap<>();
         map.put("startTime", startTime);
         map.put("endTime", endTime);
         map.put("type", type);
+        return GetPostUtil.sendGet(url, map);
+    }
+
+    @Override
+    public JSONObject queryArticlesByIdList(List<Long> articleIdList) {
+        String idListStr = StringUtils.join(articleIdList, ",");
+
+        String url = "http://" + baseUrl + "/article/queryArticlesByIdList";
+        HashMap<String, String> map = new HashMap<>();
+        map.put("idListStr", idListStr);
         return GetPostUtil.sendGet(url, map);
     }
 }

@@ -1,7 +1,10 @@
 package com.dataint.monitor.controller;
 
 import com.dataint.cloud.common.model.ResultVO;
+import com.dataint.monitor.model.form.ReportArticleForm;
 import com.dataint.monitor.model.param.ReportQueryParam;
+import com.dataint.monitor.service.IReportArticleService;
+import com.dataint.monitor.service.IReportLevelService;
 import com.dataint.monitor.service.IReportService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -15,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -26,6 +30,12 @@ public class ReportController {
 
     @Autowired
     private IReportService reportService;
+
+    @Autowired
+    private IReportArticleService reportArticleService;
+
+    @Autowired
+    private IReportLevelService reportLevelService;
 
     @ApiOperation(value = "获取简报列表", notes = "根据条件查询简报")
     @ApiImplicitParam(name = "reportQueryParam", value = "简报查询参数", required = true, dataType = "ReportQueryParam")
@@ -81,5 +91,25 @@ public class ReportController {
                 .contentType(MediaType.parseMediaType(contentType))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + encodeName + "\"")
                 .body(resource);
+    }
+
+
+    /**
+     *
+     */
+    @ApiOperation(value = "添加日报", notes = "添加日报舆情关系")
+    @ApiImplicitParam(paramType = "query", name = "reportArticleForm", value = "保存日报关系form表单", required = true, dataType = "ReportArticleForm")
+    @PostMapping
+    public ResultVO addReportArticle(@Valid @RequestBody ReportArticleForm reportArticleForm) {
+        reportArticleService.addReportArticle(reportArticleForm);
+
+        return ResultVO.success();
+    }
+
+    @ApiOperation(value = "获取所有的报告级别", notes = "获取所有的报告级别")
+    @GetMapping(value = "/getAllReportLevels")
+    public ResultVO getAllReportLevels() {
+
+        return ResultVO.success(reportLevelService.getAllReportLevels());
     }
 }

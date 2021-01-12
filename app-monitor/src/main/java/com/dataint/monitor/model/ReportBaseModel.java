@@ -15,9 +15,9 @@ public class ReportBaseModel {
 
     private String reportDate;
 
-    private List<ReportArticle> concernList;
+    private List<ArticleReport> concernList;
 
-    private List<ReportArticle> moreInfoList;
+    private List<ArticleReport> moreInfoList;
 
 //    private List<ReportRecall> recallList;
 

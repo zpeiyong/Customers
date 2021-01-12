@@ -3,7 +3,7 @@ package com.dataint.monitor.model;
 import lombok.Data;
 
 @Data
-public class ReportArticle {
+public class ArticleReport {
 
     private String title;
 

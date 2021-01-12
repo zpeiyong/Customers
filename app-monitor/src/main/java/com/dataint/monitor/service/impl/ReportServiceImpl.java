@@ -1,15 +1,18 @@
 package com.dataint.monitor.service.impl;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.dataint.cloud.common.exception.DataNotExistException;
 import com.dataint.cloud.common.model.Constants;
-import com.dataint.cloud.common.model.ResultVO;
 import com.dataint.cloud.common.model.param.PageParam;
 import com.dataint.cloud.common.utils.DateUtil;
+import com.dataint.monitor.adapt.IArticleAdapt;
+import com.dataint.monitor.dao.IReportArticleDao;
 import com.dataint.monitor.dao.IReportDao;
+import com.dataint.monitor.dao.IReportLevelDao;
 import com.dataint.monitor.dao.entity.Report;
-import com.dataint.monitor.model.ReportArticle;
+import com.dataint.monitor.dao.entity.ReportArticle;
+import com.dataint.monitor.dao.entity.ReportLevel;
+import com.dataint.monitor.model.ArticleReport;
 import com.dataint.monitor.model.ReportBaseModel;
 import com.dataint.monitor.model.ReportVO;
 import com.dataint.monitor.model.param.ReportQueryParam;
@@ -84,13 +87,17 @@ public class ReportServiceImpl implements IReportService {
         reportTypeMap.put("daily", "日报");
         reportTypeMap.put("weekly", "周报");
         reportTypeMap.put("monthly", "月报");
+        reportTypeMap.put("event", "事件报告");
     }
-
-//    @Autowired
-//    private ArticleProvider articleProvider;
 
     @Autowired
     private IReportDao reportDao;
+    @Autowired
+    private IReportArticleDao reportArticleDao;
+    @Autowired
+    private IReportLevelDao reportLevelDao;
+    @Autowired
+    private IArticleAdapt articleAdapt;
 
     @Override
     public Page<ReportVO> queryReportList(ReportQueryParam reportQueryParam) {
@@ -333,6 +340,30 @@ public class ReportServiceImpl implements IReportService {
      * @param endTime
      */
     private void getData(ReportBaseModel reportBaseModel, String startTime, String endTime, String type) {
+        Date startDateTime, endDateTime;
+
+        try {
+            startDateTime = Constants.getDateTimeFormat().parse(startTime);
+            endDateTime = Constants.getDateTimeFormat().parse(endTime);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        //
+        List<ReportLevel> reportLevelList = reportLevelDao.findAllByOrderBySort();
+        for (ReportLevel reportLevel : reportLevelList) {
+            // 查询报告舆情关系表，过滤出所有需要的舆情id()
+            List<ReportArticle> reportArticleList = reportArticleDao.findAllByUpdatedTimeBetweenAndReportTypeAndReportLevelId(
+                    startDateTime, endDateTime, type, reportLevel.getId());
+            List<Long> articleIdList = reportArticleList.stream().map(ReportArticle::getArticleId).collect(Collectors.toList());
+
+            // 请求service-datapack返回所有ID列表中的舆情数据
+            JSONObject reportJO = articleAdapt.queryArticlesByIdList(articleIdList);
+            System.out.println(reportJO);
+        }
+
+
 
         return;
 //        ResultVO<JSONObject> rstVO = articleProvider.queryDailyReport(startTime, endTime, type);
@@ -340,18 +371,18 @@ public class ReportServiceImpl implements IReportService {
 //
 //        if (!ObjectUtils.isEmpty(reportJO)) {
 //            if (reportJO.containsKey("01")) {  // concernList - 重要
-//                List<ReportArticle> concernList = JSONArray.parseArray(reportJO.getJSONArray("01").toJSONString(), ReportArticle.class);
+//                List<ArticleReport> concernList = JSONArray.parseArray(reportJO.getJSONArray("01").toJSONString(), ArticleReport.class);
 //                // transform escape characters
-//                for (ReportArticle reportArticle : concernList) {
-//                    transReportArticle(reportArticle);
+//                for (ArticleReport reportArticle : concernList) {
+//                    transArticleReport(reportArticle);
 //                }
 //                reportBaseModel.setConcernList(concernList);
 //            }
 //            if (reportJO.containsKey("02")) {  // moreInfoList - 一般
-//                List<ReportArticle> concernList = JSONArray.parseArray(reportJO.getJSONArray("02").toJSONString(), ReportArticle.class);
+//                List<ArticleReport> concernList = JSONArray.parseArray(reportJO.getJSONArray("02").toJSONString(), ArticleReport.class);
 //                // transform escape characters
-//                for (ReportArticle reportArticle : concernList) {
-//                    transReportArticle(reportArticle);
+//                for (ArticleReport reportArticle : concernList) {
+//                    transArticleReport(reportArticle);
 //                }
 //                reportBaseModel.setMoreInfoList(concernList);
 //            }
@@ -360,21 +391,21 @@ public class ReportServiceImpl implements IReportService {
 
 
     /**
-     * ReportArticle 转换特殊字符
-     * @param reportArticle
+     * ArticleReport 转换特殊字符
+     * @param articleReport
      */
-    private void transReportArticle(ReportArticle reportArticle) {
-        if (reportArticle.getArticleUrl() != null) {
-            String articleUlr = reportArticle.getArticleUrl();
-            reportArticle.setArticleUrl(transEscapeChars(articleUlr));
+    private void transArticleReport(ArticleReport articleReport) {
+        if (articleReport.getArticleUrl() != null) {
+            String articleUlr = articleReport.getArticleUrl();
+            articleReport.setArticleUrl(transEscapeChars(articleUlr));
         }
-        if (reportArticle.getSummary() != null) {
-            String summary = reportArticle.getSummary();
-            reportArticle.setSummary(transEscapeChars(summary));
+        if (articleReport.getSummary() != null) {
+            String summary = articleReport.getSummary();
+            articleReport.setSummary(transEscapeChars(summary));
         }
-        if (reportArticle.getTitle() != null) {
-            String title = reportArticle.getTitle();
-            reportArticle.setTitle(transEscapeChars(title));
+        if (articleReport.getTitle() != null) {
+            String title = articleReport.getTitle();
+            articleReport.setTitle(transEscapeChars(title));
         }
     }
 
