@@ -1,6 +1,5 @@
 package com.dataint.monitor.controller;
 
-import com.dataint.cloud.common.model.ResultVO;
 import com.dataint.monitor.model.FocusDisease;
 
 import com.dataint.monitor.service.IFocusDiseaseService;
@@ -26,8 +25,8 @@ public class FocusDiseaseController {
             @ApiImplicitParam(name = "showType",required = true, value = "周期类型",dataType ="String",paramType = "query"),
     })
     @ResponseBody
-    public Object getFoCountryList(Long id, String showType){
-        Object listFocusDisease = focusDiseaseService.listFocusDisease(id, showType);
+    public Object getFoCountryList(Long id, String showType,Long current,Long pageSize){
+        Object listFocusDisease = focusDiseaseService.listFocusDisease(id, showType, current,  pageSize);
         return  listFocusDisease;
     }
 
@@ -39,7 +38,7 @@ public class FocusDiseaseController {
         return   listFocusDiseaseDefault;
     }
 
-    @RequestMapping(value = "/addFocusDisease",method = RequestMethod.POST)
+    @RequestMapping(value = "/saveFocusDisease",method = RequestMethod.POST)
     @ApiOperation(value = "增加一个病种数据", notes = "增加一个病种数据")
     @ApiImplicitParam(paramType = "query", name = "DiseaseCountryCase", value = "保存病种数据", required = true, dataType = "DiseaseCountryCase")
     public Object addDiseaseCountry(@RequestBody FocusDisease focusDisease){

@@ -2,6 +2,7 @@ package com.dataint.service.datapack.controller;
 
 import com.dataint.cloud.common.model.ResultVO;
 import com.dataint.service.datapack.db.entity.DiseaseCountryCase;
+import com.dataint.service.datapack.model.form.DiseaseCountryForm;
 import com.dataint.service.datapack.model.param.DiseaseCountryParam;
 import com.dataint.service.datapack.model.vo.CountryVO;
 import com.dataint.service.datapack.service.IDiseaseCountryCaseService;
@@ -59,7 +60,7 @@ public class DiseaseCountryCaseController {
     @RequestMapping(value = "/addDiseaseCountry",method = RequestMethod.POST)
     @ApiOperation(value = "增加一个病种数据", notes = "增加一个病种数据")
     @ApiImplicitParam(paramType = "query", name = "DiseaseCountryCase", value = "保存病种数据", required = true, dataType = "DiseaseCountryCase")
-    public ResultVO addDiseaseCountry(@RequestBody DiseaseCountryCase country)  {
+    public ResultVO addDiseaseCountry(@RequestBody DiseaseCountryForm country)  {
 
         ResultVO resultVO = ResultVO.success(countryCaseService.addDieaseCountry(country));
         return resultVO;

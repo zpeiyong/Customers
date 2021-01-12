@@ -61,7 +61,8 @@ public interface IDiseaseCountryCaseDao extends JpaRepository<DiseaseCountryCase
             "ORDER BY d.country_name_cn DESC;", nativeQuery = true)
     List<DiseaseCountryCase> getDailyConFirmedAddByDiseaseId(Long diseaseId,int limit,String dateStr, int i);
 
-    List<DiseaseCountryCase>  findByDiseaseIdAndCountryNameCnAndPeriodStart(Long diseaseId,String countryNameCn,Date periodStart);
+    //添加病种的时候 判断数据是否重复
+    List<DiseaseCountryCase>  findByDiseaseIdAndCountryIdAndPeriodStart(Long diseaseId,Long countryId,Date periodStart);
 
     List<DiseaseCountryCase>  findByDiseaseIdAndShowTypeAndPeriodStart(Long diseaseId,String showType,Date periodStart);
 

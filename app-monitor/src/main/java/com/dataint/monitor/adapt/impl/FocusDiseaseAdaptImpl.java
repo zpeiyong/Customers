@@ -15,13 +15,19 @@ public class FocusDiseaseAdaptImpl implements IFocusDiseaseAdapt {
     @Value("${service.datapack.baseUrl}")
     private String baseUrl;
     @Override
-    public Object listFocusDisease(Long id, String showType) {
+    public Object listFocusDisease(Long id, String showType,Long current, Long pageSize) {
         HashMap<String, String> map = new HashMap<>();
         if (id!=null) {
             map.put("id", id.toString());
         }
         if (showType!=null) {
             map.put("showType", showType);
+        }
+        if (current>0){
+            map.put("current", current.toString());
+        }
+        if (pageSize>0){
+            map.put("pageSize", pageSize.toString());
         }
         String url ="http://" +  baseUrl + "/focusDisease/focusDiseaseList";
         return GetPostUtil.sendGet(url, map);

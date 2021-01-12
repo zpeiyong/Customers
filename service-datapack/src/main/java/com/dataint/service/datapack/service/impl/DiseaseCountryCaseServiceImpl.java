@@ -5,6 +5,7 @@ import com.dataint.service.datapack.db.dao.ICountryDao;
 import com.dataint.service.datapack.db.dao.IDiseaseCountryCaseDao;
 import com.dataint.service.datapack.db.entity.Country;
 import com.dataint.service.datapack.db.entity.DiseaseCountryCase;
+import com.dataint.service.datapack.model.form.DiseaseCountryForm;
 import com.dataint.service.datapack.model.param.DiseaseCountryParam;
 import com.dataint.service.datapack.model.vo.CountryVO;
 import com.dataint.service.datapack.model.vo.DiseaseCountryCaseVO;
@@ -63,6 +64,10 @@ public class DiseaseCountryCaseServiceImpl implements IDiseaseCountryCaseService
                 if (diseaseCountryParam.getPeriodStart()!=null){
                     list.add(criteriaBuilder.equal(root.get("periodStart").as(String.class), diseaseCountryParam.getPeriodStart()));
                 }
+                if (diseaseCountryParam.getId()!=null){
+                    list.add(criteriaBuilder.equal(root.get("id").as(Long.class), diseaseCountryParam.getId()));
+                }
+
                         Predicate[] p = new Predicate[list.size()];
                 return criteriaBuilder.and(list.toArray(p));
             }
@@ -72,17 +77,18 @@ public class DiseaseCountryCaseServiceImpl implements IDiseaseCountryCaseService
     }
 
     @Override
-    public DiseaseCountryCase addDieaseCountry(DiseaseCountryCase countryCase) {
+    public DiseaseCountryCase addDieaseCountry(DiseaseCountryForm countryCase) {
+        DiseaseCountryCase diseaseCountryCase = countryCase.toPo(DiseaseCountryCase.class);
         Long diseaseId = countryCase.getDiseaseId();
-        String countryCn = countryCase.getCountryNameCn();
+        Long countryId = countryCase.getCountryId();
         Date start = countryCase.getPeriodStart();
-        List<DiseaseCountryCase> caseList = caseDao.findByDiseaseIdAndCountryNameCnAndPeriodStart(diseaseId, countryCn, start);
-        if (caseList .size()>0){
+        List<DiseaseCountryCase> caseList = caseDao.findByDiseaseIdAndCountryIdAndPeriodStart(diseaseId, countryId, start);
+        if (caseList .size()>0 ){
             throw  new DataAlreadyExistException("国家名称或者病例数据在此时间段内已经存在");
         }
         else{
-            DiseaseCountryCase save = caseDao.save(countryCase);
-        return save;
+            DiseaseCountryCase CountryCaseSave = caseDao.save(diseaseCountryCase);
+            return CountryCaseSave;
         }
     }
 

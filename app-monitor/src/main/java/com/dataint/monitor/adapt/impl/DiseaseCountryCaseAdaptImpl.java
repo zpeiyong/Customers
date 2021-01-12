@@ -30,6 +30,8 @@ public class DiseaseCountryCaseAdaptImpl implements IDiseaseCountryCaseAdapt {
             map.put("diseaseId", diseaseCountryParam.getDiseaseId().toString());
         if (diseaseCountryParam.getCountryNameCn() != null)
             map.put("countryNameCn", diseaseCountryParam.getCountryNameCn());
+        if (diseaseCountryParam.getId()!=null)
+            map.put("id", diseaseCountryParam.getId().toString());
 
 
 
