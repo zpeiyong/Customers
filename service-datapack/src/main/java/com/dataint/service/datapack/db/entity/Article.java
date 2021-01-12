@@ -86,9 +86,10 @@ public class Article extends BasePO {
     private Long mediaTypeId;  // 来源媒体类型id
 
     @Column(name = "if_similar")
-    private Boolean ifSimilar;  // 是否已关联到相似文章(true:已走相似度算法 ; false: 未走相似度算法)
+    private Boolean ifSimilar = false;  // 是否已关联到相似文章(true:已走相似度算法 ; false: 未走相似度算法)
 
-    private Long similarArticleId;  // 归类相似文章id(当前文章为首篇则id=0)
+    @Column(name = "similar_article_id")
+    private Long similarArticleId = -1L;  // 归类相似文章id(当前文章为首篇则id=0)
 
 //    @Column(name = "outbreak_judgment", columnDefinition = "char(1) default 'N'")
 //    private String outbreakJudgment = "N"; //是否计入事件统计(N:不计入; Y:计入)
