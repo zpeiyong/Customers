@@ -50,7 +50,7 @@ public class DiseaseCountryCaseController {
     @ApiImplicitParam(paramType = "query", name = "diseaseCountryParam", value = "病情数据查询参数列表", required = true, dataType = "diseaseCountryParam")
 
     @ResponseBody
-        public ResultVO<DiseaseCountryCase> getdieaseCountryList(DiseaseCountryParam diseaseCountryParam) {
+        public ResultVO<DiseaseCountryCase> getdieaseCountryList(@ModelAttribute DiseaseCountryParam diseaseCountryParam) {
 
         ResultVO resultVO =ResultVO.success(countryCaseService.listDiseaseCountry(diseaseCountryParam));
         return   resultVO;
