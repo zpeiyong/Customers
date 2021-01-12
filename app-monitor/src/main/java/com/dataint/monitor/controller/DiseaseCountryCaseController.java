@@ -1,6 +1,5 @@
 package com.dataint.monitor.controller;
 
-import com.dataint.cloud.common.model.ResultVO;
 import com.dataint.monitor.model.DiseaseCountryCase;
 import com.dataint.monitor.model.param.DiseaseCountryParam;
 import com.dataint.monitor.service.IDiseaseCountryCaseService;
@@ -39,9 +38,8 @@ public class DiseaseCountryCaseController {
     @RequestMapping(value = "/diseaseCountryCaseList",method = RequestMethod.GET)
     @ApiOperation(value = "病情数据列表查询",notes = "列表查询")
     @ApiImplicitParam(paramType = "query", name = "diseaseCountryParam", value = "病情数据查询参数列表", required = true, dataType = "diseaseCountryParam")
-
     @ResponseBody
-    public Object getdieaseCountryList(DiseaseCountryParam  diseaseCountryParam){
+    public Object getdieaseCountryList(@ModelAttribute DiseaseCountryParam  diseaseCountryParam){
         Object listDiseaseCountry = countryService.listDiseaseCountry(diseaseCountryParam);
         return   listDiseaseCountry;
     }
