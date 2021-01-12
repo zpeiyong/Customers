@@ -2,6 +2,7 @@ package com.dataint.service.datapack.controller;
 
 import com.dataint.cloud.common.model.ResultVO;
 import com.dataint.service.datapack.db.entity.FocusDisease;
+import com.dataint.service.datapack.model.form.FocusDiseaseForm;
 import com.dataint.service.datapack.model.param.FocusDiseaseParam;
 import com.dataint.service.datapack.model.vo.FocusDiseaseVO;
 import com.dataint.service.datapack.service.IFocusDiseaseService;
@@ -46,7 +47,7 @@ public class FocusDiseaseController {
     @RequestMapping(value = "/addFocusDisease",method = RequestMethod.POST)
     @ApiOperation(value = "增加一个病种数据", notes = "增加一个病种数据")
     @ApiImplicitParam(paramType = "query", name = "DiseaseCountryCase", value = "保存病种数据", required = true, dataType = "DiseaseCountryCase")
-    public ResultVO addDiseaseCountry(@RequestBody FocusDisease focusDisease){
+    public ResultVO addDiseaseCountry(@RequestBody FocusDiseaseForm focusDisease){
         ResultVO resultVO = ResultVO.success(focusDiseaseService.addFocusDisease(focusDisease));
         return resultVO;
     }

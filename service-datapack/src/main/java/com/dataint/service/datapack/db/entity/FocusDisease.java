@@ -21,6 +21,8 @@ import javax.persistence.Table;
 @AllArgsConstructor
 public class FocusDisease extends BasePO {
 
+    @Column(name = "id")
+    private  Long id;
     @Column(name = "code", nullable = false)
     private String code;  // 国际疾病伤害及死因分类标准第十版code
 

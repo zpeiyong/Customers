@@ -22,6 +22,8 @@ import java.util.Date;
 @AllArgsConstructor
 public class DiseaseCountryCase extends BasePO {
 
+    @Column(name = "id")
+    private   Long  id;
     @Column(name = "disease_id")
     private Long diseaseId;  // 传染病id(暂对应focus_disease表)
 

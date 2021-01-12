@@ -39,7 +39,7 @@ public class FocusDiseaseController {
         return   listFocusDiseaseDefault;
     }
 
-    @RequestMapping(value = "/addFocusDisease",method = RequestMethod.POST)
+    @RequestMapping(value = "/saveFocusDisease",method = RequestMethod.POST)
     @ApiOperation(value = "增加一个病种数据", notes = "增加一个病种数据")
     @ApiImplicitParam(paramType = "query", name = "DiseaseCountryCase", value = "保存病种数据", required = true, dataType = "DiseaseCountryCase")
     public Object addDiseaseCountry(@RequestBody FocusDisease focusDisease){

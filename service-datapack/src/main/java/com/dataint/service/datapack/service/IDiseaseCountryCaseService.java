@@ -2,6 +2,7 @@ package com.dataint.service.datapack.service;
 
 
 import com.dataint.service.datapack.db.entity.DiseaseCountryCase;
+import com.dataint.service.datapack.model.form.DiseaseCountryForm;
 import com.dataint.service.datapack.model.param.DiseaseCountryParam;
 import com.dataint.service.datapack.model.vo.CountryVO;
 import com.dataint.service.datapack.model.vo.DiseaseCountryCaseVO;
@@ -26,7 +27,7 @@ public interface IDiseaseCountryCaseService {
      * @param
      * @return
      */
-    DiseaseCountryCase addDieaseCountry(DiseaseCountryCase  countryCase);
+    DiseaseCountryCase addDieaseCountry(DiseaseCountryForm countryCase);
 
 
 

@@ -8,6 +8,7 @@ import java.util.Date;
 @Getter
 @Setter
 public class DiseaseCountryParam {
+    private  Long id;
     private Long diseaseId;  // 传染病id(暂对应focus_disease表)
 
     private Long countryId;  // 国家id
