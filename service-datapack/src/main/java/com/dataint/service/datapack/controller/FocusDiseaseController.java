@@ -28,10 +28,12 @@ public class FocusDiseaseController {
             @ApiImplicitParam(name = "showType",required = true, value = "周期类型",dataType ="String",paramType = "query"),
     })
     @ResponseBody
-    public ResultVO<FocusDiseaseVO> getFoCountryList(Long id, String showType){
+    public ResultVO<FocusDiseaseVO> getFoCountryList(Long id, String showType,int current,int pageSize){
         FocusDiseaseParam focusDiseaseParam = new FocusDiseaseParam();
         focusDiseaseParam.setId(id);
         focusDiseaseParam.setShowType(showType);
+        focusDiseaseParam.setCurrent(current);
+        focusDiseaseParam.setPageSize(pageSize);
         ResultVO  resultVO = ResultVO.success(focusDiseaseService.listFocusDisease(focusDiseaseParam));
         return  resultVO;
     }
