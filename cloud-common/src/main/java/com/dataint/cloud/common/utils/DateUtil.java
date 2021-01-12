@@ -5,6 +5,7 @@ import com.dataint.cloud.common.model.Constants;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
@@ -280,10 +281,10 @@ public class DateUtil {
      * 获取当月第一天0点
      * @return
      */
-    public static String getStartTimeOfQuarter() {
-        LocalDate nowDate = LocalDate.now();
+    public static String getStartTimeOfMonth() {
+        LocalDateTime nowDateTime = LocalDateTime.now();
 
-        LocalDate firstDayOfMonth = nowDate.with(TemporalAdjusters.firstDayOfMonth());
+        LocalDateTime firstDayOfMonth = nowDateTime.with(TemporalAdjusters.firstDayOfMonth()).withHour(0).withMinute(0).withSecond(0);
 
         return firstDayOfMonth.format(DateTimeFormatter.ofPattern(Constants.DateTimeFormat));
     }
@@ -292,11 +293,11 @@ public class DateUtil {
      * 获取当季第一天0点
      * @return
      */
-    public static String getStartTimeOfMonth(){
-        LocalDate nowDate = LocalDate.now();
-        Month firstMonthOfQuarter = nowDate.getMonth().firstMonthOfQuarter();
+    public static String getStartTimeOfQuarter(){
+        LocalDateTime nowDateTime = LocalDateTime.now();
+        Month firstMonthOfQuarter = nowDateTime.getMonth().firstMonthOfQuarter();
 
-        LocalDate firstDayOfQuarter = LocalDate.of(nowDate.getYear(), firstMonthOfQuarter, 1);
+        LocalDateTime firstDayOfQuarter = LocalDateTime.of(nowDateTime.getYear(), firstMonthOfQuarter, 1, 0, 0, 0);
 
         return firstDayOfQuarter.format(DateTimeFormatter.ofPattern(Constants.DateTimeFormat));
     }
@@ -305,10 +306,10 @@ public class DateUtil {
      * 获取当年第一天0点
      * @return
      */
-    public static String getStartTimeOfYeary() {
-        LocalDate nowDate = LocalDate.now();
+    public static String getStartTimeOfYearly() {
+        LocalDateTime nowDateTime = LocalDateTime.now();
 
-        LocalDate firstDayOfYear = nowDate.with(TemporalAdjusters.firstDayOfYear());
+        LocalDateTime firstDayOfYear = nowDateTime.with(TemporalAdjusters.firstDayOfYear()).withHour(0).withMinute(0).withSecond(0);
 
         return firstDayOfYear.format(DateTimeFormatter.ofPattern(Constants.DateTimeFormat));
     }
@@ -525,12 +526,15 @@ public class DateUtil {
 //        System.out.println(getDailyBetweenIntervals(beginTime, overTime));
         String timeStr = "2019-12-02 00:00:00";
 //        System.out.println(getWeekOfYear(timeStr));
-        try {
-            System.out.println(get1YearAgoStart(timeStr));
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            System.out.println(get1YearAgoStart(timeStr));
+//
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+        System.out.println(getStartTimeOfMonth());
+        System.out.println(getStartTimeOfYearly());
+        System.out.println(getStartTimeOfQuarter());
 
     }
 }

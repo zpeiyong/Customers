@@ -22,7 +22,7 @@ public class FocusDiseaseVO extends BaseVO {
         } else if ("quarterly".equals(showType)) {
             firstDateOfPeriod = DateUtil.getStartTimeOfQuarter().split(" ")[0];
         } else if ("yearly".equals(showType)) {
-            firstDateOfPeriod = DateUtil.getStartTimeOfYeary().split(" ")[0];
+            firstDateOfPeriod = DateUtil.getStartTimeOfYearly().split(" ")[0];
         }
     }
 
