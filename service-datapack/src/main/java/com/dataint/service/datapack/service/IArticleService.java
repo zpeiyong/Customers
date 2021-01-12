@@ -5,11 +5,11 @@ import com.dataint.service.datapack.model.form.ArticleUpdateForm;
 import com.dataint.service.datapack.model.form.StoreDataForm;
 import com.dataint.service.datapack.model.param.ArticleListQueryParam;
 import com.dataint.service.datapack.model.vo.ArticleBasicVO;
+import com.dataint.service.datapack.model.vo.ArticleReportVO;
 import com.dataint.service.datapack.model.vo.ArticleVO;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
-import java.util.Map;
 
 public interface IArticleService {
 
@@ -101,12 +101,11 @@ public interface IArticleService {
 
     /* 统计/分析模块 */
     List<String> searchByKeyword(String keyword);
+
     /**
      *
-     * @param startTime
-     * @param endTime
-     * @param type
+     * @param articleIdList
      * @return
      */
-    Map<String, Object> queryReportContent(String startTime, String endTime, String type);
+    List<ArticleReportVO> queryReportContent(List<Long> articleIdList);
 }

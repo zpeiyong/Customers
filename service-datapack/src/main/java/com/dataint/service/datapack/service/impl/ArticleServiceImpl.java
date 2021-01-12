@@ -13,6 +13,7 @@ import com.dataint.service.datapack.db.entity.*;
 import com.dataint.service.datapack.model.form.*;
 import com.dataint.service.datapack.model.param.ArticleListQueryParam;
 import com.dataint.service.datapack.model.vo.ArticleBasicVO;
+import com.dataint.service.datapack.model.vo.ArticleReportVO;
 import com.dataint.service.datapack.model.vo.ArticleVO;
 import com.dataint.service.datapack.service.IArticleService;
 import lombok.extern.slf4j.Slf4j;
@@ -561,32 +562,10 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
     }
 
     @Override
-    public Map<String, Object> queryReportContent(String startTime, String endTime, String type) {
-//        // 获取文章所有等级
-//        List<OutbreakLevel> levelList = outbreakLevelDao.findAll();
+    public List<ArticleReportVO> queryReportContent(List<Long> articleIdList) {
+        List<Article> articleList = articleDao.findAllByIdInOrderByGmtRelease(articleIdList);
+        List<ArticleReportVO> voList = articleList.stream().map(ArticleReportVO::new).collect(Collectors.toList());
 
-        Map<String, Object> articleMap = new HashMap<>();
-//        for (OutbreakLevel level : levelList) {
-//            // 00: 未评价
-//            if (!"00".equals(level.getLevelCode())) {
-//                String levelCode = level.getLevelCode();
-//                // 生成周报时不包含一般关注
-//                if ("02".equals(levelCode) && "weekly".equals(type)) {
-//                    continue;
-//                }
-//                List<Article> articleList = articleDao.queryAllByUpdatedTime(startTime, endTime, level.getId());
-//
-//                /*
-//                构造返回值map
-//                 */
-//                // 重要, 一般
-//                if (!CollectionUtils.isEmpty(articleList)) {
-//                    articleMap.put(levelCode, articleList.stream().map(ArticleReportVO::new).collect(Collectors.toList()));
-//                }
-//            }
-//        }
-
-        return articleMap;
+        return voList;
     }
-
 }

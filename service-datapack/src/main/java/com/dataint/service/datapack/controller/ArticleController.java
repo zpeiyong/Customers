@@ -161,16 +161,15 @@ public class ArticleController {
         return ResultVO.success(articleService.searchByKeyword(keyword));
     }
 
-    @ApiOperation(value = "获取报告所需舆情数据", notes = "根据起始时间段, 获取报告所需舆情数据内容")
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", name = "startTime", value = "舆情起始时间", required = true, dataType = "string"),
-            @ApiImplicitParam(paramType = "query", name = "endTime", value = "舆情结束时间", required = true, dataType = "string"),
-            @ApiImplicitParam(paramType = "query", name = "type", value = "舆情报告类型", required = true, dataType = "string")
-    })
-    @GetMapping("/queryReport")
-    public ResultVO queryDailyReport(@RequestParam("startTime") String startTime, @RequestParam("endTime") String endTime, @RequestParam(value = "type") String type) {
+    @ApiOperation(value = "获取报告需要的舆情数据", notes = "根据舆情id列表获取报告需要的舆情数据")
+    @ApiImplicitParam(paramType = "query", name = "idListStr", value = "舆情数据id列表", allowMultiple = true, required = true, dataType = "string")
+    @GetMapping("/queryArticlesByIdList")
+    public ResultVO queryArticlesByIdList(@RequestParam List<Long> idListStr) {
+        log.debug("query articles by articleId List: {}", idListStr);
+//        List<Long> idList = Arrays.stream(idListStr.split(Constants.SPLITTER)).map(Long::valueOf).collect(Collectors.toList());
+//        List<Long> idList = idListStr;
 
-        return ResultVO.success(articleService.queryReportContent(startTime, endTime, type));
+        return ResultVO.success(articleService.queryReportContent(idListStr));
     }
 
 }
