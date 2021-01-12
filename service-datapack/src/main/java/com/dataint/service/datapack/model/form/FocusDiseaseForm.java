@@ -13,17 +13,8 @@ import javax.validation.constraints.NotBlank;
 public class FocusDiseaseForm extends BaseForm<FocusDisease> {
 
     private  Long  id;
-    @NotBlank
-    private String nameEn;
-    @NotBlank
-    private String nameCn;
 
     @NotBlank
     private String showType;  // 展示周期类型
 
-    private  String   nameCnFirst;
-
-    private Integer status;  // 状态(1:可用; 0:不可用)
-
-    private  Boolean ifPopular;
 }

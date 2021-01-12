@@ -55,20 +55,19 @@ public class FocusDiseaseServiceImpl implements IFocusDiseaseService {
 
     @Override
     public FocusDisease addFocusDisease(FocusDiseaseForm focusDiseaseForm) {
-        FocusDisease focusDisease = focusDiseaseForm.toPo(FocusDisease.class);
         Long diseaseFormId = focusDiseaseForm.getId();
         Optional<FocusDisease> focusOpt = focusDiseaseDao.findById(diseaseFormId);
         if (!focusOpt.isPresent()) {
             throw new DataNotExistException();
         }
-        String    name  = focusDiseaseForm.getNameCn();
-        String showType = focusDiseaseForm.getShowType();
-        List<FocusDisease> lists = focusDiseaseDao.findByNameCnAndShowType(name,showType);
-        if (lists.size()>0){
-            throw  new DataAlreadyExistException("病例已经存在");
+        FocusDisease focusDisease = focusOpt.get();
+
+        if (!focusDisease.getShowType().equals(focusDiseaseForm.getShowType())) {
+            focusDisease.setShowType(focusDiseaseForm.getShowType());
+            focusDiseaseDao.save(focusDisease);
         }
-        FocusDisease save = focusDiseaseDao.save(focusDisease);
-            return save;
+
+        return focusDisease;
     }
 
     @Override
