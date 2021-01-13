@@ -8,7 +8,7 @@ import java.util.Map;
 public interface IUserService {
     User getByUsername(String uniqueId);
 
-    Map<String, Object> checkUserByUsername(String username, String password);
+    Map<String, Object> checkUserByUsername(String username, String password, String type);
 
     CurrentUserVO getCurrentUser(String username);
 

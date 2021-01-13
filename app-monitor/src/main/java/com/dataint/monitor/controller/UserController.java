@@ -35,7 +35,14 @@ public class UserController {
         if (!params.containsKey("username") || !params.containsKey("password"))
             throw new DataintBaseException(BaseExceptionEnum.DATA_VER_USERNAME_PASSWORD_ERROR);
 
-        Map<String, Object> rstMap = userService.checkUserByUsername((String)params.get("username"), (String)params.get("password"));
+        if (!params.containsKey("type")) {
+            throw new DataintBaseException(BaseExceptionEnum.ARGUMENT_NOT_VALID);
+        }
+
+        Map<String, Object> rstMap = userService.checkUserByUsername(
+                (String)params.get("username"),
+                (String)params.get("password"),
+                (String)params.get("type"));
 
         // Return the token
         return ResultVO.success(rstMap);
