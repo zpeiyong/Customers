@@ -133,7 +133,7 @@ public class ReportServiceImpl implements IReportService {
             // keyword条件存在时, 通过数据库匹配并推算出对应简报标题
             else {
                 String keyword = reportQueryParam.getKeyword();
-                List<ArticleReport> arList = articleReportDao.findAllByTitleLikeAndSummaryLikeOrderByReportTitleDesc(keyword, keyword);
+                List<ArticleReport> arList = articleReportDao.findAllByTitleLikeOrSummaryLikeOrderByReportTitleDesc(keyword, keyword);
 
                 List<String> titleList = arList.stream().map(ArticleReport::getReportTitle).collect(Collectors.toList());
 
@@ -168,7 +168,8 @@ public class ReportServiceImpl implements IReportService {
         // 生成日报
         generateReport(paramMap);
 
-        // TODO: 保存已生成报告的舆情信息
+        // 保存已生成报告的舆情信息
+        String reportTitle = ((Report) paramMap.get("report")).getTitle();
         List<ReportLevel> reportLevelList = reportLevelDao.findAllByOrderBySort();
         for (ReportLevel level : reportLevelList) {
             List<ArticleReportVO> articleReportVOList = reportBaseModel.getListMap().get(level.getLevelName());
@@ -176,9 +177,10 @@ public class ReportServiceImpl implements IReportService {
                 ArticleReport articleReport = new ArticleReport();
                 articleReport.setArticleId(vo.getId());
                 articleReport.setReportLevelId(level.getId());
-                articleReport.setReportTitle(vo.getTitle());
+                articleReport.setTitle(vo.getTitle());
                 articleReport.setSummary(vo.getSummary());
                 articleReport.setArticleUrl(vo.getArticleUrl());
+                articleReport.setReportTitle(reportTitle);
 
                 return articleReport;
             }).collect(Collectors.toList());

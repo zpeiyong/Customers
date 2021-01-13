@@ -34,7 +34,7 @@ public class ArticleReport implements Serializable {
     @Column(name = "summary")
     private String summary;
 
-    @Column(name = "article_url")
+    @Column(name = "article_url", length = 1024)
     private String articleUrl;
 
     @Column(name = "report_title")

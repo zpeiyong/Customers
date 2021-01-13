@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface IArticleReportDao extends JpaRepository<ArticleReport, Long> {
 
-    List<ArticleReport> findAllByTitleLikeAndSummaryLikeOrderByReportTitleDesc(String title, String summary);
+    List<ArticleReport> findAllByTitleLikeOrSummaryLikeOrderByReportTitleDesc(String title, String summary);
 }
