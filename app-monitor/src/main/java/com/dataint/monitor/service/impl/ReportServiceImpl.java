@@ -1,5 +1,6 @@
 package com.dataint.monitor.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.dataint.cloud.common.exception.DataNotExistException;
 import com.dataint.cloud.common.model.Constants;
@@ -175,10 +176,14 @@ public class ReportServiceImpl implements IReportService {
             return;
         //
         ReportBaseModel reportBaseModel = (ReportBaseModel) paramMap.get("reportBaseModel");
-        if (reportBaseModel.getConcernList() == null && reportBaseModel.getMoreInfoList() == null) {
+        if (CollectionUtils.isEmpty(reportBaseModel.getListMap())) {
             log.info(reportBaseModel.getReportDate() + " 未对舆情数据进行处置!");
             return;
         }
+//        if (reportBaseModel.getConcernList() == null && reportBaseModel.getMoreInfoList() == null) {
+//            log.info(reportBaseModel.getReportDate() + " 未对舆情数据进行处置!");
+//            return;
+//        }
 
         // 生成日报
         generateReport(paramMap);
@@ -351,6 +356,7 @@ public class ReportServiceImpl implements IReportService {
         }
 
         //
+        LinkedHashMap<String, List<ArticleReport>> listMap = new LinkedHashMap<>();
         List<ReportLevel> reportLevelList = reportLevelDao.findAllByOrderBySort();
         for (ReportLevel reportLevel : reportLevelList) {
             // 查询报告舆情关系表，过滤出所有需要的舆情id()
@@ -359,13 +365,19 @@ public class ReportServiceImpl implements IReportService {
             List<Long> articleIdList = reportArticleList.stream().map(ReportArticle::getArticleId).collect(Collectors.toList());
 
             // 请求service-datapack返回所有ID列表中的舆情数据
-            JSONObject reportJO = articleAdapt.queryArticlesByIdList(articleIdList);
-            System.out.println(reportJO);
+            JSONObject rstVO = articleAdapt.queryArticlesByIdList(articleIdList);
+            if (rstVO != null && rstVO.containsKey("data")) {
+                List<ArticleReport> concernList = JSONArray.parseArray(rstVO.getJSONArray("data").toJSONString(), ArticleReport.class);
+                for (ArticleReport reportArticle : concernList) {
+                    transArticleReport(reportArticle);
+                }
+
+                listMap.put(reportLevel.getLevelName(), concernList);
+            }
         }
+        reportBaseModel.setListMap(listMap);
 
 
-
-        return;
 //        ResultVO<JSONObject> rstVO = articleProvider.queryDailyReport(startTime, endTime, type);
 //        JSONObject reportJO = rstVO.getData();
 //

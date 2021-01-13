@@ -2,6 +2,7 @@ package com.dataint.monitor.model;
 
 import lombok.Data;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 
 @Data
@@ -15,10 +16,12 @@ public class ReportBaseModel {
 
     private String reportDate;
 
-    private List<ArticleReport> concernList;
+    private LinkedHashMap<String, List<ArticleReport>> listMap;
 
-    private List<ArticleReport> moreInfoList;
-
+//    private List<ArticleReport> concernList;
+//
+//    private List<ArticleReport> moreInfoList;
+//
 //    private List<ReportRecall> recallList;
 
 }
