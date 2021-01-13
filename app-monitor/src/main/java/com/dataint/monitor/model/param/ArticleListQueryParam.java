@@ -21,6 +21,4 @@ public class ArticleListQueryParam extends PageParam {
     private String articleType;  // 舆情文章内容类型
 
     private Long regionId;  // 大洲id(直航地区id=0)
-
-    private Long userId; //用户id
 }

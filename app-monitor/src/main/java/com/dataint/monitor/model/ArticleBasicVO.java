@@ -1,7 +1,6 @@
 package com.dataint.monitor.model;
 
 import com.dataint.cloud.common.model.BaseVO;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -28,8 +27,6 @@ public class ArticleBasicVO extends BaseVO {
 
     private ArticleOrigBasicVO articleOriginVO;  //
 
-//    private OutbreakLevelVO levelVO;  // 舆情等级实体
-
     private String articleType;  //舆情类型： pubinfo|statistic
 
     /*  */
@@ -37,15 +34,11 @@ public class ArticleBasicVO extends BaseVO {
 
     private Boolean ifSimilar;  // 是否已关联到相似文章
 
-/*    app-monitor:
-            - 当前用户是否关注
-                        - 评审数量
-                        - 是否已加入日报
-                     */
-    private Boolean ifLike = false; //当前用户是否关注, 默认没有关注
-
-    private Integer reviewCount; //评审数量
-
-
+    /* app-monitor:
+        - 当前用户是否关注
+        - 评审数量
+        - 是否已加入日报
+     */
+    private Boolean ifLike = false; // 当前用户是否关注, 默认没有关注
 
 }

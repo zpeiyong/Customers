@@ -1,7 +1,5 @@
 package com.dataint.monitor.service.impl;
 
-import com.dataint.cloud.common.dim.BaseExceptionEnum;
-import com.dataint.cloud.common.exception.DataintBaseException;
 import com.dataint.cloud.common.model.Constants;
 import com.dataint.cloud.common.utils.JWTUtil;
 import com.dataint.monitor.dao.IUserDao;
@@ -68,6 +66,7 @@ public class UserServiceImpl implements IUserService {
             claims.put("authorities", roleSet);
         }
         claims.put("userId", user.getId());
+        claims.put("systemType", type);
 
         // rebuild return map
         Map<String, Object> resultMap = new HashMap<>();

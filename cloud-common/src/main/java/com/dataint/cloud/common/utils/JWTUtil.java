@@ -115,9 +115,19 @@ public class JWTUtil {
      * @param token
      * @return
      */
-    public static Integer getUserId(String token) {
+    public static Long getUserId(String token) {
         Map<String, Object> mapTypes = parseJWTPublic(token);
-        return (Integer) mapTypes.get("userId");
+        return Long.valueOf((Integer) mapTypes.get("userId"));
+    }
+
+    /**
+     * token --> systemType
+     * @param token
+     * @return
+     */
+    public static String getSystemType(String token) {
+        Map<String, Object> mapTypes = parseJWTPublic(token);
+        return (String) mapTypes.get("systemType");
     }
 
     /**

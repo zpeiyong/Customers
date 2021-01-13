@@ -3,6 +3,8 @@ package com.dataint.service.datapack.service.impl;
 import com.dataint.cloud.common.exception.DataAlreadyExistException;
 import com.dataint.cloud.common.exception.DataNotExistException;
 import com.dataint.cloud.common.model.Constants;
+import com.dataint.cloud.common.model.Pagination;
+import com.dataint.cloud.common.model.ResultVO;
 import com.dataint.cloud.common.model.param.PageParam;
 import com.dataint.cloud.common.utils.MD5Util;
 import com.dataint.service.datapack.db.dao.IArticleDao;
@@ -21,7 +23,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -267,8 +268,7 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
     }
 
     @Override
-    public Page<Object> getArticleList(ArticleListQueryParam queryParam) {
-
+    public ResultVO getArticleList(ArticleListQueryParam queryParam) {
         // 大洲对应国家列表准备
         final List<String> countryCodeList;
         if (!ObjectUtils.isEmpty(queryParam.getRegionId())) {
@@ -303,7 +303,7 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
                 }
 
                 // 疫情类型id
-                if (queryParam.getDiseaseId() != 0) {
+                if (!ObjectUtils.isEmpty(queryParam.getDiseaseId()) && queryParam.getDiseaseId() != 0) {
                     Subquery<Long> subQuery = criteriaQuery.subquery(Long.class);
                     Root<ArticleDisease> adSubRoot = subQuery.from(ArticleDisease.class);
                     //
@@ -316,7 +316,7 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
                 }
 
                 // 来源媒体
-                if (queryParam.getMediaTypeId() != 0) {
+                if (!ObjectUtils.isEmpty(queryParam.getMediaTypeId()) && queryParam.getMediaTypeId() != 0) {
                     list.add(criteriaBuilder.equal(root.get("mediaTypeId").as(Long.class), queryParam.getMediaTypeId()));
                 }
 
@@ -385,11 +385,12 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
                         basicVO.setIfSimilar(false);
                         basicVO.setSimilarArticleCnt(0);
                     }
-
                     return basicVO;
                 }).collect(Collectors.toList());
 
-        return new PageImpl(basicVOList, articlePage.getPageable(), articlePage.getTotalElements());
+        Pagination pagination = new Pagination(queryParam.getPageSize(),articlePage.getTotalElements(), queryParam.getCurrent());
+
+        return ResultVO.success(basicVOList, pagination);
     }
 
     @Override

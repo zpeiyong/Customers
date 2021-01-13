@@ -69,13 +69,13 @@ public class ArticleController {
 
 
     /**
-     * Web疫情讯息模块
+     * Web视点模块
      */
     @ApiOperation(value = "获取舆情列表", notes = "获取舆情信息列表")
     @GetMapping("/normal/getArticleList")
     public ResultVO getArticleList(@ModelAttribute ArticleListQueryParam articleListQueryParam) {
 
-        return ResultVO.success(articleService.getArticleList(articleListQueryParam));
+        return articleService.getArticleList(articleListQueryParam);
     }
 
     @ApiOperation(value = "根据舆情id获取舆情信息", notes = "根据舆情id获取舆情信息")
@@ -166,8 +166,6 @@ public class ArticleController {
     @GetMapping("/queryArticlesByIdList")
     public ResultVO queryArticlesByIdList(@RequestParam List<Long> idListStr) {
         log.debug("query articles by articleId List: {}", idListStr);
-//        List<Long> idList = Arrays.stream(idListStr.split(Constants.SPLITTER)).map(Long::valueOf).collect(Collectors.toList());
-//        List<Long> idList = idListStr;
 
         return ResultVO.success(articleService.queryReportContent(idListStr));
     }

@@ -6,16 +6,13 @@ import com.dataint.cloud.common.utils.GetPostUtil;
 import com.dataint.monitor.adapt.IArticleAdapt;
 import com.dataint.monitor.dao.IArticleLikeDao;
 import com.dataint.monitor.dao.ICommentDao;
-import com.dataint.monitor.model.ArticleBasicVO;
 import com.dataint.monitor.model.form.ArticleUpdateForm;
 import com.dataint.monitor.model.param.ArticleListQueryParam;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -58,7 +55,7 @@ public class ArticleAdaptImpl implements IArticleAdapt {
     }
 
     @Override
-    public Object getArticleList(ArticleListQueryParam articleListQueryParam) {
+    public JSONObject getArticleList(ArticleListQueryParam articleListQueryParam) {
         HashMap<String, String> map = new HashMap<>();
         map.put("current", articleListQueryParam.getCurrent().toString());
         map.put("pageSize", articleListQueryParam.getPageSize().toString());
@@ -78,26 +75,8 @@ public class ArticleAdaptImpl implements IArticleAdapt {
             map.put("regionId", articleListQueryParam.getRegionId().toString());
         
         String url ="http://" +  baseUrl + "/article/normal/getArticleList";
-        JSONObject jsonObject = GetPostUtil.sendGet(url, map);
-        JSONObject data = jsonObject.getJSONObject("data");
-        List content = (ArrayList) data.get("content");
-        ArrayList<ArticleBasicVO> articleBasicVOArrayList = new ArrayList<>();
-        if (content.size() > 0) {
-            Long userId = articleListQueryParam.getUserId();
-            List<Long> idList = articleLikeDao.findArticleIdByUserId(userId);
-            for (Object ob: content){
-                ArticleBasicVO articleBasicVO = new ObjectMapper().convertValue(ob, ArticleBasicVO.class);
-                boolean flag = idList.contains(articleBasicVO.getId());
-                if (flag)
-                    articleBasicVO.setIfLike(true);
-                Integer i = commentDao.countByArticleId(articleBasicVO.getId().intValue());
-                articleBasicVO.setReviewCount(i);
-                articleBasicVOArrayList.add(articleBasicVO);
-            }
-            data.put("content", articleBasicVOArrayList);
-            jsonObject.put("data", data);
-        }
-        return jsonObject;
+
+        return GetPostUtil.sendGet(url, map);
     }
 
     @Override
