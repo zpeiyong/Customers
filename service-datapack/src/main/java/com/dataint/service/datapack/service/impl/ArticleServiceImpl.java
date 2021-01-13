@@ -144,62 +144,70 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
 
                 // 根据预处理传过来的值获取国家和传染病信息
                 Country country = countryDao.findByNameCn(entry.getKey());
-                FocusDisease disease = diseaseDao.findByNameCn(entry.getValue());
-                if (country != null && disease != null) {
-                    //
+                if (country != null) {
                     articleDisease.setCountryId(country.getId());
                     articleDisease.setCountryCode(country.getCode());
+                } else {
+                    articleDisease.setCountryCode(entry.getKey());
+                }
+                FocusDisease disease = diseaseDao.findByNameCn(entry.getValue());
+                if (disease != null) {
                     articleDisease.setDiseaseId(disease.getId());
                     articleDisease.setDiseaseCode(disease.getCode());
-                    //
-                    diseaseList.add(articleDisease);
+                } else {
+                    articleDisease.setDiseaseCode(entry.getValue());
                 }
+
+                diseaseList.add(articleDisease);
             }
         }
 
         // statistic类型舆情才会有该字段
         if (!CollectionUtils.isEmpty(staDiseaseFormList)) {
             for (StaDiseaseForm staDiseaseForm : staDiseaseFormList) {
-                Country country = countryDao.findByNameCn(staDiseaseForm.getCountry());
-                FocusDisease disease = diseaseDao.findByNameCn(staDiseaseForm.getDiseaseName());
+                ArticleDisease articleDisease = new ArticleDisease();
 
-                if (country != null && disease != null) {
-                    ArticleDisease articleDisease = new ArticleDisease();
-                    //
+                //
+                Country country = countryDao.findByNameCn(staDiseaseForm.getCountry());
+                if (country != null) {
                     articleDisease.setCountryId(country.getId());
                     articleDisease.setCountryCode(country.getCode());
+                } else {
+                    articleDisease.setCountryCode(staDiseaseForm.getCountry());
+                }
+                FocusDisease disease = diseaseDao.findByNameCn(staDiseaseForm.getDiseaseName());
+                if (disease != null) {
                     articleDisease.setDiseaseId(disease.getId());
                     articleDisease.setDiseaseCode(disease.getCode());
-
-                    //
-                    if (staDiseaseForm.getTimePeriodStart() != null) {
-                        articleDisease.setDiseaseStart(staDiseaseForm.getTimePeriodStart());
-                    }
-                    if (staDiseaseForm.getTimePeriodEnd() != null) {
-                        articleDisease.setDiseaseEnd(staDiseaseForm.getTimePeriodEnd());
-                    }
-                    if (staDiseaseForm.getPeriodConfirm() != null) {
-                        articleDisease.setPeriodConfirm(Integer.valueOf(staDiseaseForm.getPeriodConfirm()));
-                    }
-                    if (staDiseaseForm.getPeriodDeath() != null) {
-                        articleDisease.setPeriodDeath(Integer.valueOf(staDiseaseForm.getPeriodDeath()));
-                    }
-                    if (staDiseaseForm.getPeriodCure() != null) {
-                        articleDisease.setPeriodCure(Integer.valueOf(staDiseaseForm.getPeriodCure()));
-                    }
-                    if (staDiseaseForm.getConfirmCases() != null) {
-                        articleDisease.setConfirmCases(Integer.valueOf(staDiseaseForm.getConfirmCases()));
-                    }
-                    if (staDiseaseForm.getDeathCases() != null) {
-                        articleDisease.setDeathCases(Integer.valueOf(staDiseaseForm.getDeathCases()));
-                    }
-                    if (staDiseaseForm.getCureCases() != null) {
-                        articleDisease.setCureCases(Integer.valueOf(staDiseaseForm.getCureCases()));
-                    }
-
-                    //
-                    diseaseList.add(articleDisease);
                 }
+
+                //
+                if (staDiseaseForm.getTimePeriodStart() != null) {
+                    articleDisease.setDiseaseStart(staDiseaseForm.getTimePeriodStart());
+                }
+                if (staDiseaseForm.getTimePeriodEnd() != null) {
+                    articleDisease.setDiseaseEnd(staDiseaseForm.getTimePeriodEnd());
+                }
+                if (staDiseaseForm.getPeriodConfirm() != null) {
+                    articleDisease.setPeriodConfirm(Integer.valueOf(staDiseaseForm.getPeriodConfirm()));
+                }
+                if (staDiseaseForm.getPeriodDeath() != null) {
+                    articleDisease.setPeriodDeath(Integer.valueOf(staDiseaseForm.getPeriodDeath()));
+                }
+                if (staDiseaseForm.getPeriodCure() != null) {
+                    articleDisease.setPeriodCure(Integer.valueOf(staDiseaseForm.getPeriodCure()));
+                }
+                if (staDiseaseForm.getConfirmCases() != null) {
+                    articleDisease.setConfirmCases(Integer.valueOf(staDiseaseForm.getConfirmCases()));
+                }
+                if (staDiseaseForm.getDeathCases() != null) {
+                    articleDisease.setDeathCases(Integer.valueOf(staDiseaseForm.getDeathCases()));
+                }
+                if (staDiseaseForm.getCureCases() != null) {
+                    articleDisease.setCureCases(Integer.valueOf(staDiseaseForm.getCureCases()));
+                }
+
+                diseaseList.add(articleDisease);
             }
         }
 
