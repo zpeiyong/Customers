@@ -10,7 +10,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * @Description  主题点赞表
+ * @Description  舆情点赞表
  * @Author  Jiangxc
  * @Date 2020-06-22 
  */
@@ -34,7 +34,7 @@ public class ArticleLike implements Serializable {
 	private Long userId;  // 点赞用户id
 
  	@Column(name = "article_id" )
-	private Long articleId;  // 点赞主题库id
+	private Long articleId;  // 点赞舆情id
 
  	@Column(name = "created_time" )
 	private Date createdTime;  // 点赞时间
