@@ -26,9 +26,6 @@ public class ArticleBasicVO extends BaseVO {
         if (article.getArticleOrigin() != null) {
             this.articleOriginVO = new ArticleOrigBasicVO(article.getArticleOrigin());
         }
-//        if (article.getOutbreakLevel() != null) {
-//            this.levelVO = new OutbreakLevelVO(article.getOutbreakLevel());
-//        }
     }
 
     private String title;  // 标题
@@ -47,13 +44,13 @@ public class ArticleBasicVO extends BaseVO {
 
     private ArticleOrigBasicVO articleOriginVO;  //
 
-//    private OutbreakLevelVO levelVO;  // 舆情等级实体
-
     private String articleType;  //舆情类型： pubinfo|statistic
 
     /*  */
     private Integer similarArticleCnt;  // 相似文章数量
 
     private Boolean ifSimilar;  // 是否已关联到相似文章
+
+
 
 }

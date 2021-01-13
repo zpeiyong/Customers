@@ -10,4 +10,6 @@ import java.util.List;
 public interface IArticleReportDao extends JpaRepository<ArticleReport, Long> {
 
     List<ArticleReport> findAllByTitleLikeOrSummaryLikeOrderByReportTitleDesc(String title, String summary);
+    
+    boolean existsByArticleId(Long articleId);
 }

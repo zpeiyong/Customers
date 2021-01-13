@@ -26,12 +26,13 @@ public interface IArticleService {
     ResultVO getArticleBasicById(Integer articleId);
 
     /**
-     *
+     * 
+     * @param articleListQueryParam
      * @param userId
-     * @param pageParam
+     * @param systemType
      * @return
      */
-    JSONObject getArticleList(Integer userId, ArticleListQueryParam articleListQueryParam);
+    ResultVO getArticleList(ArticleListQueryParam articleListQueryParam, Long userId, String systemType);
 
     /**
      *

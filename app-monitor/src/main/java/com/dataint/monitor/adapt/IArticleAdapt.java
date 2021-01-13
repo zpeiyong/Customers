@@ -3,7 +3,6 @@ package com.dataint.monitor.adapt;
 import com.alibaba.fastjson.JSONObject;
 import com.dataint.cloud.common.model.param.PageParam;
 import com.dataint.monitor.model.form.ArticleUpdateForm;
-import com.dataint.monitor.model.form.StoreDataForm;
 import com.dataint.monitor.model.param.ArticleListQueryParam;
 
 import java.util.List;
@@ -16,7 +15,7 @@ public interface IArticleAdapt {
 
     Object queryMapBasicList(Long countryId, String diseaseName, PageParam pageParam);
 
-    Object getArticleList(ArticleListQueryParam articleListQueryParam);
+    JSONObject getArticleList(ArticleListQueryParam articleListQueryParam);
 
     Object getArticleById(Long id);
 
