@@ -132,7 +132,7 @@ public class ReportServiceImpl implements IReportService {
             }
             // keyword条件存在时, 通过数据库匹配并推算出对应简报标题
             else {
-                String keyword = reportQueryParam.getKeyword();
+                String keyword = "%" + reportQueryParam.getKeyword() + "%";
                 List<ArticleReport> arList = articleReportDao.findAllByTitleLikeOrSummaryLikeOrderByReportTitleDesc(keyword, keyword);
 
                 List<String> titleList = arList.stream().map(ArticleReport::getReportTitle).collect(Collectors.toList());
