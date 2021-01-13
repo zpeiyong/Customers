@@ -19,6 +19,7 @@ public enum BaseExceptionEnum implements ExceptionType {
     DUPLICATE_PRIMARY_KEY("唯一键冲突", 324),
     ES_FAILED("数据索引操作失败", 325),
     ES_ERROR("数据索引报错", 326),
+    DATE_PARSE_ERROR("日期格式化解析错误", 327),
 
     DATA_VER_NOT_EXIST("该数据不存在", 330),
     DATA_VER_ALREADY_EXIST("该数据已存在", 331),
@@ -29,6 +30,7 @@ public enum BaseExceptionEnum implements ExceptionType {
     DATA_VER_PASSWORD_NULL("密码不能为空！", 336),
     DATA_VER_USERNAME_PASSWORD_ERROR("用户名或密码不正确！", 337),
     DATA_VER_USER_NOT_ENABLED("当前用户不可用, 请联系管理员!", 338),
+
 
     DB_CONNECT_FAILED("数据库连接失败!", 350),
     DB_TYPE_NOT_SUPPORT("暂不支持对应的数据库类型", 351),

@@ -48,10 +48,10 @@ public class DateUtil {
     }
 
     /**
-     * 获取今天 23:59:59
+     * 获取指定时间天 23:59:59
      * @return
      */
-    public static String getTodayEnd(String timeStr) throws ParseException {
+    public static String getDayEnd(String timeStr) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Calendar cal = Calendar.getInstance();
         cal.setTime(sdf.parse(timeStr));
@@ -290,6 +290,29 @@ public class DateUtil {
         cal.set(Calendar.MILLISECOND, 0);
 
         return Constants.getDateTimeFormat().format(cal.getTime());
+    }
+
+    /**
+     * 获取基于指定时间n天的 00:00:00
+     * @param timeStr
+     * @param nDays +7,-8等
+     * @return
+     */
+    public static String getNDaysThanTimeStart(String timeStr, int nDays) {
+        Calendar startTimeOfDay;
+        try {
+            startTimeOfDay = getStartTimeOfDay(timeStr);
+            startTimeOfDay.add(Calendar.DAY_OF_YEAR, nDays);
+            startTimeOfDay.set(Calendar.HOUR_OF_DAY, 0);
+            startTimeOfDay.set(Calendar.MINUTE, 0);
+            startTimeOfDay.set(Calendar.SECOND, 0);
+            startTimeOfDay.set(Calendar.MILLISECOND, 0);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return Constants.getDateTimeFormat().format(startTimeOfDay.getTime());
     }
 
     /**

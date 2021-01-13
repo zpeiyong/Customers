@@ -2,7 +2,9 @@ package com.dataint.monitor.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.dataint.cloud.common.dim.BaseExceptionEnum;
 import com.dataint.cloud.common.exception.DataNotExistException;
+import com.dataint.cloud.common.exception.DataintBaseException;
 import com.dataint.cloud.common.model.Constants;
 import com.dataint.cloud.common.model.Pagination;
 import com.dataint.cloud.common.model.ResultVO;
@@ -114,14 +116,27 @@ public class ReportServiceImpl implements IReportService {
 
         // 日期条件存在时，不考虑keyword条件
         if (!StringUtils.isEmpty(reportQueryParam.getReportDate())) {
+            String reportDate = reportQueryParam.getReportDate() + " 00:00:00";
             Date dayStart, dayEnd;
             try {
-                dayStart = Constants.DateTimeSDF.parse(reportQueryParam.getReportDate() + " 00:00:00");
-                dayEnd = Constants.DateTimeSDF.parse(reportQueryParam.getReportDate() + " 23:59:59");
+                // 日报获取当前时间前7天, 周报获取当前时间前30天
+                String nDaysTimeStart = "";
+                if ("daily".equals(reportQueryParam.getReportType())) {
+                    nDaysTimeStart = DateUtil.getNDaysThanTimeStart(reportDate, -7);
+                } else if ("weekly".equals(reportQueryParam.getReportType())) {
+                    nDaysTimeStart = DateUtil.getNDaysThanTimeStart(reportDate, -30);
+                } else {
+                    // 暂时不会有monthly和yearly, 可能有event类型
+                    nDaysTimeStart = DateUtil.getNDaysThanTimeStart(reportDate, -30);
+                }
+
+                dayStart = Constants.DateTimeSDF.parse(nDaysTimeStart);
+                dayEnd = Constants.DateTimeSDF.parse(DateUtil.getDayEnd(reportDate));
             } catch (ParseException pe) {
                 pe.printStackTrace();
-                return null;
+                throw new DataintBaseException(BaseExceptionEnum.DATE_PARSE_ERROR);
             }
+
             pageResult = reportDao.findByGmtStartAndGmtEndAndReportType(dayStart, dayEnd,
                     reportQueryParam.getReportType(), pageParam.toPageRequest("gmtStart"));
         } else {
