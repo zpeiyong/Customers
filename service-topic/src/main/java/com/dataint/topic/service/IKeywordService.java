@@ -1,6 +1,6 @@
 package com.dataint.topic.service;
 
-import com.dataint.topic.db.entity.Keywords;
+import com.dataint.topic.model.vo.KeywordVO;
 
 import java.util.List;
 
@@ -10,5 +10,5 @@ public interface IKeywordService {
      * @param topicId
      * @return
      */
-    List<Keywords> getKeywordListByTopicId(Long topicId);
+    List<KeywordVO> getKeywordListByTopicId(Long topicId);
 }
