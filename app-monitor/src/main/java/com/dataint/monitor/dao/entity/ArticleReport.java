@@ -31,7 +31,7 @@ public class ArticleReport implements Serializable {
     @Column(name = "title")
     private String title;
 
-    @Column(name = "id")
+    @Column(name = "summary")
     private String summary;
 
     @Column(name = "article_url")
