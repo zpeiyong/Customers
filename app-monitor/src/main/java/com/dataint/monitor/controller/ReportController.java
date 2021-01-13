@@ -42,7 +42,7 @@ public class ReportController {
     @PostMapping("/queryReportList")
     public ResultVO queryReportList(@RequestBody ReportQueryParam reportQueryParam) {
 
-        return ResultVO.success(reportService.queryReportList(reportQueryParam));
+        return reportService.queryReportList(reportQueryParam);
     }
 
     @ApiOperation(value = "生成指定期间内的简报(日/周/月)", notes = "生成指定期间内的简报(日/周/月)")
@@ -61,7 +61,7 @@ public class ReportController {
     @ApiOperation(value = "预览/下载简报", notes = "根据简报Id预览/下载简报")
     @ApiImplicitParam(paramType = "path", name = "reportId", value = "简报ID", required = true, dataType = "long")
     @GetMapping("/download/{reportId}")
-    public ResponseEntity<Resource> downloadReport(@PathVariable("reportId") Integer reportId, HttpServletRequest request) {
+    public ResponseEntity<Resource> downloadReport(@PathVariable("reportId") Long reportId, HttpServletRequest request) {
         Resource resource = reportService.loadFileAsResource(reportId);
 
         // Try to determine file's content type

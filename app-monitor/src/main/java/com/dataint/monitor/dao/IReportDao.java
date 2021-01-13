@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 @Repository
-public interface IReportDao extends JpaRepository<Report, Integer> {
+public interface IReportDao extends JpaRepository<Report, Long> {
 
     Page<Report> findByGmtStartAndGmtEndAndReportType(Date gmtStart, Date gmtEnd, String reportType, Pageable pageable);
 

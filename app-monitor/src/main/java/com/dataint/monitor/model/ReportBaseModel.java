@@ -16,11 +16,11 @@ public class ReportBaseModel {
 
     private String reportDate;
 
-    private LinkedHashMap<String, List<ArticleReport>> listMap;
+    private LinkedHashMap<String, List<ArticleReportVO>> listMap;
 
-//    private List<ArticleReport> concernList;
+//    private List<ArticleReportVO> concernList;
 //
-//    private List<ArticleReport> moreInfoList;
+//    private List<ArticleReportVO> moreInfoList;
 //
 //    private List<ReportRecall> recallList;
 

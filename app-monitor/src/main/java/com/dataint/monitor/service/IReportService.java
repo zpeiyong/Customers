@@ -1,9 +1,8 @@
 package com.dataint.monitor.service;
 
-import com.dataint.monitor.model.ReportVO;
+import com.dataint.cloud.common.model.ResultVO;
 import com.dataint.monitor.model.param.ReportQueryParam;
 import org.springframework.core.io.Resource;
-import org.springframework.data.domain.Page;
 
 public interface IReportService {
     /*
@@ -15,7 +14,7 @@ public interface IReportService {
      * @param reportQueryParam
      * @return
      */
-    Page<ReportVO> queryReportList(ReportQueryParam reportQueryParam);
+    ResultVO queryReportList(ReportQueryParam reportQueryParam);
 
     /**
      *
@@ -29,7 +28,7 @@ public interface IReportService {
      * @param reportId
      * @return
      */
-    Resource loadFileAsResource(Integer reportId);
+    Resource loadFileAsResource(Long reportId);
 
 
     /*

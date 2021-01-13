@@ -3,7 +3,9 @@ package com.dataint.monitor.model;
 import lombok.Data;
 
 @Data
-public class ArticleReport {
+public class ArticleReportVO {
+
+    private Long id;
 
     private String title;
 
