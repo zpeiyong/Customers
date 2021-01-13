@@ -1,6 +1,9 @@
 package com.dataint.service.datapack.service.impl;
 
 import com.dataint.cloud.common.exception.DataAlreadyExistException;
+import com.dataint.cloud.common.exception.DataNotExistException;
+import com.dataint.cloud.common.model.Constants;
+import com.dataint.cloud.common.utils.DateUtil;
 import com.dataint.service.datapack.db.dao.ICountryDao;
 import com.dataint.service.datapack.db.dao.IDiseaseCountryCaseDao;
 import com.dataint.service.datapack.db.entity.Country;
@@ -77,56 +80,64 @@ public class DiseaseCountryCaseServiceImpl implements IDiseaseCountryCaseService
     }
 
     @Override
-    public DiseaseCountryCase addDieaseCountry(DiseaseCountryForm countryCase) {
-        Long id = countryCase.getId();
-        if (id==null){
-            DiseaseCountryCase diseaseCountryCase = countryCase.toPo(DiseaseCountryCase.class);
-            Long diseaseId = countryCase.getDiseaseId();
-            Long countryId = countryCase.getCountryId();
-            Date start = countryCase.getPeriodStart();
+    public DiseaseCountryCase addDiseaseCountryCase(DiseaseCountryForm dcForm) {
+        Long id = dcForm.getId();
+        DiseaseCountryCase diseaseCountryCase;
+        if (id == null){
+            diseaseCountryCase = dcForm.toPo(DiseaseCountryCase.class);
+            Long diseaseId = dcForm.getDiseaseId();
+            Long countryId = dcForm.getCountryId();
+            Date periodStart = dcForm.getPeriodStart();
 
-            List<DiseaseCountryCase> caseList = caseDao.findByDiseaseIdAndCountryIdAndPeriodStart(diseaseId, countryId, start);
-            if (caseList .size()>0 &&id ==null){
-                throw  new DataAlreadyExistException("国家名称或者病例数据在此时间段内已经存在");
+            List<DiseaseCountryCase> caseList = caseDao.findByDiseaseIdAndCountryIdAndPeriodStart(diseaseId, countryId, periodStart);
+            if (caseList.size() > 0){
+                throw new DataAlreadyExistException("国家名称或者病例数据在此时间段内已经存在");
             }
-            else{
-                DiseaseCountryCase CountryCaseSave = caseDao.save(diseaseCountryCase);
-                return CountryCaseSave;
+
+            // 换算周期截止时间
+            String periodStartStr = Constants.DateTimeSDF.format(periodStart);
+            String periodEndStr;
+            try {
+                if ("daily".equals(diseaseCountryCase.getShowType())) {
+                    periodEndStr = DateUtil.getTodayEnd(periodStartStr);
+                } else if ("weekly".equals(diseaseCountryCase.getShowType())) {
+                    periodEndStr = DateUtil.getWeekEnd(periodStartStr);
+                } else if ("monthly".equals(diseaseCountryCase.getShowType())) {
+                    periodEndStr = DateUtil.getEndTimeOfMonth(periodStartStr);
+                } else if ("quarterly".equals(diseaseCountryCase.getShowType())) {
+                    periodEndStr = DateUtil.getEndTimeOfQuarter(periodStartStr);
+                } else {
+                    periodEndStr = DateUtil.getEndTimeOfYearly(periodStartStr);
+                }
+                diseaseCountryCase.setPeriodEnd(Constants.getDateTimeFormat().parse(periodEndStr));
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
+            caseDao.save(diseaseCountryCase);
+
+            return diseaseCountryCase;
         }
         //修改
         else {
             Optional<DiseaseCountryCase> caseDaoById = caseDao.findById(id);
             if (!caseDaoById.isPresent()){
+                throw new DataNotExistException();
+            }
+            diseaseCountryCase = caseDaoById.get();
 
-            }
-            DiseaseCountryCase diseaseCountryCase = caseDaoById.get();
-
-                //数据库传过来的值和 前台接受的值进行比较
-            if (diseaseCountryCase.getConfirmAdd()!=countryCase.getConfirmAdd()){
-                diseaseCountryCase.setConfirmAdd(countryCase.getConfirmAdd());
-            }
-            if (diseaseCountryCase.getCureAdd()!=countryCase.getCureAdd()){
-                diseaseCountryCase.setCureAdd(countryCase.getCureAdd());
-            }
-            if (diseaseCountryCase.getDeathAdd()!=countryCase.getDeathAdd()){
-                diseaseCountryCase.setDeathAdd(countryCase.getDeathAdd());
-            }
-            if (diseaseCountryCase.getCureTotal()!=countryCase.getCureTotal()){
-                diseaseCountryCase.setCureTotal(countryCase.getCureTotal());
-            }
-            if (diseaseCountryCase.getDeathTotal()!=countryCase.getDeathTotal()){
-                diseaseCountryCase.setDeathTotal(countryCase.getDeathTotal());
-            }
-            if (diseaseCountryCase.getConfirmTotal()!=countryCase.getConfirmTotal()){
-                diseaseCountryCase.setConfirmTotal(countryCase.getConfirmTotal());
-            }
-            DiseaseCountryCase CountryCaseSave = caseDao.save(diseaseCountryCase);
-            return CountryCaseSave;
+            // 前台接受的值进行比较直接覆盖原来的
+            diseaseCountryCase.setConfirmAdd(dcForm.getConfirmAdd());
+            diseaseCountryCase.setCureAdd(dcForm.getCureAdd());
+            diseaseCountryCase.setDeathAdd(dcForm.getDeathAdd());
+            diseaseCountryCase.setCureTotal(dcForm.getCureTotal());
+            diseaseCountryCase.setDeathTotal(dcForm.getDeathTotal());
+            diseaseCountryCase.setConfirmTotal(dcForm.getConfirmTotal());
 
         }
-    }
+        caseDao.save(diseaseCountryCase);
 
+        return diseaseCountryCase;
+    }
 
     @Override
     public List<CountryVO> getCountriesByParam(Long diseaseId, String showType, String periodStart) throws  ParseException  {
@@ -142,7 +153,7 @@ public class DiseaseCountryCaseServiceImpl implements IDiseaseCountryCaseService
             countryMap.remove(dcCase.getCountryId());
         });
         List<CountryVO> remainCountryList = countryMap.values().stream().map(CountryVO::new).collect(toList());
-        return remainCountryList;
 
+        return remainCountryList;
     }
 }
