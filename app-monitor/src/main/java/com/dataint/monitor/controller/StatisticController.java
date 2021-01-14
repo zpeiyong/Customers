@@ -109,6 +109,79 @@ public class StatisticController {
         return statisticAdapt.getArticleTotalCntRank(diseaseId, dateStr);
     }
 
+    @ApiOperation(value = "[确诊趋势]获取过去7天新增确诊数(折线图)", notes = "获取过去7天新增确诊数(折线图)")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "diseaseId", value = "传染病id", required = true, dataType = "long"),
+            @ApiImplicitParam(paramType = "query", name = "dateStr", value = "查看日期", dataType = "string")
+    })
+    @GetMapping("/confirmed/getAddTimeLine")
+    public ResultVO getConfirmedTimeLine(@RequestParam Long diseaseId,
+                                         @RequestParam(required = false) String dateStr) {
+
+        return ResultVO.success(statisticAdapt.getConfirmedTimeLine(diseaseId, dateStr));
+    }
+
+    @ApiOperation(value = "[确诊趋势]获取前一天确诊数量排名", notes = "获取前一天确诊数量排名")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "diseaseId", value = "传染病id", required = true, dataType = "long"),
+            @ApiImplicitParam(paramType = "query", name = "dateStr", value = "查看日期", dataType = "string")
+    })
+    @GetMapping("/confirmed/getTotalCntRank")
+    public ResultVO getConfirmedTotalCntRank(@RequestParam Long diseaseId,
+                                             @RequestParam(required = false) String dateStr) {
+
+        return ResultVO.success(statisticAdapt.getConfirmedTotalCntRank(diseaseId, dateStr));
+    }
+
+    @ApiOperation(value = "[治愈趋势]获取过去7天新增治愈数(折线图)", notes = "获取过去7天新增治愈数(折线图)")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "diseaseId", value = "传染病id", required = true, dataType = "long"),
+            @ApiImplicitParam(paramType = "query", name = "dateStr", value = "查看日期", dataType = "string")
+    })
+    @GetMapping("/cured/getAddTimeLine")
+    public ResultVO getCuredTimeLine(@RequestParam Long diseaseId,
+                                     @RequestParam(required = false) String dateStr) {
+
+        return ResultVO.success(statisticAdapt.getCuredTimeLine(diseaseId, dateStr));
+    }
+
+    @ApiOperation(value = "[治愈率]获取前一天治愈百分比排名", notes = "获取前一天治愈百分比排名")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "diseaseId", value = "传染病id", required = true, dataType = "long"),
+            @ApiImplicitParam(paramType = "query", name = "dateStr", value = "查看日期", dataType = "string")
+    })
+    @GetMapping("/cured/getTotalCntRank")
+    public ResultVO getCuredTotalCntRank(@RequestParam Long diseaseId,
+                                         @RequestParam(required = false) String dateStr) {
+
+        return ResultVO.success(statisticAdapt.getCuredTotalCntRank(diseaseId, dateStr));
+    }
+
+    @ApiOperation(value = "[死亡趋势]获取过去7天新增死亡数(折线图)", notes = "获取过去7天新增死亡数(折线图)")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "diseaseId", value = "传染病id", required = true, dataType = "long"),
+            @ApiImplicitParam(paramType = "query", name = "dateStr", value = "查看日期", dataType = "string")
+    })
+    @GetMapping("/death/getAddTimeLine")
+    public ResultVO getDeathTimeLine(@RequestParam Long diseaseId,
+                                     @RequestParam(required = false) String dateStr) {
+
+        return ResultVO.success(statisticAdapt.getDeathTimeLine(diseaseId, dateStr));
+    }
+
+    @ApiOperation(value = "[死亡趋势]获取前一天死亡百分比排名", notes = "获取前一天死亡百分比排名")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "diseaseId", value = "传染病id", required = true, dataType = "long"),
+            @ApiImplicitParam(paramType = "query", name = "dateStr", value = "查看日期", dataType = "string")
+    })
+    @GetMapping("/death/getTotalCntRank")
+    public ResultVO getDeathTotalCntRank(@RequestParam Long diseaseId,
+                                         @RequestParam(required = false) String dateStr) {
+
+        return ResultVO.success(statisticAdapt.getDeathTotalCntRank(diseaseId, dateStr));
+    }
+
+
     @ApiOperation(value = "获取需要在地图上标记的国家列表", notes = "获取需要在地图上标记的国家列表")
     @GetMapping("/getMapCountryList")
     public Object getMapCountryList() {

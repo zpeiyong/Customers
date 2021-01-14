@@ -17,6 +17,18 @@ public interface IStatisticAdapt {
 
     Object getArticleTotalCntRank(Long diseaseId, String dateStr);
 
+    Object getConfirmedTimeLine(Long diseaseId, String dateStr);
+
+    Object getConfirmedTotalCntRank(Long diseaseId, String dateStr);
+
+    Object getCuredTimeLine(Long diseaseId, String dateStr);
+
+    Object getCuredTotalCntRank(Long diseaseId, String dateStr);
+
+    Object getDeathTimeLine(Long diseaseId, String dateStr);
+
+    Object getDeathTotalCntRank(Long diseaseId, String dateStr);
+
     Object getMapCountryList();
 
     Object getGlobalRiskTimeLine(String dateStr);
