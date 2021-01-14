@@ -40,7 +40,7 @@ public interface IArticleService {
      * @param id
      * @return
      */
-    JSONObject getArticleById(Integer userId, Integer id);
+    ResultVO getArticleById(Long userId, Long id, String systemType);
 
     /**
      *
@@ -89,6 +89,14 @@ public interface IArticleService {
      */
     JSONObject updateArticle(int userId, ArticleUpdateForm articleUpdateForm);
 
+    /**
+     *
+     * @param diseaseId
+     * @param pageSize
+     * @param current
+     * @param releaseTime
+     * @return
+     */
     JSONObject queryEventList(Long diseaseId,Long pageSize, Long current, String releaseTime);
 
 }

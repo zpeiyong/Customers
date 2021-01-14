@@ -497,10 +497,12 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
     @Override
     public ArticleVO getArticleById(Long articleId) {
         Optional<Article> articleOpt = articleDao.findById(articleId);
-        if (articleOpt.isPresent())
-            return new ArticleVO(articleOpt.get());
+        if (!articleOpt.isPresent()) {
+            throw new DataNotExistException("当前数据不存在");
+        }
+        Article article = articleOpt.get();
 
-        return new ArticleVO();
+        return new ArticleVO(article);
     }
 
     @Transactional

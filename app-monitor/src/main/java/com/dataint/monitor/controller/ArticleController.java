@@ -27,17 +27,16 @@ public class ArticleController {
     @Autowired
     private IArticleAdapt articleAdapt;
 
-    @RequestMapping(value = "/queryEventList",method = RequestMethod.GET)
+    /**
+     * 全景(BI)展示模块
+     */
     @ApiOperation(value = "BI大屏事件信息查询",notes = "BI大屏事件查询")
-    @ResponseBody
-    public  Object  queryEventList(Long diseaseId,Long pageSize, Long current,String releaseTime){
+    @RequestMapping(value = "/queryEventList",method = RequestMethod.GET)
+    public Object queryEventList(Long diseaseId, Long pageSize, Long current, String releaseTime) {
         JSONObject eventList = articleService.queryEventList(diseaseId, pageSize, current,releaseTime);
-        return  eventList;
+        return eventList;
     }
 
-    /**
-     * BI展示模块
-     */
     @ApiOperation(value = "获取BI舆情列表", notes = "获取BI舆情信息列表")
     @GetMapping("/queryBasicList")
     public Object queryBasicList(@ModelAttribute PageParam pageParam) {
@@ -81,17 +80,22 @@ public class ArticleController {
         return articleService.getArticleList(articleListQueryParam, userId, systemType);
     }
 
-
-
-
-    @ApiOperation(value = "根据舆情id获取舆情信息", notes = "根据舆情id获取舆情信息")
+    @ApiOperation(value = "获取舆情信息", notes = "获取舆情信息")
     @ApiImplicitParam(paramType = "path", name = "id", value = "舆情ID", required = true, dataType = "long")
     @GetMapping(value = "/normal/{id}")
-    public Object getArticleById(@PathVariable Long id) {
+    public ResultVO getArticleById(@PathVariable Long id,
+                                   @RequestHeader(Constants.AUTHORIZE_ACCESS_TOKEN) String accessToken) {
         log.debug("get with id: {}", id);
 
-        return articleAdapt.getArticleById(id);
+        // 解析token获取userId
+        Long userId = JWTUtil.getUserId(accessToken);
+        String systemType = JWTUtil.getSystemType(accessToken);
+
+        return articleService.getArticleById(userId, id, systemType);
     }
+
+
+
 
     @ApiOperation(value = "单个/批量删除舆情", notes = "根据舆情id列表删除舆情信息")
     @ApiImplicitParam(paramType = "query", name = "idListStr", value = "舆情IDs", required = true, dataType = "string")
