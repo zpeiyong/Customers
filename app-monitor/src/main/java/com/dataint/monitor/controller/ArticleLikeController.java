@@ -21,9 +21,10 @@ public class ArticleLikeController {
     IArticleLikeService articleLikeService;
     @PostMapping(value = "/saveArticleLike")
     @ApiOperation(value = "点赞", notes = "增加ArticleLike数据")
-    @ApiImplicitParam(paramType = "articleId", name = "articleId", value = "文章Id", required = true, dataType = "string")
-    public ResultVO saveArticleLike(@RequestHeader(value = Constants.AUTHORIZE_ACCESS_TOKEN) String accessToken, ArticleLikeForm articleLikeForm){
+    @ApiImplicitParam(paramType = "articleId", name = "articleId", value = "文章Id", required = true, dataType = "Long")
+    public ResultVO saveArticleLike(@RequestBody ArticleLikeForm articleLikeForm ,@RequestHeader(value = Constants.AUTHORIZE_ACCESS_TOKEN) String accessToken){
         Long userId = JWTUtil.getUserId(accessToken);
+        articleLikeForm.setArticleId(articleLikeForm.getArticleId());
         articleLikeForm.setUserId(userId);
         articleLikeForm.setCreatedTime(new Date());
         return ResultVO.success(articleLikeService.saveArticleLike(articleLikeForm));
