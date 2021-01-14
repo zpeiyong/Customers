@@ -1,6 +1,5 @@
 package com.dataint.service.datapack.db.dao;
 
-import com.dataint.service.datapack.db.IDayDate;
 import com.dataint.service.datapack.db.IMapCountry;
 import com.dataint.service.datapack.db.entity.DiseaseCountryCase;
 import com.dataint.service.datapack.model.vo.DiseaseCountryCaseVO;
@@ -51,13 +50,14 @@ public interface IDiseaseCountryCaseDao extends JpaRepository<DiseaseCountryCase
     List<Map<String,Object>> getLatestDiseaseCasesByCountry(Long countryId);
 
     @Query(value = "SELECT * FROM disease_country_case d " +
-            "RIGHT JOIN (SELECT country_name_cn  FROM ( " +
-            "SELECT * FROM disease_country_case WHERE " +
-            "statistic_date > DATE_SUB(?3,INTERVAL ?4 DAY) AND statistic_date <= ?3 " +
-            ")as dis GROUP BY country_name_cn,disease_id " +
-            "HAVING disease_id = ?1 " +
-            "ORDER BY MAX(confirm_add) DESC LIMIT ?2) d1  " +
-            "on d.country_name_cn = d1.country_name_cn " +
+            "RIGHT JOIN (SELECT country_name_cn " +
+            "   FROM (SELECT * FROM disease_country_case " +
+            "       WHERE statistic_date > DATE_SUB(?3,INTERVAL ?4 DAY) AND statistic_date <= ?3)as dis " +
+            "   GROUP BY country_name_cn,disease_id " +
+            "   HAVING disease_id = ?1 " +
+            "   ORDER BY MAX(confirm_add) DESC LIMIT ?2) d1  " +
+            "ON d.country_name_cn = d1.country_name_cn " +
+            "WHERE statistic_date > DATE_SUB(?3,INTERVAL ?4 DAY) AND statistic_date <= ?3" +
             "ORDER BY d.country_name_cn DESC;", nativeQuery = true)
     List<DiseaseCountryCase> getDailyConFirmedAddByDiseaseId(Long diseaseId,int limit,String dateStr, int i);
 
@@ -67,24 +67,26 @@ public interface IDiseaseCountryCaseDao extends JpaRepository<DiseaseCountryCase
     List<DiseaseCountryCase>  findByDiseaseIdAndShowTypeAndPeriodStart(Long diseaseId,String showType,Date periodStart);
 
     @Query(value = "SELECT * FROM disease_country_case d " +
-            "RIGHT JOIN (SELECT country_name_cn  FROM ( " +
-            "SELECT * FROM disease_country_case WHERE " +
-            "statistic_date > DATE_SUB(?3,INTERVAL ?4 DAY) AND statistic_date <= ?3 " +
-            ")as dis GROUP BY country_name_cn,disease_id " +
-            "HAVING disease_id = ?1 " +
-            "ORDER BY MAX(cure_add) DESC LIMIT ?2) d1  " +
-            "on d.country_name_cn = d1.country_name_cn " +
+            "RIGHT JOIN (SELECT country_name_cn " +
+            "   FROM (SELECT * FROM disease_country_case " +
+            "       WHERE statistic_date > DATE_SUB(?3,INTERVAL ?4 DAY) AND statistic_date <= ?3)as dis " +
+            "   GROUP BY country_name_cn,disease_id " +
+            "   HAVING disease_id = ?1 " +
+            "   ORDER BY MAX(cure_add) DESC LIMIT ?2) d1  " +
+            "ON d.country_name_cn = d1.country_name_cn " +
+            "WHERE statistic_date > DATE_SUB(?3,INTERVAL ?4 DAY) AND statistic_date <= ?3 " +
             "ORDER BY d.country_name_cn DESC;", nativeQuery = true)
     List<DiseaseCountryCase> getDailyCuredAddByDiseaseId(Long diseaseId, int limit,String dateStr, int i);
 
     @Query(value = "SELECT * FROM disease_country_case d " +
-            "RIGHT JOIN (SELECT country_name_cn  FROM ( " +
-            "SELECT * FROM disease_country_case WHERE " +
-            "statistic_date > DATE_SUB(?3,INTERVAL ?4 DAY) AND statistic_date <= ?3 " +
-            ")as dis GROUP BY country_name_cn,disease_id " +
-            "HAVING disease_id = ?1 " +
-            "ORDER BY MAX(death_add) DESC LIMIT ?2) d1  " +
-            "on d.country_name_cn = d1.country_name_cn " +
+            "RIGHT JOIN (SELECT country_name_cn " +
+            "   FROM (SELECT * FROM disease_country_case " +
+            "       WHERE statistic_date > DATE_SUB(?3,INTERVAL ?4 DAY) AND statistic_date <= ?3)as dis " +
+            "   GROUP BY country_name_cn,disease_id " +
+            "   HAVING disease_id = ?1 " +
+            "   ORDER BY MAX(death_add) DESC LIMIT ?2) d1  " +
+            "ON d.country_name_cn = d1.country_name_cn " +
+            "WHERE statistic_date > DATE_SUB(?3,INTERVAL ?4 DAY) AND statistic_date <= ?3 " +
             "ORDER BY d.country_name_cn DESC;", nativeQuery = true)
     List<DiseaseCountryCase> getDailyDeathAddByDiseaseId(Long diseaseId, int limit,String dateStr, int i);
 

@@ -1,6 +1,5 @@
 package com.dataint.monitor.controller;
 
-import com.dataint.cloud.common.model.ResultVO;
 import com.dataint.monitor.adapt.IStatisticAdapt;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -115,10 +114,10 @@ public class StatisticController {
             @ApiImplicitParam(paramType = "query", name = "dateStr", value = "查看日期", dataType = "string")
     })
     @GetMapping("/confirmed/getAddTimeLine")
-    public ResultVO getConfirmedTimeLine(@RequestParam Long diseaseId,
+    public Object getConfirmedTimeLine(@RequestParam Long diseaseId,
                                          @RequestParam(required = false) String dateStr) {
 
-        return ResultVO.success(statisticAdapt.getConfirmedTimeLine(diseaseId, dateStr));
+        return statisticAdapt.getConfirmedTimeLine(diseaseId, dateStr);
     }
 
     @ApiOperation(value = "[确诊趋势]获取前一天确诊数量排名", notes = "获取前一天确诊数量排名")
@@ -127,10 +126,10 @@ public class StatisticController {
             @ApiImplicitParam(paramType = "query", name = "dateStr", value = "查看日期", dataType = "string")
     })
     @GetMapping("/confirmed/getTotalCntRank")
-    public ResultVO getConfirmedTotalCntRank(@RequestParam Long diseaseId,
+    public Object getConfirmedTotalCntRank(@RequestParam Long diseaseId,
                                              @RequestParam(required = false) String dateStr) {
 
-        return ResultVO.success(statisticAdapt.getConfirmedTotalCntRank(diseaseId, dateStr));
+        return statisticAdapt.getConfirmedTotalCntRank(diseaseId, dateStr);
     }
 
     @ApiOperation(value = "[治愈趋势]获取过去7天新增治愈数(折线图)", notes = "获取过去7天新增治愈数(折线图)")
@@ -139,10 +138,10 @@ public class StatisticController {
             @ApiImplicitParam(paramType = "query", name = "dateStr", value = "查看日期", dataType = "string")
     })
     @GetMapping("/cured/getAddTimeLine")
-    public ResultVO getCuredTimeLine(@RequestParam Long diseaseId,
+    public Object getCuredTimeLine(@RequestParam Long diseaseId,
                                      @RequestParam(required = false) String dateStr) {
 
-        return ResultVO.success(statisticAdapt.getCuredTimeLine(diseaseId, dateStr));
+        return statisticAdapt.getCuredTimeLine(diseaseId, dateStr);
     }
 
     @ApiOperation(value = "[治愈率]获取前一天治愈百分比排名", notes = "获取前一天治愈百分比排名")
@@ -151,10 +150,10 @@ public class StatisticController {
             @ApiImplicitParam(paramType = "query", name = "dateStr", value = "查看日期", dataType = "string")
     })
     @GetMapping("/cured/getTotalCntRank")
-    public ResultVO getCuredTotalCntRank(@RequestParam Long diseaseId,
+    public Object getCuredTotalCntRank(@RequestParam Long diseaseId,
                                          @RequestParam(required = false) String dateStr) {
 
-        return ResultVO.success(statisticAdapt.getCuredTotalCntRank(diseaseId, dateStr));
+        return statisticAdapt.getCuredTotalCntRank(diseaseId, dateStr);
     }
 
     @ApiOperation(value = "[死亡趋势]获取过去7天新增死亡数(折线图)", notes = "获取过去7天新增死亡数(折线图)")
@@ -163,10 +162,10 @@ public class StatisticController {
             @ApiImplicitParam(paramType = "query", name = "dateStr", value = "查看日期", dataType = "string")
     })
     @GetMapping("/death/getAddTimeLine")
-    public ResultVO getDeathTimeLine(@RequestParam Long diseaseId,
+    public Object getDeathTimeLine(@RequestParam Long diseaseId,
                                      @RequestParam(required = false) String dateStr) {
 
-        return ResultVO.success(statisticAdapt.getDeathTimeLine(diseaseId, dateStr));
+        return statisticAdapt.getDeathTimeLine(diseaseId, dateStr);
     }
 
     @ApiOperation(value = "[死亡趋势]获取前一天死亡百分比排名", notes = "获取前一天死亡百分比排名")
@@ -175,10 +174,10 @@ public class StatisticController {
             @ApiImplicitParam(paramType = "query", name = "dateStr", value = "查看日期", dataType = "string")
     })
     @GetMapping("/death/getTotalCntRank")
-    public ResultVO getDeathTotalCntRank(@RequestParam Long diseaseId,
+    public Object getDeathTotalCntRank(@RequestParam Long diseaseId,
                                          @RequestParam(required = false) String dateStr) {
 
-        return ResultVO.success(statisticAdapt.getDeathTotalCntRank(diseaseId, dateStr));
+        return statisticAdapt.getDeathTotalCntRank(diseaseId, dateStr);
     }
 
 
