@@ -23,6 +23,8 @@ public class ArticleBasicVO extends BaseVO {
 
     private Date gmtRelease;  //
 
+    private Date gmtCrawl;  //
+
     private String articleUrl; // 文章链接
 
     private ArticleOrigBasicVO articleOriginVO;  //
