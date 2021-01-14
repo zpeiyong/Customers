@@ -94,6 +94,21 @@ public class ArticleController {
         return articleService.getArticleById(userId, id, systemType);
     }
 
+    @ApiOperation(value = "获取舆情信息相似文章", notes = "根据id获取舆情信息相似文章")
+    @ApiImplicitParam(paramType = "path", name = "id", value = "舆情ID", required = true, dataType = "long")
+    @GetMapping(value = "/normal/similar/{id}")
+    public ResultVO getSimilarArticlesById(@PathVariable Long id,
+                                           @ModelAttribute PageParam pageParam,
+                                           @RequestHeader(Constants.AUTHORIZE_ACCESS_TOKEN) String accessToken) {
+        log.debug("get with id: {}", id);
+
+        // 解析token获取userId
+        Long userId = JWTUtil.getUserId(accessToken);
+        String systemType = JWTUtil.getSystemType(accessToken);
+
+        return articleService.getSimilarArticlesById(userId, id, pageParam, systemType);
+    }
+
 
 
 

@@ -94,6 +94,15 @@ public class ArticleController {
         return ResultVO.success(articleService.getArticleById(id));
     }
 
+    @ApiOperation(value = "获取舆情信息相似文章", notes = "根据id获取舆情信息相似文章")
+    @ApiImplicitParam(paramType = "path", name = "id", value = "舆情ID", required = true, dataType = "long")
+    @GetMapping(value = "/normal/similar/{id}")
+    public ResultVO getSimilarArticlesById(@PathVariable Long id, @ModelAttribute PageParam pageParam) {
+        log.debug("get similar articles by id: {}", id);
+
+        return ResultVO.success(articleService.getSimilarArticlesById(id, pageParam));
+    }
+
     @ApiOperation(value = "单个/批量删除舆情", notes = "根据舆情id列表删除舆情信息")
     @ApiImplicitParam(paramType = "query", name = "idListStr", value = "舆情IDs", required = true, dataType = "string")
     @DeleteMapping(value = "/normal/delArticles")

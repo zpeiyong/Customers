@@ -18,6 +18,7 @@ import com.dataint.service.datapack.model.param.ArticleListQueryParam;
 import com.dataint.service.datapack.model.vo.ArticleBasicVO;
 import com.dataint.service.datapack.model.vo.ArticleReportVO;
 import com.dataint.service.datapack.model.vo.ArticleVO;
+import com.dataint.service.datapack.model.vo.BIArticleBasicVO;
 import com.dataint.service.datapack.service.IArticleService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -339,19 +340,20 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
     }
 
     @Override
-    public List<ArticleBasicVO> queryBasicList(PageParam pageParam) {
+    public List<BIArticleBasicVO> queryBasicList(PageParam pageParam) {
         Page<Article> pageResult = articleDao.findAllByIfDeleted(false, pageParam.toPageRequest("gmtRelease"));
 
-        return pageResult.getContent().stream().map(ArticleBasicVO::new).collect(Collectors.toList());
+        return pageResult.getContent().stream().map(BIArticleBasicVO::new).collect(Collectors.toList());
     }
 
     @Override
-    public ArticleBasicVO queryBasicById(Long articleId) {
+    public BIArticleBasicVO queryBasicById(Long articleId) {
         Optional<Article> articleOpt = articleDao.findById(articleId);
-        if (articleOpt.isPresent())
-            return new ArticleBasicVO(articleOpt.get());
+        if (!articleOpt.isPresent()) {
+            throw new DataNotExistException();
+        }
 
-        return new ArticleBasicVO();
+        return new BIArticleBasicVO(articleOpt.get());
     }
 
     @Override
@@ -454,7 +456,7 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
                 Predicate[] p = new Predicate[list.size()];
                 return criteriaBuilder.and(list.toArray(p));
             }
-        }, queryParam.toPageRequest( "gmtCrawl"));
+        }, queryParam.toPageRequest( "gmtRelease"));
 
         // 封装为文章基础字段vo对象列表
         List<ArticleBasicVO> basicVOList = articlePage.getContent()
@@ -503,6 +505,33 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
         Article article = articleOpt.get();
 
         return new ArticleVO(article);
+    }
+
+    @Override
+    public ResultVO getSimilarArticlesById(Long articleId, PageParam pageParam) {
+        Optional<Article> articleOpt = articleDao.findById(articleId);
+        if (!articleOpt.isPresent()) {
+            throw new DataNotExistException("当前数据不存在");
+        }
+        Article article = articleOpt.get();
+
+        // 当前舆情similarId=0则根据当前舆情id找，否则同时要找similarId这条舆情
+        Page<Article> similarArticlePage;
+        if (article.getSimilarArticleId() == 0) {
+            similarArticlePage = articleDao.findAllBySimilarArticleId(
+                    article.getId(),
+                    pageParam.toPageRequest());
+        } else {
+            similarArticlePage = articleDao.findAllBySimilarArticleIdOrId(
+                    article.getSimilarArticleId(),
+                    article.getSimilarArticleId(),
+                    pageParam.toPageRequest());
+        }
+
+        List<ArticleBasicVO> articleBasicVOList = similarArticlePage.getContent().stream().map(ArticleBasicVO::new).collect(Collectors.toList());
+        Pagination pagination = new Pagination(pageParam.getPageSize(), similarArticlePage.getTotalElements(), pageParam.getCurrent());
+
+        return ResultVO.success(articleBasicVOList, pagination);
     }
 
     @Transactional

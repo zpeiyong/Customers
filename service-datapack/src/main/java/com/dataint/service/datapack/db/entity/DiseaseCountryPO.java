@@ -41,7 +41,7 @@ public class DiseaseCountryPO extends BasePO {
     private Double riskScore;  // 风险值
 
     @Column(name = "event_total")
-    private Integer eventToTal = 0;  // 截止statisticDate结束事件数量-总数
+    private Integer eventTotal = 0;  // 截止statisticDate结束事件数量-总数
 
     @Column(name = "event_add")
     private Integer eventAdd = 0;  // 当天事件数量-增加

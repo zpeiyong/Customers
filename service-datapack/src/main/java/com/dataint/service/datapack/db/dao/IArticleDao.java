@@ -88,6 +88,9 @@ public interface IArticleDao extends JpaRepository<Article, Long>, JpaSpecificat
                     "where ad.disease_id=?1  and a.similar_article_id=0  and a.gmt_release LIKE ?2 GROUP BY ad.article_id ")
     Page<IArticleEvent> findGmtTime(long diseaseId, String releaseTime, Pageable pageable);
 
+    Page<Article> findAllBySimilarArticleId(Long similarId, Pageable pageable);
 
-
+    @Query(value = "from Article a " +
+            "where (a.similarArticleId = ?1 and a.similarArticleId != ?2) or a.id = ?2")
+    Page<Article> findAllBySimilarArticleIdOrId(Long similarId, Long articleId, Pageable pageable);
 }

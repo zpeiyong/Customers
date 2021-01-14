@@ -66,7 +66,6 @@ public class ArticleAdaptImpl implements IArticleAdapt {
             map.put("regionId", articleListQueryParam.getRegionId().toString());
         
         String url ="http://" +  baseUrl + "/article/normal/getArticleList";
-
         return GetPostUtil.sendGet(url, map);
     }
 
@@ -74,6 +73,16 @@ public class ArticleAdaptImpl implements IArticleAdapt {
     public JSONObject getArticleById(Long id) {
         String url = "http://" +  baseUrl + "/article/normal/" + id.toString();
         return GetPostUtil.sendGet(url);
+    }
+
+    @Override
+    public JSONObject getSimilarArticlesById(Long id, PageParam pageParam) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("current", pageParam.getCurrent().toString());
+        map.put("pageSize", pageParam.getPageSize().toString());
+
+        String url = "http://" +  baseUrl + "/article/normal/similar/" + id.toString();
+        return GetPostUtil.sendGet(url, map);
     }
 
     @Override

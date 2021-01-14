@@ -74,7 +74,6 @@ public class ArticleServiceImpl implements IArticleService {
         JSONObject responseJO = articleAdapt.getArticleById(id);
 
         JSONObject data = responseJO.getJSONObject("data");
-
         if (data != null) {
             data = rebuildArticle(userId, data, systemType);
         } else {
@@ -82,13 +81,21 @@ public class ArticleServiceImpl implements IArticleService {
         }
 
         return ResultVO.success(data);
+    }
 
-//        JSONObject retJO = (JSONObject) articleProvider.getArticleById(id).getData();
-//
-//        if (retJO != null)
-//            return rebuildArticle(userId, retJO);
-//
-//        return new JSONObject();
+    @Override
+    public ResultVO getSimilarArticlesById(Long userId, Long id, PageParam pageParam, String systemType) {
+        // 从datapack服务获取舆情相似文章列表
+        JSONObject responseJO = articleAdapt.getSimilarArticlesById(id, pageParam);
+
+        JSONObject data = responseJO.getJSONObject("data");
+        if (data != null) {
+            data = rebuildArticle(userId, data, systemType);
+        } else {
+            return JSON.parseObject(responseJO.toString(), ResultVO.class);
+        }
+
+        return ResultVO.success(data);
     }
 
     @Override

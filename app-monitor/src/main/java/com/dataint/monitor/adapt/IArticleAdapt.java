@@ -19,6 +19,8 @@ public interface IArticleAdapt {
 
     JSONObject getArticleById(Long id);
 
+    JSONObject getSimilarArticlesById(Long id, PageParam pageParam);
+
     Object delArticles(String idListStr);
 
     Object addKeyword(String idListStr, String keyword);

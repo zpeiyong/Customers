@@ -1,8 +1,6 @@
 package com.dataint.service.datapack.db.dao;
 
-import com.dataint.service.datapack.db.IDayDate;
 import com.dataint.service.datapack.db.entity.DiseaseCountryPO;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -21,7 +19,7 @@ public interface IDiseaseCountryPODao extends JpaRepository<DiseaseCountryPO, Lo
             "where dcp.diseaseId = ?1 and dcp.statisticDate = ?2")
     List<Map<String, Object>> getRiskRankByDiseaseIdAndStatisticDate(Long diseaseId, Date statisticDate, Pageable pageable);
 
-    @Query(value = "select new map(c.nameCn, dcp.eventToTal) " +
+    @Query(value = "select new map(c.nameCn, dcp.eventTotal) " +
             "from DiseaseCountryPO dcp " +
             "left join Country c on dcp.countryId = c.id " +
             "where dcp.diseaseId = ?1 and dcp.statisticDate = ?2")

@@ -8,6 +8,7 @@ import com.dataint.service.datapack.model.param.ArticleListQueryParam;
 import com.dataint.service.datapack.model.vo.ArticleBasicVO;
 import com.dataint.service.datapack.model.vo.ArticleReportVO;
 import com.dataint.service.datapack.model.vo.ArticleVO;
+import com.dataint.service.datapack.model.vo.BIArticleBasicVO;
 
 import java.util.List;
 import java.util.Map;
@@ -27,14 +28,14 @@ public interface IArticleService {
      * @param pageParam
      * @return
      */
-    List<ArticleBasicVO> queryBasicList(PageParam pageParam);
+    List<BIArticleBasicVO> queryBasicList(PageParam pageParam);
 
     /**
      *
      * @param articleId
      * @return
      */
-    ArticleBasicVO queryBasicById(Long articleId);
+    BIArticleBasicVO queryBasicById(Long articleId);
 
     /**
      *
@@ -60,6 +61,14 @@ public interface IArticleService {
      * @return
      */
     ArticleVO getArticleById(Long articleId);
+
+    /**
+     *
+     * @param articleId
+     * @param pageParam
+     * @return
+     */
+    ResultVO getSimilarArticlesById(Long articleId, PageParam pageParam);
 
     /**
      *
