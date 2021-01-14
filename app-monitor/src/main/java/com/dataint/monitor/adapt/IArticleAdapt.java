@@ -31,4 +31,6 @@ public interface IArticleAdapt {
     Object searchByKeyword(String keyword);
 
     Object queryReportContent(String startTime, String endTime, String type);
+    Object queryEventList(Long diseaseId,Long pageSize, Long current,String  releaseTime);
+
 }

@@ -27,6 +27,15 @@ public class ArticleController {
     @Autowired
     private IArticleService articleService;
 
+    @RequestMapping(value = "/queryEventList",method = RequestMethod.GET)
+    @ApiOperation(value = "BI大屏事件信息查询",notes = "BI大屏事件查询")
+    @ResponseBody
+    public ResultVO queryArticleList(Long diseaseId,int pageSize, int current,String  releaseTime) {
+
+        return ResultVO.success(articleService.queryEventList(diseaseId,pageSize,current,releaseTime));
+    }
+
+
     @ApiOperation(value = "保存舆情", notes = "保存一条舆情")
     @ApiImplicitParam(name = "storeDataForm", value = "保存舆情form表单", required = true, dataType = "StoreDataForm")
     @PostMapping("/store")

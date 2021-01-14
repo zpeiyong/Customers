@@ -109,4 +109,6 @@ public interface IArticleService {
      * @return
      */
     Map<String, Object> queryReportContent(String startTime, String endTime, String type);
+
+    List<Map<String, Object>> queryEventList(Long diseaseId, int pageSize, int current,String  releaseTime);
 }

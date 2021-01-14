@@ -2,17 +2,15 @@ package com.dataint.monitor.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.dataint.cloud.common.model.Constants;
 import com.dataint.cloud.common.model.ResultVO;
 import com.dataint.cloud.common.model.param.PageParam;
+import com.dataint.monitor.adapt.IArticleAdapt;
 import com.dataint.monitor.dao.IArticleAuditDao;
 import com.dataint.monitor.dao.IArticleUserDao;
-import com.dataint.monitor.dao.entity.ArticleAudit;
 import com.dataint.monitor.dao.entity.ArticleUser;
 import com.dataint.monitor.model.form.ArticleUpdateForm;
 import com.dataint.monitor.model.param.ArticleListQueryParam;
 import com.dataint.monitor.service.IArticleService;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +27,8 @@ public class ArticleServiceImpl implements IArticleService {
 
     @Autowired
     private IArticleAuditDao articleAuditDao;
+    @Autowired
+    private IArticleAdapt articleAdapt;
 
     @Override
     public ResultVO getLatestList(PageParam pageParam) {
@@ -164,6 +164,14 @@ public class ArticleServiceImpl implements IArticleService {
 //            return rebuildArticle(userId, retJO);
 //
 //        return new JSONObject();
+    }
+
+    @Override
+    public JSONObject queryEventList(Long diseaseId,Long pageSize, Long current, String releaseTime) {
+        JSONObject jsonObject = new JSONObject();
+        Object queryEventList = articleAdapt.queryEventList(diseaseId, pageSize, current,releaseTime);
+          jsonObject= (JSONObject) queryEventList;
+        return jsonObject;
     }
 
 

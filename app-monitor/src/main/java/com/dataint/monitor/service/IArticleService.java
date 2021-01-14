@@ -87,4 +87,7 @@ public interface IArticleService {
      * @return
      */
     JSONObject updateArticle(int userId, ArticleUpdateForm articleUpdateForm);
+
+    JSONObject   queryEventList(Long diseaseId,Long pageSize, Long current, String releaseTime);
+
 }

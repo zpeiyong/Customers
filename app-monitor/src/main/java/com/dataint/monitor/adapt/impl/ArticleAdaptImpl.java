@@ -166,4 +166,19 @@ public class ArticleAdaptImpl implements IArticleAdapt {
         map.put("type", type);
         return GetPostUtil.sendGet(url, map);
     }
+
+    @Override
+    public Object queryEventList(Long diseaseId,Long pageSize, Long current,String  releaseTime) {
+        String  url="http://"+baseUrl+"/article/queryEventList";
+        HashMap<String,String> map  = new HashMap<>();
+        if (diseaseId!=null)
+        map.put("diseaseId", diseaseId.toString());
+        if (pageSize!=null)
+        map.put("pageSize",pageSize.toString());
+        if (current!=null)
+        map.put("current", current.toString());
+        if (releaseTime!=null)
+        map.put("releaseTime", releaseTime);
+        return  GetPostUtil.sendGet(url, map);
+    }
 }

@@ -1,10 +1,12 @@
 package com.dataint.monitor.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.dataint.cloud.common.model.param.PageParam;
 import com.dataint.monitor.adapt.IArticleAdapt;
 import com.dataint.monitor.model.form.ArticleUpdateForm;
 import com.dataint.monitor.model.form.StoreDataForm;
 import com.dataint.monitor.model.param.ArticleListQueryParam;
+import com.dataint.monitor.service.IArticleService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -22,6 +24,9 @@ public class ArticleController {
     @Autowired
     private IArticleAdapt articleAdapt;
 
+    @Autowired
+    private IArticleService articleService;
+
     @ApiOperation(value = "保存舆情", notes = "保存一条舆情")
     @ApiImplicitParam(name = "storeDataForm", value = "保存舆情form表单", required = true, dataType = "StoreDataForm")
     @PostMapping("/store")
@@ -30,6 +35,13 @@ public class ArticleController {
         return  articleAdapt.storeData(storeDataForm);
     }
 
+    @RequestMapping(value = "/queryEventList",method = RequestMethod.GET)
+    @ApiOperation(value = "BI大屏事件信息查询",notes = "BI大屏事件查询")
+    @ResponseBody
+    public  Object  queryEventList(Long diseaseId,Long pageSize, Long current,String releaseTime){
+        JSONObject eventList = articleService.queryEventList(diseaseId, pageSize, current,releaseTime);
+        return  eventList;
+    }
 
     /**
      * BI展示模块
