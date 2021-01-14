@@ -51,7 +51,7 @@ public class CommentController {
     @RequestMapping(value = "/saveComment",method = RequestMethod.POST)
     @ApiOperation(value = "评论数据保存", notes = "评论数据保存")
     @ApiImplicitParam(name = "commentForm", value = "保存评论数据", required = true, dataType = "commentForm")
-    public ResultVO saveComment(@RequestHeader(value = Constants.AUTHORIZE_ACCESS_TOKEN) String accessToken, CommentForm commentForm){
+    public ResultVO saveComment(@RequestHeader(value = Constants.AUTHORIZE_ACCESS_TOKEN) String accessToken, @RequestBody CommentForm commentForm){
         Long userId = JWTUtil.getUserId(accessToken);
         commentForm.setUserId(userId);
 
