@@ -107,4 +107,6 @@ public interface IDiseaseCountryCaseDao extends JpaRepository<DiseaseCountryCase
             "where dcc.diseaseId = ?1 and dcc.statisticDate = ?2 " +
             "order by dcc.cureTotal/dcc.confirmTotal desc")
     List<Map<String, Object>> getCuredCntByDiseaseIdAndStatisticDate(Long diseaseId, Date yesStartDate, PageRequest of);
+
+    DiseaseCountryCase findTopByDiseaseIdAndCountryIdOrderByStatisticDateDesc(Long diseaseId, Long countryId);
 }

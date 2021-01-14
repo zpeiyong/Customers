@@ -33,5 +33,11 @@ public interface IDiseaseCountryCaseService {
      * @return
      * @throws ParseException
      */
-    List<CountryVO> getCountriesByParam(Long diseaseId, String showType, String periodStart) throws ParseException;
+    List<CountryVO> getCountriesByParam(Long diseaseId, String showType, String periodStart);
+
+    /**
+     *
+     * @return
+     */
+    DiseaseCountryCaseVO getLatestCasesByParam(Long diseaseId, Long countryId);
 }
