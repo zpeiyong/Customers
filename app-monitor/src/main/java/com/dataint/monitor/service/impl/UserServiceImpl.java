@@ -49,10 +49,10 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public Map<String, Object> checkUserByUsername(String username, String password) {
+    public Map<String, Object> checkUserByUsername(String username, String password, String type) {
         // check if user exist
         User user = getByUsername(username);
-        UserVerifyUtil.verifyLogin(user, password);
+        UserVerifyUtil.verifyLogin(user, password, type);
         // 登录授权
         UsernamePasswordAuthenticationToken upToken = new UsernamePasswordAuthenticationToken(username, password);
         final Authentication authentication = authenticationManager.authenticate(upToken);
@@ -66,6 +66,7 @@ public class UserServiceImpl implements IUserService {
             claims.put("authorities", roleSet);
         }
         claims.put("userId", user.getId());
+        claims.put("systemType", type);
 
         // rebuild return map
         Map<String, Object> resultMap = new HashMap<>();

@@ -1,34 +1,39 @@
 package com.dataint.monitor.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.dataint.cloud.common.model.ResultVO;
 import com.dataint.cloud.common.model.param.PageParam;
 import com.dataint.monitor.adapt.IArticleAdapt;
-import com.dataint.monitor.dao.IArticleAuditDao;
-import com.dataint.monitor.dao.IArticleUserDao;
+import com.dataint.monitor.dao.*;
 import com.dataint.monitor.dao.entity.ArticleUser;
+import com.dataint.monitor.model.ArticleBasicAdminVO;
+import com.dataint.monitor.model.ArticleBasicVO;
 import com.dataint.monitor.model.form.ArticleUpdateForm;
 import com.dataint.monitor.model.param.ArticleListQueryParam;
 import com.dataint.monitor.service.IArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class ArticleServiceImpl implements IArticleService {
-
-//    @Autowired
-//    private ArticleProvider articleProvider;
-
+    @Autowired
+    private IArticleAdapt articleAdapt;
     @Autowired
     private IArticleUserDao articleUserDao;
-
+    @Autowired
+    private IArticleLikeDao articleLikeDao;
     @Autowired
     private IArticleAuditDao articleAuditDao;
     @Autowired
-    private IArticleAdapt articleAdapt;
+    private ICommentDao commentDao;
+    @Autowired
+    private IArticleReportDao articleReportDao;
 
     @Override
     public ResultVO getLatestList(PageParam pageParam) {
@@ -45,20 +50,42 @@ public class ArticleServiceImpl implements IArticleService {
     }
 
     @Override
-    public JSONObject getArticleList(Integer userId, ArticleListQueryParam articleListQueryParam) {
+    public ResultVO getArticleList(ArticleListQueryParam articleListQueryParam, Long userId, String systemType) {
+        // 从datapack服务获取舆情列表
+        JSONObject responseJO = articleAdapt.getArticleList(articleListQueryParam);
 
-        return null;
-//        JSONObject retJO = articleProvider.getArticleList(articleListQueryParam.getCurrent(), articleListQueryParam.getPageSize(), articleListQueryParam.getArticleType()).getData();
-//
-//        JSONArray rebuildJA = new JSONArray();
-//        for (Object object : retJO.getJSONArray("content")) {
-//            JSONObject rebuildJO = rebuildArticle(userId, (Map)object);
-//
-//            rebuildJA.add(rebuildJO);
-//        }
-//        retJO.put("content", rebuildJA);
-//
-//        return retJO;
+        // 解析并构造最终返回的ArticleBasicVO
+        JSONObject data = responseJO.getJSONObject("data");
+        if (data != null && data.containsKey("list")) {
+            // 后台管理界面视点模块
+            if ("admin".equals(systemType)) {
+                List<ArticleBasicAdminVO> abVOList = JSONArray.parseArray(data.get("list").toString(), ArticleBasicAdminVO.class);
+                for (ArticleBasicAdminVO abVO : abVOList) {
+                    // 当前用户是否关注 ifLike
+                    boolean ifLike = articleLikeDao.existsByArticleIdAndUserId(abVO.getId(), userId);
+                    abVO.setIfLike(ifLike);
+                    // 评审数量
+                    Integer commentCnt = commentDao.countByArticleId(abVO.getId());
+                    abVO.setReviewCount(commentCnt);
+                    // 是否已加入日报
+                    boolean ifInReport = articleReportDao.existsByArticleId(abVO.getId());
+                    abVO.setIfInReport(ifInReport);
+                }
+                data.put("list", abVOList);
+            } else {
+                List<ArticleBasicVO> abVOList = JSONArray.parseArray(data.get("list").toString(), ArticleBasicVO.class);
+                for (ArticleBasicVO abVO : abVOList) {
+                    // 当前用户是否关注 ifLike
+                    boolean ifLike = articleLikeDao.existsByArticleIdAndUserId(abVO.getId(), userId);
+                    abVO.setIfLike(ifLike);
+                }
+                data.put("list", abVOList);
+            }
+        } else {
+            return JSON.parseObject(responseJO.toString(), ResultVO.class);
+        }
+        
+        return ResultVO.success(data);
     }
 
     @Override

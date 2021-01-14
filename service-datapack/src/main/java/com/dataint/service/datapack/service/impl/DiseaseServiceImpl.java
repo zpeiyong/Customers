@@ -198,19 +198,17 @@ public class DiseaseServiceImpl implements IDiseaseService {
         if (!StringUtils.isEmpty(dateStr)) {
             dateTimeStr = dateStr + " 00:00:00";
         }
-        String dailyStartStr = DateUtil.getCurrentTime();;
         String weeklyStartStr = DateUtil.getLastWeekStart();
         String quarterlyStartStr = DateUtil.getStartTimeOfQuarter();
         try {
-            dailyStartStr = DateUtil.getYesterdayStart(dateTimeStr);
+            dateTimeStr = DateUtil.getYesterdayStart(dateTimeStr);
             weeklyStartStr = DateUtil.getWeekStart(dateTimeStr);
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
-
         List<Map<String,Object>> latestCaseList = diseaseCountryCaseDao.getLatestDiseaseCasesByCountry(countryId);
-        String finalDailyStartStr = dailyStartStr;
+        String finalDailyStartStr = dateTimeStr;
         String finalWeeklyStartStr = weeklyStartStr;
         List<DiseaseCountryCaseVO> latestCaseVOList = latestCaseList.stream()
                 .map((e) -> JSON.parseObject(JSON.toJSONString(e), DiseaseCountryCaseVO.class))
@@ -228,11 +226,11 @@ public class DiseaseServiceImpl implements IDiseaseService {
                         } else {
                             return false;
                         }
-
                         // 与统计起始时间比较
                         return startTimeStr.equals(Constants.getDateTimeFormat().format(e.getPeriodStart()));
-                    } else
+                    } else {
                         return false;
+                    }
                 })
                 .collect(Collectors.toList());
 

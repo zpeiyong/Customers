@@ -2,14 +2,24 @@ package com.dataint.monitor.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.dataint.cloud.common.dim.BaseExceptionEnum;
 import com.dataint.cloud.common.exception.DataNotExistException;
+import com.dataint.cloud.common.exception.DataintBaseException;
 import com.dataint.cloud.common.model.Constants;
+import com.dataint.cloud.common.model.Pagination;
 import com.dataint.cloud.common.model.ResultVO;
 import com.dataint.cloud.common.model.param.PageParam;
 import com.dataint.cloud.common.utils.DateUtil;
+import com.dataint.monitor.adapt.IArticleAdapt;
+import com.dataint.monitor.dao.IArticleReportDao;
+import com.dataint.monitor.dao.IReportArticleDao;
 import com.dataint.monitor.dao.IReportDao;
+import com.dataint.monitor.dao.IReportLevelDao;
+import com.dataint.monitor.dao.entity.ArticleReport;
 import com.dataint.monitor.dao.entity.Report;
-import com.dataint.monitor.model.ReportArticle;
+import com.dataint.monitor.dao.entity.ReportArticle;
+import com.dataint.monitor.dao.entity.ReportLevel;
+import com.dataint.monitor.model.ArticleReportVO;
 import com.dataint.monitor.model.ReportBaseModel;
 import com.dataint.monitor.model.ReportVO;
 import com.dataint.monitor.model.param.ReportQueryParam;
@@ -19,14 +29,12 @@ import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -84,16 +92,22 @@ public class ReportServiceImpl implements IReportService {
         reportTypeMap.put("daily", "日报");
         reportTypeMap.put("weekly", "周报");
         reportTypeMap.put("monthly", "月报");
+        reportTypeMap.put("event", "事件报告");
     }
-
-//    @Autowired
-//    private ArticleProvider articleProvider;
 
     @Autowired
     private IReportDao reportDao;
+    @Autowired
+    private IReportArticleDao reportArticleDao;
+    @Autowired
+    private IReportLevelDao reportLevelDao;
+    @Autowired
+    private IArticleAdapt articleAdapt;
+    @Autowired
+    private IArticleReportDao articleReportDao;
 
     @Override
-    public Page<ReportVO> queryReportList(ReportQueryParam reportQueryParam) {
+    public ResultVO queryReportList(ReportQueryParam reportQueryParam) {
         Page<Report> pageResult = null;
         //
         PageParam pageParam = new PageParam();
@@ -102,14 +116,27 @@ public class ReportServiceImpl implements IReportService {
 
         // 日期条件存在时，不考虑keyword条件
         if (!StringUtils.isEmpty(reportQueryParam.getReportDate())) {
+            String reportDate = reportQueryParam.getReportDate() + " 00:00:00";
             Date dayStart, dayEnd;
             try {
-                dayStart = Constants.DateTimeSDF.parse(reportQueryParam.getReportDate() + " 00:00:00");
-                dayEnd = Constants.DateTimeSDF.parse(reportQueryParam.getReportDate() + " 23:59:59");
+                // 日报获取当前时间前7天, 周报获取当前时间前30天
+                String nDaysTimeStart = "";
+                if ("daily".equals(reportQueryParam.getReportType())) {
+                    nDaysTimeStart = DateUtil.getNDaysThanTimeStart(reportDate, -7);
+                } else if ("weekly".equals(reportQueryParam.getReportType())) {
+                    nDaysTimeStart = DateUtil.getNDaysThanTimeStart(reportDate, -30);
+                } else {
+                    // 暂时不会有monthly和yearly, 可能有event类型
+                    nDaysTimeStart = DateUtil.getNDaysThanTimeStart(reportDate, -30);
+                }
+
+                dayStart = Constants.DateTimeSDF.parse(nDaysTimeStart);
+                dayEnd = Constants.DateTimeSDF.parse(DateUtil.getDayEnd(reportDate));
             } catch (ParseException pe) {
                 pe.printStackTrace();
-                return null;
+                throw new DataintBaseException(BaseExceptionEnum.DATE_PARSE_ERROR);
             }
+
             pageResult = reportDao.findByGmtStartAndGmtEndAndReportType(dayStart, dayEnd,
                     reportQueryParam.getReportType(), pageParam.toPageRequest("gmtStart"));
         } else {
@@ -120,43 +147,23 @@ public class ReportServiceImpl implements IReportService {
             }
             // keyword条件存在时, 通过数据库匹配并推算出对应简报标题
             else {
-                // 返回结果为发布日期列表(List<String> gmtReleaseList)
-//                ResultVO<List<String>> retVO = articleProvider.searchByKeyword(reportQueryParam.getKeyword());
-//                if (!ObjectUtils.isEmpty(retVO)) {
-//                    List<String> titleList = retVO.getData().stream().map(dateStr -> {
-//                        String date = dateStr.replace("-", ".");
-//                        // 日报标题为: YYYY.MM.DD-日报
-//                        if ("daily".equals(reportQueryParam.getReportType())) {
-//                            return date + "-" + reportTypeMap.get(reportQueryParam.getReportType());
-//                        }
-//                        // TODO: 周报标题为: YYYY第X周-周报
-//                        else if ("weekly".equals(reportQueryParam.getReportType())) {
-//                            return "weekly";
-//                        }
-//                        // TODO: 月报标题为: YYYY.MM-月报
-//                        else if ("monthly".equals(reportQueryParam.getReportType())) {
-//                            return "monthly";
-//                        }
-//                        // TODO:
-//                        else {
-//                            return "yearly";
-//                        }
-//                    }).collect(Collectors.toList());
-//
-//                    pageResult = reportDao.findAllByReportTypeAndTitleIn(reportQueryParam.getReportType(), titleList,
-//                            pageParam.toPageRequest("gmtStart"));
-//                }
+                String keyword = "%" + reportQueryParam.getKeyword() + "%";
+                List<ArticleReport> arList = articleReportDao.findAllByTitleLikeOrSummaryLikeOrderByReportTitleDesc(keyword, keyword);
+
+                List<String> titleList = arList.stream().map(ArticleReport::getReportTitle).collect(Collectors.toList());
+
+                pageResult = reportDao.findAllByReportTypeAndTitleIn(
+                        reportQueryParam.getReportType(),
+                        titleList,
+                        pageParam.toPageRequest("gmtStart"));
             }
         }
 
         /* 封装VO返回 */
-        if (!ObjectUtils.isEmpty(pageResult)) {
-            List<ReportVO> reportVOList = pageResult.getContent().stream().map(ReportVO::new).collect(Collectors.toList());
+        List<ReportVO> reportVOList = pageResult.getContent().stream().map(ReportVO::new).collect(Collectors.toList());
+        Pagination pagination = new Pagination(pageParam.getPageSize(), pageResult.getTotalElements(), pageParam.getCurrent());
 
-            return new PageImpl(reportVOList, pageResult.getPageable(), pageResult.getTotalElements());
-        }
-
-        return null;
+        return ResultVO.success(reportVOList, pagination);
     }
 
     @Override
@@ -168,13 +175,33 @@ public class ReportServiceImpl implements IReportService {
             return;
         //
         ReportBaseModel reportBaseModel = (ReportBaseModel) paramMap.get("reportBaseModel");
-        if (reportBaseModel.getConcernList() == null && reportBaseModel.getMoreInfoList() == null) {
+        if (CollectionUtils.isEmpty(reportBaseModel.getListMap())) {
             log.info(reportBaseModel.getReportDate() + " 未对舆情数据进行处置!");
             return;
         }
 
         // 生成日报
         generateReport(paramMap);
+
+        // 保存已生成报告的舆情信息
+        String reportTitle = ((Report) paramMap.get("report")).getTitle();
+        List<ReportLevel> reportLevelList = reportLevelDao.findAllByOrderBySort();
+        for (ReportLevel level : reportLevelList) {
+            List<ArticleReportVO> articleReportVOList = reportBaseModel.getListMap().get(level.getLevelName());
+            List<ArticleReport> arList = articleReportVOList.stream().map(vo -> {
+                ArticleReport articleReport = new ArticleReport();
+                articleReport.setArticleId(vo.getId());
+                articleReport.setReportLevelId(level.getId());
+                articleReport.setTitle(vo.getTitle());
+                articleReport.setSummary(vo.getSummary());
+                articleReport.setArticleUrl(vo.getArticleUrl());
+                articleReport.setReportTitle(reportTitle);
+
+                return articleReport;
+            }).collect(Collectors.toList());
+
+            articleReportDao.saveAll(arList);
+        }
     }
 
     @Override
@@ -197,7 +224,7 @@ public class ReportServiceImpl implements IReportService {
     }
 
     @Override
-    public Resource loadFileAsResource(Integer reportId) {
+    public Resource loadFileAsResource(Long reportId) {
         // check if report exist
         Optional<Report> reportOpt = reportDao.findById(reportId);
         if (!reportOpt.isPresent()) {
@@ -333,25 +360,56 @@ public class ReportServiceImpl implements IReportService {
      * @param endTime
      */
     private void getData(ReportBaseModel reportBaseModel, String startTime, String endTime, String type) {
+        Date startDateTime, endDateTime;
 
-        return;
+        try {
+            startDateTime = Constants.getDateTimeFormat().parse(startTime);
+            endDateTime = Constants.getDateTimeFormat().parse(endTime);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        //
+        LinkedHashMap<String, List<ArticleReportVO>> listMap = new LinkedHashMap<>();
+        List<ReportLevel> reportLevelList = reportLevelDao.findAllByOrderBySort();
+        for (ReportLevel reportLevel : reportLevelList) {
+            // 查询报告舆情关系表，过滤出所有需要的舆情id()
+            List<ReportArticle> reportArticleList = reportArticleDao.findAllByUpdatedTimeBetweenAndReportTypeAndReportLevelId(
+                    startDateTime, endDateTime, type, reportLevel.getId());
+            List<Long> articleIdList = reportArticleList.stream().map(ReportArticle::getArticleId).collect(Collectors.toList());
+
+            // 请求service-datapack返回所有ID列表中的舆情数据
+            JSONObject rstVO = articleAdapt.queryArticlesByIdList(articleIdList);
+            if (rstVO != null && rstVO.containsKey("data")) {
+                List<ArticleReportVO> concernList = JSONArray.parseArray(rstVO.getJSONArray("data").toJSONString(), ArticleReportVO.class);
+                for (ArticleReportVO reportArticle : concernList) {
+                    transArticleReport(reportArticle);
+                }
+
+                listMap.put(reportLevel.getLevelName(), concernList);
+            }
+        }
+        reportBaseModel.setListMap(listMap);
+
+
 //        ResultVO<JSONObject> rstVO = articleProvider.queryDailyReport(startTime, endTime, type);
 //        JSONObject reportJO = rstVO.getData();
 //
 //        if (!ObjectUtils.isEmpty(reportJO)) {
 //            if (reportJO.containsKey("01")) {  // concernList - 重要
-//                List<ReportArticle> concernList = JSONArray.parseArray(reportJO.getJSONArray("01").toJSONString(), ReportArticle.class);
+//                List<ArticleReportVO> concernList = JSONArray.parseArray(reportJO.getJSONArray("01").toJSONString(), ArticleReportVO.class);
 //                // transform escape characters
-//                for (ReportArticle reportArticle : concernList) {
-//                    transReportArticle(reportArticle);
+//                for (ArticleReportVO reportArticle : concernList) {
+//                    transArticleReport(reportArticle);
 //                }
 //                reportBaseModel.setConcernList(concernList);
 //            }
 //            if (reportJO.containsKey("02")) {  // moreInfoList - 一般
-//                List<ReportArticle> concernList = JSONArray.parseArray(reportJO.getJSONArray("02").toJSONString(), ReportArticle.class);
+//                List<ArticleReportVO> concernList = JSONArray.parseArray(reportJO.getJSONArray("02").toJSONString(), ArticleReportVO.class);
 //                // transform escape characters
-//                for (ReportArticle reportArticle : concernList) {
-//                    transReportArticle(reportArticle);
+//                for (ArticleReportVO reportArticle : concernList) {
+//                    transArticleReport(reportArticle);
 //                }
 //                reportBaseModel.setMoreInfoList(concernList);
 //            }
@@ -360,21 +418,21 @@ public class ReportServiceImpl implements IReportService {
 
 
     /**
-     * ReportArticle 转换特殊字符
-     * @param reportArticle
+     * ArticleReportVO 转换特殊字符
+     * @param articleReportVO
      */
-    private void transReportArticle(ReportArticle reportArticle) {
-        if (reportArticle.getArticleUrl() != null) {
-            String articleUlr = reportArticle.getArticleUrl();
-            reportArticle.setArticleUrl(transEscapeChars(articleUlr));
+    private void transArticleReport(ArticleReportVO articleReportVO) {
+        if (articleReportVO.getArticleUrl() != null) {
+            String articleUlr = articleReportVO.getArticleUrl();
+            articleReportVO.setArticleUrl(transEscapeChars(articleUlr));
         }
-        if (reportArticle.getSummary() != null) {
-            String summary = reportArticle.getSummary();
-            reportArticle.setSummary(transEscapeChars(summary));
+        if (articleReportVO.getSummary() != null) {
+            String summary = articleReportVO.getSummary();
+            articleReportVO.setSummary(transEscapeChars(summary));
         }
-        if (reportArticle.getTitle() != null) {
-            String title = reportArticle.getTitle();
-            reportArticle.setTitle(transEscapeChars(title));
+        if (articleReportVO.getTitle() != null) {
+            String title = articleReportVO.getTitle();
+            articleReportVO.setTitle(transEscapeChars(title));
         }
     }
 

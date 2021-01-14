@@ -4,6 +4,7 @@ import com.dataint.cloud.common.exception.DataAlreadyExistException;
 import com.dataint.cloud.common.exception.DataNotExistException;
 import com.dataint.cloud.common.model.Constants;
 import com.dataint.cloud.common.model.Pagination;
+import com.dataint.cloud.common.model.ResultVO;
 import com.dataint.cloud.common.model.param.PageParam;
 import com.dataint.cloud.common.utils.MD5Util;
 import com.dataint.service.datapack.db.IArticleEvent;
@@ -15,6 +16,7 @@ import com.dataint.service.datapack.db.entity.*;
 import com.dataint.service.datapack.model.form.*;
 import com.dataint.service.datapack.model.param.ArticleListQueryParam;
 import com.dataint.service.datapack.model.vo.ArticleBasicVO;
+import com.dataint.service.datapack.model.vo.ArticleReportVO;
 import com.dataint.service.datapack.model.vo.ArticleVO;
 import com.dataint.service.datapack.service.IArticleService;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +24,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -236,62 +237,70 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
 
                 // 根据预处理传过来的值获取国家和传染病信息
                 Country country = countryDao.findByNameCn(entry.getKey());
-                FocusDisease disease = diseaseDao.findByNameCn(entry.getValue());
-                if (country != null && disease != null) {
-                    //
+                if (country != null) {
                     articleDisease.setCountryId(country.getId());
                     articleDisease.setCountryCode(country.getCode());
+                } else {
+                    articleDisease.setCountryCode(entry.getKey());
+                }
+                FocusDisease disease = diseaseDao.findByNameCn(entry.getValue());
+                if (disease != null) {
                     articleDisease.setDiseaseId(disease.getId());
                     articleDisease.setDiseaseCode(disease.getCode());
-                    //
-                    diseaseList.add(articleDisease);
+                } else {
+                    articleDisease.setDiseaseCode(entry.getValue());
                 }
+
+                diseaseList.add(articleDisease);
             }
         }
 
         // statistic类型舆情才会有该字段
         if (!CollectionUtils.isEmpty(staDiseaseFormList)) {
             for (StaDiseaseForm staDiseaseForm : staDiseaseFormList) {
-                Country country = countryDao.findByNameCn(staDiseaseForm.getCountry());
-                FocusDisease disease = diseaseDao.findByNameCn(staDiseaseForm.getDiseaseName());
+                ArticleDisease articleDisease = new ArticleDisease();
 
-                if (country != null && disease != null) {
-                    ArticleDisease articleDisease = new ArticleDisease();
-                    //
+                //
+                Country country = countryDao.findByNameCn(staDiseaseForm.getCountry());
+                if (country != null) {
                     articleDisease.setCountryId(country.getId());
                     articleDisease.setCountryCode(country.getCode());
+                } else {
+                    articleDisease.setCountryCode(staDiseaseForm.getCountry());
+                }
+                FocusDisease disease = diseaseDao.findByNameCn(staDiseaseForm.getDiseaseName());
+                if (disease != null) {
                     articleDisease.setDiseaseId(disease.getId());
                     articleDisease.setDiseaseCode(disease.getCode());
-
-                    //
-                    if (staDiseaseForm.getTimePeriodStart() != null) {
-                        articleDisease.setDiseaseStart(staDiseaseForm.getTimePeriodStart());
-                    }
-                    if (staDiseaseForm.getTimePeriodEnd() != null) {
-                        articleDisease.setDiseaseEnd(staDiseaseForm.getTimePeriodEnd());
-                    }
-                    if (staDiseaseForm.getPeriodConfirm() != null) {
-                        articleDisease.setPeriodConfirm(Integer.valueOf(staDiseaseForm.getPeriodConfirm()));
-                    }
-                    if (staDiseaseForm.getPeriodDeath() != null) {
-                        articleDisease.setPeriodDeath(Integer.valueOf(staDiseaseForm.getPeriodDeath()));
-                    }
-                    if (staDiseaseForm.getPeriodCure() != null) {
-                        articleDisease.setPeriodCure(Integer.valueOf(staDiseaseForm.getPeriodCure()));
-                    }
-                    if (staDiseaseForm.getConfirmCases() != null) {
-                        articleDisease.setConfirmCases(Integer.valueOf(staDiseaseForm.getConfirmCases()));
-                    }
-                    if (staDiseaseForm.getDeathCases() != null) {
-                        articleDisease.setDeathCases(Integer.valueOf(staDiseaseForm.getDeathCases()));
-                    }
-                    if (staDiseaseForm.getCureCases() != null) {
-                        articleDisease.setCureCases(Integer.valueOf(staDiseaseForm.getCureCases()));
-                    }
-
-                    //
-                    diseaseList.add(articleDisease);
                 }
+
+                //
+                if (staDiseaseForm.getTimePeriodStart() != null) {
+                    articleDisease.setDiseaseStart(staDiseaseForm.getTimePeriodStart());
+                }
+                if (staDiseaseForm.getTimePeriodEnd() != null) {
+                    articleDisease.setDiseaseEnd(staDiseaseForm.getTimePeriodEnd());
+                }
+                if (staDiseaseForm.getPeriodConfirm() != null) {
+                    articleDisease.setPeriodConfirm(Integer.valueOf(staDiseaseForm.getPeriodConfirm()));
+                }
+                if (staDiseaseForm.getPeriodDeath() != null) {
+                    articleDisease.setPeriodDeath(Integer.valueOf(staDiseaseForm.getPeriodDeath()));
+                }
+                if (staDiseaseForm.getPeriodCure() != null) {
+                    articleDisease.setPeriodCure(Integer.valueOf(staDiseaseForm.getPeriodCure()));
+                }
+                if (staDiseaseForm.getConfirmCases() != null) {
+                    articleDisease.setConfirmCases(Integer.valueOf(staDiseaseForm.getConfirmCases()));
+                }
+                if (staDiseaseForm.getDeathCases() != null) {
+                    articleDisease.setDeathCases(Integer.valueOf(staDiseaseForm.getDeathCases()));
+                }
+                if (staDiseaseForm.getCureCases() != null) {
+                    articleDisease.setCureCases(Integer.valueOf(staDiseaseForm.getCureCases()));
+                }
+
+                diseaseList.add(articleDisease);
             }
         }
 
@@ -360,8 +369,7 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
     }
 
     @Override
-    public Page<Object> getArticleList(ArticleListQueryParam queryParam) {
-
+    public ResultVO getArticleList(ArticleListQueryParam queryParam) {
         // 大洲对应国家列表准备
         final List<String> countryCodeList;
         if (!ObjectUtils.isEmpty(queryParam.getRegionId())) {
@@ -396,7 +404,7 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
                 }
 
                 // 疫情类型id
-                if (queryParam.getDiseaseId() != 0) {
+                if (!ObjectUtils.isEmpty(queryParam.getDiseaseId()) && queryParam.getDiseaseId() != 0) {
                     Subquery<Long> subQuery = criteriaQuery.subquery(Long.class);
                     Root<ArticleDisease> adSubRoot = subQuery.from(ArticleDisease.class);
                     //
@@ -409,7 +417,7 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
                 }
 
                 // 来源媒体
-                if (queryParam.getMediaTypeId() != 0) {
+                if (!ObjectUtils.isEmpty(queryParam.getMediaTypeId()) && queryParam.getMediaTypeId() != 0) {
                     list.add(criteriaBuilder.equal(root.get("mediaTypeId").as(Long.class), queryParam.getMediaTypeId()));
                 }
 
@@ -478,11 +486,12 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
                         basicVO.setIfSimilar(false);
                         basicVO.setSimilarArticleCnt(0);
                     }
-
                     return basicVO;
                 }).collect(Collectors.toList());
 
-        return new PageImpl(basicVOList, articlePage.getPageable(), articlePage.getTotalElements());
+        Pagination pagination = new Pagination(queryParam.getPageSize(),articlePage.getTotalElements(), queryParam.getCurrent());
+
+        return ResultVO.success(basicVOList, pagination);
     }
 
     @Override
@@ -655,34 +664,10 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
     }
 
     @Override
-    public Map<String, Object> queryReportContent(String startTime, String endTime, String type) {
-//        // 获取文章所有等级
-//        List<OutbreakLevel> levelList = outbreakLevelDao.findAll();
+    public List<ArticleReportVO> queryReportContent(List<Long> articleIdList) {
+        List<Article> articleList = articleDao.findAllByIdInOrderByGmtRelease(articleIdList);
+        List<ArticleReportVO> voList = articleList.stream().map(ArticleReportVO::new).collect(Collectors.toList());
 
-        Map<String, Object> articleMap = new HashMap<>();
-//        for (OutbreakLevel level : levelList) {
-//            // 00: 未评价
-//            if (!"00".equals(level.getLevelCode())) {
-//                String levelCode = level.getLevelCode();
-//                // 生成周报时不包含一般关注
-//                if ("02".equals(levelCode) && "weekly".equals(type)) {
-//                    continue;
-//                }
-//                List<Article> articleList = articleDao.queryAllByUpdatedTime(startTime, endTime, level.getId());
-//
-//                /*
-//                构造返回值map
-//                 */
-//                // 重要, 一般
-//                if (!CollectionUtils.isEmpty(articleList)) {
-//                    articleMap.put(levelCode, articleList.stream().map(ArticleReportVO::new).collect(Collectors.toList()));
-//                }
-//            }
-//        }
-
-        return articleMap;
+        return voList;
     }
-
-
-
 }

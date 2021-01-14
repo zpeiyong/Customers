@@ -4,7 +4,7 @@ import com.dataint.cloud.common.model.Constants;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
@@ -39,6 +39,22 @@ public class DateUtil {
      */
     public static String getTodayEnd() {
         Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, 23);
+        cal.set(Calendar.MINUTE, 59);
+        cal.set(Calendar.SECOND, 59);
+        cal.set(Calendar.MILLISECOND, 999);
+
+        return Constants.getDateTimeFormat().format(cal.getTime());
+    }
+
+    /**
+     * 获取指定时间天 23:59:59
+     * @return
+     */
+    public static String getDayEnd(String timeStr) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(sdf.parse(timeStr));
         cal.set(Calendar.HOUR_OF_DAY, 23);
         cal.set(Calendar.MINUTE, 59);
         cal.set(Calendar.SECOND, 59);
@@ -277,40 +293,144 @@ public class DateUtil {
     }
 
     /**
+     * 获取基于指定时间n天的 00:00:00
+     * @param timeStr
+     * @param nDays +7,-8等
+     * @return
+     */
+    public static String getNDaysThanTimeStart(String timeStr, int nDays) {
+        Calendar startTimeOfDay;
+        try {
+            startTimeOfDay = getStartTimeOfDay(timeStr);
+            startTimeOfDay.add(Calendar.DAY_OF_YEAR, nDays);
+            startTimeOfDay.set(Calendar.HOUR_OF_DAY, 0);
+            startTimeOfDay.set(Calendar.MINUTE, 0);
+            startTimeOfDay.set(Calendar.SECOND, 0);
+            startTimeOfDay.set(Calendar.MILLISECOND, 0);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return Constants.getDateTimeFormat().format(startTimeOfDay.getTime());
+    }
+
+    /**
      * 获取当月第一天0点
      * @return
      */
-    public static String getStartTimeOfQuarter() {
-        LocalDate nowDate = LocalDate.now();
+    public static String getStartTimeOfMonth() {
+        LocalDateTime nowDateTime = LocalDateTime.now();
 
-        LocalDate firstDayOfMonth = nowDate.with(TemporalAdjusters.firstDayOfMonth());
+        LocalDateTime firstDayOfMonth = nowDateTime.with(TemporalAdjusters.firstDayOfMonth()).withHour(0).withMinute(0).withSecond(0);
 
         return firstDayOfMonth.format(DateTimeFormatter.ofPattern(Constants.DateTimeFormat));
+    }
+
+    /**
+     * 获取当月最后一天23:59:59
+     * @return
+     */
+    public static String getEndTimeOfMonth() {
+        LocalDateTime nowDateTime = LocalDateTime.now();
+
+        LocalDateTime endDayOfMonth = nowDateTime.with(TemporalAdjusters.lastDayOfMonth()).withHour(23).withMinute(59).withSecond(59);
+
+        return endDayOfMonth.format(DateTimeFormatter.ofPattern(Constants.DateTimeFormat));
+    }
+
+    /**
+     * 获取当月最后一天23:59:59
+     * @return
+     */
+    public static String getEndTimeOfMonth(String timeStr) {
+        LocalDateTime nowDateTime = LocalDateTime.parse(timeStr, DateTimeFormatter.ofPattern(Constants.DateTimeFormat));
+
+        LocalDateTime endDayOfMonth = nowDateTime.with(TemporalAdjusters.lastDayOfMonth()).withHour(23).withMinute(59).withSecond(59);
+
+        return endDayOfMonth.format(DateTimeFormatter.ofPattern(Constants.DateTimeFormat));
     }
 
     /**
      * 获取当季第一天0点
      * @return
      */
-    public static String getStartTimeOfMonth(){
-        LocalDate nowDate = LocalDate.now();
-        Month firstMonthOfQuarter = nowDate.getMonth().firstMonthOfQuarter();
+    public static String getStartTimeOfQuarter() {
+        LocalDateTime nowDateTime = LocalDateTime.now();
+        Month firstMonthOfQuarter = nowDateTime.getMonth().firstMonthOfQuarter();
 
-        LocalDate firstDayOfQuarter = LocalDate.of(nowDate.getYear(), firstMonthOfQuarter, 1);
+        LocalDateTime firstDayOfQuarter = LocalDateTime.of(nowDateTime.getYear(), firstMonthOfQuarter, 1, 0, 0, 0);
 
         return firstDayOfQuarter.format(DateTimeFormatter.ofPattern(Constants.DateTimeFormat));
+    }
+
+    /**
+     * 获取当季最后一天23:59:59
+     * @return
+     */
+    public static String getEndTimeOfQuarter() {
+        LocalDateTime nowDateTime = LocalDateTime.now();
+        Month endMonthOfQuarter = Month.of(nowDateTime.getMonth().firstMonthOfQuarter().getValue() + 2);
+
+        LocalDateTime endDayOfQuarter = LocalDateTime.of(
+                nowDateTime.getYear(),
+                endMonthOfQuarter.getValue(),
+                endMonthOfQuarter.length(nowDateTime.toLocalDate().isLeapYear()), 23, 59, 59);
+
+        return endDayOfQuarter.format(DateTimeFormatter.ofPattern(Constants.DateTimeFormat));
+    }
+
+    /**
+     * 获取当季最后一天23:59:59
+     * @return
+     */
+    public static String getEndTimeOfQuarter(String timeStr) {
+        LocalDateTime nowDateTime = LocalDateTime.parse(timeStr, DateTimeFormatter.ofPattern(Constants.DateTimeFormat));
+
+        Month endMonthOfQuarter = Month.of(nowDateTime.getMonth().firstMonthOfQuarter().getValue() + 2);
+
+        LocalDateTime endDayOfQuarter = LocalDateTime.of(
+                nowDateTime.getYear(),
+                endMonthOfQuarter.getValue(),
+                endMonthOfQuarter.length(nowDateTime.toLocalDate().isLeapYear()), 23, 59, 59);
+
+        return endDayOfQuarter.format(DateTimeFormatter.ofPattern(Constants.DateTimeFormat));
     }
 
     /**
      * 获取当年第一天0点
      * @return
      */
-    public static String getStartTimeOfYeary() {
-        LocalDate nowDate = LocalDate.now();
+    public static String getStartTimeOfYearly() {
+        LocalDateTime nowDateTime = LocalDateTime.now();
 
-        LocalDate firstDayOfYear = nowDate.with(TemporalAdjusters.firstDayOfYear());
+        LocalDateTime firstDayOfYear = nowDateTime.with(TemporalAdjusters.firstDayOfYear()).withHour(0).withMinute(0).withSecond(0);
 
         return firstDayOfYear.format(DateTimeFormatter.ofPattern(Constants.DateTimeFormat));
+    }
+
+    /**
+     * 获取当年最后一天23:59:59
+     * @return
+     */
+    public static String getEndTimeOfYearly() {
+        LocalDateTime nowDateTime = LocalDateTime.now();
+
+        LocalDateTime endDayOfYear = nowDateTime.with(TemporalAdjusters.lastDayOfYear()).withHour(23).withMinute(59).withSecond(59);
+
+        return endDayOfYear.format(DateTimeFormatter.ofPattern(Constants.DateTimeFormat));
+    }
+
+    /**
+     * 获取当年最后一天23:59:59
+     * @return
+     */
+    public static String getEndTimeOfYearly(String timeStr) {
+        LocalDateTime nowDateTime = LocalDateTime.parse(timeStr, DateTimeFormatter.ofPattern(Constants.DateTimeFormat));
+
+        LocalDateTime endDayOfYear = nowDateTime.with(TemporalAdjusters.lastDayOfYear()).withHour(23).withMinute(59).withSecond(59);
+
+        return endDayOfYear.format(DateTimeFormatter.ofPattern(Constants.DateTimeFormat));
     }
 
     /**
@@ -515,7 +635,7 @@ public class DateUtil {
         return Constants.getDateTimeFormat().format(cal.getTime());
     }
 
-    public static void main(String[] args)  {
+    public static void main(String[] args) throws ParseException {
 //        System.out.println(getLastWeekStart());
 //        System.out.println(getLastWeekEnd());
 //        System.out.println(get7DaysAgoStart());
@@ -523,14 +643,24 @@ public class DateUtil {
 //        String beginTime = "2019-12-01 01:01:01";
 //        String overTime = "2019-12-04 23:23:01";
 //        System.out.println(getDailyBetweenIntervals(beginTime, overTime));
-        String timeStr = "2019-12-02 00:00:00";
+        String timeStr = "2019-12-08 00:00:00";
 //        System.out.println(getWeekOfYear(timeStr));
-        try {
-            System.out.println(get1YearAgoStart(timeStr));
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            System.out.println(get1YearAgoStart(timeStr));
+//
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+        System.out.println(getStartTimeOfMonth());
+        System.out.println(getStartTimeOfYearly());
+        System.out.println(getStartTimeOfQuarter());
+        System.out.println(getEndTimeOfMonth());
+        System.out.println(getEndTimeOfQuarter());
+        System.out.println(getEndTimeOfYearly());
+        System.out.println(getEndTimeOfMonth(timeStr));
+        System.out.println(getEndTimeOfQuarter(timeStr));
+        System.out.println(getEndTimeOfYearly(timeStr));
+        System.out.println(getWeekEnd(timeStr));
 
     }
 }

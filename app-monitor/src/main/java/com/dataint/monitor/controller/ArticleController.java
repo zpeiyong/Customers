@@ -1,10 +1,12 @@
 package com.dataint.monitor.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.dataint.cloud.common.model.Constants;
+import com.dataint.cloud.common.model.ResultVO;
 import com.dataint.cloud.common.model.param.PageParam;
+import com.dataint.cloud.common.utils.JWTUtil;
 import com.dataint.monitor.adapt.IArticleAdapt;
 import com.dataint.monitor.model.form.ArticleUpdateForm;
-import com.dataint.monitor.model.form.StoreDataForm;
 import com.dataint.monitor.model.param.ArticleListQueryParam;
 import com.dataint.monitor.service.IArticleService;
 import io.swagger.annotations.ApiImplicitParam;
@@ -14,26 +16,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-
 @RestController
 @RequestMapping(value = "/article")
 @Slf4j
 public class ArticleController {
-
-    @Autowired
-    private IArticleAdapt articleAdapt;
-
+    
     @Autowired
     private IArticleService articleService;
 
-    @ApiOperation(value = "保存舆情", notes = "保存一条舆情")
-    @ApiImplicitParam(name = "storeDataForm", value = "保存舆情form表单", required = true, dataType = "StoreDataForm")
-    @PostMapping("/store")
-    public Object store(@Valid @RequestBody StoreDataForm storeDataForm) {
-        log.debug("Name: {}", storeDataForm);
-        return  articleAdapt.storeData(storeDataForm);
-    }
+    @Autowired
+    private IArticleAdapt articleAdapt;
 
     @RequestMapping(value = "/queryEventList",method = RequestMethod.GET)
     @ApiOperation(value = "BI大屏事件信息查询",notes = "BI大屏事件查询")
@@ -74,14 +66,23 @@ public class ArticleController {
 
 
     /**
-     * Web疫情讯息模块
+     * Web视点模块
      */
     @ApiOperation(value = "获取舆情列表", notes = "获取舆情信息列表")
-    @GetMapping("/normal/getArticleList")
-    public Object getArticleList(@ModelAttribute ArticleListQueryParam articleListQueryParam) {
+    @GetMapping(value = "/normal/getArticleList")
+    public ResultVO getArticleList(@ModelAttribute ArticleListQueryParam articleListQueryParam, 
+                                   @RequestHeader(Constants.AUTHORIZE_ACCESS_TOKEN) String accessToken) {
+        log.debug("get article: {}", articleListQueryParam);
 
-        return articleAdapt.getArticleList(articleListQueryParam);
+        // 解析token获取userId
+        Long userId = JWTUtil.getUserId(accessToken);
+        String systemType = JWTUtil.getSystemType(accessToken);
+
+        return articleService.getArticleList(articleListQueryParam, userId, systemType);
     }
+
+
+
 
     @ApiOperation(value = "根据舆情id获取舆情信息", notes = "根据舆情id获取舆情信息")
     @ApiImplicitParam(paramType = "path", name = "id", value = "舆情ID", required = true, dataType = "long")
@@ -90,7 +91,6 @@ public class ArticleController {
         log.debug("get with id: {}", id);
 
         return articleAdapt.getArticleById(id);
-
     }
 
     @ApiOperation(value = "单个/批量删除舆情", notes = "根据舆情id列表删除舆情信息")
@@ -143,30 +143,4 @@ public class ArticleController {
     public Object updateArticle(@RequestBody ArticleUpdateForm articleUpdateForm) {
         return articleAdapt.updateArticle(articleUpdateForm);
     }
-
-
-
-    /**
-     * 统计/分析模块
-     */
-    @ApiOperation(value = "获取gmtRelease列表", notes = "根据关键词查询gmtRelease列表")
-    @ApiImplicitParam(paramType = "query", name = "keyword", value = "关键词", required = true, dataType = "string")
-    @GetMapping("/searchByKeyword")
-    public Object searchByKeyword(@RequestParam String keyword) {
-
-        return articleAdapt.searchByKeyword(keyword);
-    }
-
-    @ApiOperation(value = "获取报告所需舆情数据", notes = "根据起始时间段, 获取报告所需舆情数据内容")
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", name = "startTime", value = "舆情起始时间", required = true, dataType = "string"),
-            @ApiImplicitParam(paramType = "query", name = "endTime", value = "舆情结束时间", required = true, dataType = "string"),
-            @ApiImplicitParam(paramType = "query", name = "type", value = "舆情报告类型", required = true, dataType = "string")
-    })
-    @GetMapping("/queryReport")
-    public Object queryDailyReport(@RequestParam("startTime") String startTime, @RequestParam("endTime") String endTime, @RequestParam(value = "type") String type) {
-
-        return articleAdapt.queryReportContent(startTime, endTime, type);
-    }
-
 }

@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ISiteDao extends JpaRepository<Site, Integer> {
+public interface ISiteDao extends JpaRepository<Site, Long> {
 
     Site findByNameCnAndUrl(String nameCn, String url);
 }

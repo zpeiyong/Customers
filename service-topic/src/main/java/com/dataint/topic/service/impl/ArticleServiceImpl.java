@@ -3,8 +3,9 @@ package com.dataint.topic.service.impl;
 import com.dataint.cloud.common.model.Pagination;
 import com.dataint.cloud.common.model.ResultVO;
 import com.dataint.topic.db.dao.IArticleDao;
-import com.dataint.topic.db.dao.IMediaTypeDao;
+import com.dataint.topic.db.dao.ITopicKeywordDao;
 import com.dataint.topic.db.entity.TopicArticle;
+import com.dataint.topic.db.entity.TopicKeyword;
 import com.dataint.topic.model.form.ArticleConditionForm;
 import com.dataint.topic.model.vo.TopicArticleVO;
 import com.dataint.topic.service.IArticleService;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -28,9 +30,8 @@ import java.util.stream.Collectors;
 public class ArticleServiceImpl implements IArticleService {
     @Autowired
     private IArticleDao articleDao;
-
     @Autowired
-    private IMediaTypeDao mediaTypeDao;
+    private ITopicKeywordDao topicKeywordDao;
 
     @Override
     public ResultVO queryArticlesByCondition(ArticleConditionForm acReq) {
@@ -46,39 +47,51 @@ public class ArticleServiceImpl implements IArticleService {
                 ArrayList<Long> mediaTypeIdList = acReq.getMediaTypeIdList();
                 String sortOrder = acReq.getSortOrder();
 
-                //专题id
-                if(topicId != null && topicId > 0) {
-                    list.add(criteriaBuilder.equal(root.get("id"), topicId));
+                // 关键词id
+                if (keywordId != null && keywordId > 0) {
+                    list.add(criteriaBuilder.equal(root.get("keywordId"), keywordId));
                 } else {
-                    // 关键字
-                    if (keywordId != null && keywordId >  0)
-                        list.add(criteriaBuilder.equal(root.get("keywordId"), keywordId));
+                    // 根据topicId查询所有的keyword
+                    if(topicId != null && topicId > 0) {
+                        List<TopicKeyword> tkList = topicKeywordDao.findAllByTopicId(topicId);
+                        if (!CollectionUtils.isEmpty(tkList)) {
+                            List<Long> keywordIdList = tkList.stream().map(TopicKeyword::getKeywordId).collect(Collectors.toList());
+                            CriteriaBuilder.In<Long> keywordIdIn = criteriaBuilder.in(root.get("keywordId"));
+                            for (Long id : keywordIdList) {
+                                keywordIdIn.value(id);
+                            }
+                            list.add(criteriaBuilder.and(keywordIdIn));
+                        } else {
+                            list.add(criteriaBuilder.equal(root.get("keywordId"), 0L));
+                        }
+                    }
                 }
 
                 // 来源
                 if (siteIdList != null && siteIdList.size() != 0){
-                    CriteriaBuilder.In<Long> siteId = criteriaBuilder.in(root.get("siteId"));
+                    CriteriaBuilder.In<Long> siteIdIn = criteriaBuilder.in(root.get("siteId"));
                     for (Long id : siteIdList) {
-                        siteId.value(id);
+                        siteIdIn.value(id);
                     }
-                    list.add(criteriaBuilder.and(siteId));
+                    list.add(criteriaBuilder.and(siteIdIn));
                 }
 
                 // 类型
                 // getAll 官方媒体/新闻媒体
                 if (mediaTypeIdList != null && mediaTypeIdList.size() > 0) {
-                    CriteriaBuilder.In<Long> mediaTypeId = criteriaBuilder.in(root.get("mediaTypeId"));
+                    CriteriaBuilder.In<Long> mediaTypeIdIn = criteriaBuilder.in(root.get("mediaTypeId"));
                     for (Long id : mediaTypeIdList) {
-                        mediaTypeId.value(id);
+                        mediaTypeIdIn.value(id);
                     }
-                    list.add(criteriaBuilder.and(mediaTypeId));
+                    list.add(criteriaBuilder.and(mediaTypeIdIn));
                 }
 
                 // 排序
-                if ("asc".equals(sortOrder.toLowerCase()))
+                if ("asc".equals(sortOrder.toLowerCase())) {
                     criteriaQuery.orderBy(criteriaBuilder.asc(root.get("gmtRelease")));
-                else
+                } else {
                     criteriaQuery.orderBy(criteriaBuilder.desc(root.get("gmtRelease")));
+                }
 
                 Predicate[] p = new Predicate[list.size()];
                 return criteriaBuilder.and(list.toArray(p));

@@ -70,6 +70,8 @@ public interface IArticleDao extends JpaRepository<Article, Long>, JpaSpecificat
             "   AND (locate(?1, a.title) OR locate(?1, a.summary))", nativeQuery = true)
     List<String> searchByKeyword(String keyword);
 
+    List<Article> findAllByIdInOrderByGmtRelease(Iterable<Long> iterable);
+
     /**
      * 统计当前文章除自身以外的相似度文章数量
      * @param similarArticleId

@@ -78,13 +78,13 @@ public class ArticleController {
 
 
     /**
-     * Web疫情讯息模块
+     * Web视点模块
      */
     @ApiOperation(value = "获取舆情列表", notes = "获取舆情信息列表")
     @GetMapping("/normal/getArticleList")
     public ResultVO getArticleList(@ModelAttribute ArticleListQueryParam articleListQueryParam) {
 
-        return ResultVO.success(articleService.getArticleList(articleListQueryParam));
+        return articleService.getArticleList(articleListQueryParam);
     }
 
     @ApiOperation(value = "根据舆情id获取舆情信息", notes = "根据舆情id获取舆情信息")
@@ -170,16 +170,13 @@ public class ArticleController {
         return ResultVO.success(articleService.searchByKeyword(keyword));
     }
 
-    @ApiOperation(value = "获取报告所需舆情数据", notes = "根据起始时间段, 获取报告所需舆情数据内容")
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", name = "startTime", value = "舆情起始时间", required = true, dataType = "string"),
-            @ApiImplicitParam(paramType = "query", name = "endTime", value = "舆情结束时间", required = true, dataType = "string"),
-            @ApiImplicitParam(paramType = "query", name = "type", value = "舆情报告类型", required = true, dataType = "string")
-    })
-    @GetMapping("/queryReport")
-    public ResultVO queryDailyReport(@RequestParam("startTime") String startTime, @RequestParam("endTime") String endTime, @RequestParam(value = "type") String type) {
+    @ApiOperation(value = "获取报告需要的舆情数据", notes = "根据舆情id列表获取报告需要的舆情数据")
+    @ApiImplicitParam(paramType = "query", name = "idListStr", value = "舆情数据id列表", allowMultiple = true, required = true, dataType = "string")
+    @GetMapping("/queryArticlesByIdList")
+    public ResultVO queryArticlesByIdList(@RequestParam List<Long> idListStr) {
+        log.debug("query articles by articleId List: {}", idListStr);
 
-        return ResultVO.success(articleService.queryReportContent(startTime, endTime, type));
+        return ResultVO.success(articleService.queryReportContent(idListStr));
     }
 
 }

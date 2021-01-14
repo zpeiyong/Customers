@@ -28,12 +28,12 @@ public class Comment extends BasePO {
 	private static final long serialVersionUID =  2596282133756690139L;
 
  	@Column(name = "article_id" )
-	private Long articleId;  // 主题库id
+	private Long articleId;  // 舆情id
 
  	@Column(name = "content" )
 	private String content;  // 评论内容
 
 	@NotNull
  	@Column(name = "user_id" )
-	private Integer userId;  // 评论用户id
+	private Long userId;  // 评论用户id
 }

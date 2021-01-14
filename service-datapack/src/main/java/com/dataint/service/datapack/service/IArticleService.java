@@ -1,12 +1,13 @@
 package com.dataint.service.datapack.service;
 
+import com.dataint.cloud.common.model.ResultVO;
 import com.dataint.cloud.common.model.param.PageParam;
 import com.dataint.service.datapack.model.form.ArticleUpdateForm;
 import com.dataint.service.datapack.model.form.StoreDataForm;
 import com.dataint.service.datapack.model.param.ArticleListQueryParam;
 import com.dataint.service.datapack.model.vo.ArticleBasicVO;
+import com.dataint.service.datapack.model.vo.ArticleReportVO;
 import com.dataint.service.datapack.model.vo.ArticleVO;
-import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.Map;
@@ -51,7 +52,7 @@ public interface IArticleService {
      * @param articleListQueryParam
      * @return
      */
-    Page<Object> getArticleList(ArticleListQueryParam articleListQueryParam);
+    ResultVO getArticleList(ArticleListQueryParam articleListQueryParam);
 
     /**
      *
@@ -101,14 +102,13 @@ public interface IArticleService {
 
     /* 统计/分析模块 */
     List<String> searchByKeyword(String keyword);
+
     /**
      *
-     * @param startTime
-     * @param endTime
-     * @param type
+     * @param articleIdList
      * @return
      */
-    Map<String, Object> queryReportContent(String startTime, String endTime, String type);
+    List<ArticleReportVO> queryReportContent(List<Long> articleIdList);
 
-    List<Map<String, Object>> queryEventList(Long diseaseId, int pageSize, int current,String  releaseTime);
+    List<Map<String, Object>> queryEventList(Long diseaseId, int pageSize, int current, String  releaseTime);
 }
