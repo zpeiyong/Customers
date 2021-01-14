@@ -36,6 +36,11 @@ public interface IArticleDao extends JpaRepository<Article, Long>, JpaSpecificat
 //                    "WHERE (locate(?1, a.country_code) OR locate(?1, ad.country_codes)) AND ad.disease_code = ?2 AND a.if_deleted = ?3", nativeQuery = true)
 //    Page<Article> findMapBasicListByIfDeleted(String countryCode, String diseaseName, Boolean ifDeleted, Pageable pageable);
 
+    @Query(value = "from Article a " +
+            "left join ArticleDisease ad on a.id = ad.articleId " +
+            "where ad.countryId = ?1 and ad.diseaseId = ?2")
+    Page<Article> findMapBasicList(Long countryId, Long diseaseId, Pageable pageable);
+
     /* Statistic */
     int countByGmtCrawlBetween(Date startTime, Date endTime);
 

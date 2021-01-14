@@ -250,14 +250,14 @@ public class StatisticServiceImpl implements IStatisticService {
         }
 
         List<Map<String, Object>> poList = diseaseCountryPODao.getEventCntByDiseaseIdAndStatisticDate(diseaseId, yesStartDate,
-                PageRequest.of(0, 5, Sort.by("eventToTal").descending()));
+                PageRequest.of(0, 5, Sort.by("eventTotal").descending()));
         for (Map<String, Object> poMap : poList) {
             Map<String, Object> itemMap = new HashMap<>();
             itemMap.put("countryNameCn", poMap.get("0"));
             if (poMap.get("1") != null) {
-                itemMap.put("eventToTal", poMap.get("1"));
+                itemMap.put("eventTotal", poMap.get("1"));
             } else {
-                itemMap.put("eventToTal", 0);
+                itemMap.put("eventTotal", 0);
             }
             respList.add(itemMap);
         }
@@ -314,7 +314,11 @@ public class StatisticServiceImpl implements IStatisticService {
         for (Map<String, Object> poMap : poList) {
             Map<String, Object> itemMap = new HashMap<>();
             itemMap.put("countryNameCn", poMap.get("0"));
-            itemMap.put("articleTotal", poMap.get("1"));
+            if (poMap.get("1") != null) {
+                itemMap.put("articleTotal", poMap.get("1"));
+            } else {
+                itemMap.put("articleTotal", 0);
+            }
             respList.add(itemMap);
         }
 

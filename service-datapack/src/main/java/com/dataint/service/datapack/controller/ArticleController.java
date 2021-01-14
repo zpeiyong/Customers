@@ -69,9 +69,9 @@ public class ArticleController {
             @ApiImplicitParam(paramType = "query", name = "diseaseName", value = "疫情名称", required = true, dataType = "string")
     })
     @GetMapping("/queryMapBasicList")
-    public ResultVO queryMapBasicList(@RequestParam Long countryId, @RequestParam String diseaseName, @ModelAttribute PageParam pageParam) {
+    public ResultVO queryMapBasicList(@RequestParam Long countryId, @RequestParam Long diseaseId, @ModelAttribute PageParam pageParam) {
 
-        return ResultVO.success(articleService.queryMapBasicList(countryId, diseaseName, pageParam));
+        return articleService.queryMapBasicList(countryId, diseaseId, pageParam);
     }
 
 
