@@ -358,7 +358,12 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
 
     @Override
     public ResultVO queryMapBasicList(Long countryId, Long diseaseId, PageParam pageParam) {
-        Page<Article> mapArticlePage = articleDao.findMapBasicList(countryId, diseaseId, pageParam.toPageRequest());
+        Page<Article> mapArticlePage;
+        if (countryId != null) {
+            mapArticlePage = articleDao.findMapBasicList(countryId, diseaseId, pageParam.toPageRequest("gmtRelease"));
+        } else {
+            mapArticlePage = articleDao.findMapBasicList(diseaseId, pageParam.toPageRequest("gmtRelease"));
+        }
 
         List<BIArticleBasicVO> mapBasicVOList = mapArticlePage.getContent().stream().map(BIArticleBasicVO::new).collect(Collectors.toList());
         Pagination pagination = new Pagination(pageParam.getPageSize(), mapArticlePage.getTotalElements(), pageParam.getCurrent());

@@ -38,7 +38,9 @@ public class ArticleAdaptImpl implements IArticleAdapt {
     public Object queryMapBasicList(Long countryId, Long diseaseId, PageParam pageParam) {
         String url = "http://" +  baseUrl + "/article/queryMapBasicList";
         HashMap<String, String> map = new HashMap<>();
-        map.put("countryId", countryId.toString());
+        if (countryId != null) {
+            map.put("countryId", countryId.toString());
+        }
         map.put("diseaseId", diseaseId.toString());
         map.put("current",pageParam.getCurrent().toString());
         map.put("pageSize", pageParam.getPageSize().toString());
