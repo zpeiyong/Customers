@@ -124,12 +124,17 @@ public class ArticleAdaptImpl implements IArticleAdapt {
     }
 
     @Override
-    public Object queryReportContent(String startTime, String endTime, String type) {
-        String url = "http://" + baseUrl + "/queryReport";
+    public Object queryEventList(Long diseaseId,Long pageSize, Long current,String  releaseTime) {
+        String url = "http://" + baseUrl + "/article/queryEventList";
         HashMap<String, String> map = new HashMap<>();
-        map.put("startTime", startTime);
-        map.put("endTime", endTime);
-        map.put("type", type);
+        if (diseaseId != null)
+            map.put("diseaseId", diseaseId.toString());
+        if (pageSize != null)
+            map.put("pageSize", pageSize.toString());
+        if (current != null)
+            map.put("current", current.toString());
+        if (releaseTime != null)
+            map.put("releaseTime", releaseTime);
         return GetPostUtil.sendGet(url, map);
     }
 

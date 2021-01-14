@@ -8,9 +8,9 @@ import com.dataint.service.datapack.model.param.ArticleListQueryParam;
 import com.dataint.service.datapack.model.vo.ArticleBasicVO;
 import com.dataint.service.datapack.model.vo.ArticleReportVO;
 import com.dataint.service.datapack.model.vo.ArticleVO;
-import org.springframework.data.domain.Page;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IArticleService {
 
@@ -109,4 +109,6 @@ public interface IArticleService {
      * @return
      */
     List<ArticleReportVO> queryReportContent(List<Long> articleIdList);
+
+    List<Map<String, Object>> queryEventList(Long diseaseId, int pageSize, int current, String  releaseTime);
 }
