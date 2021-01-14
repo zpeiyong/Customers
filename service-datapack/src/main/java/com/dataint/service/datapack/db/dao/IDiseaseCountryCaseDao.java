@@ -57,7 +57,7 @@ public interface IDiseaseCountryCaseDao extends JpaRepository<DiseaseCountryCase
             "   HAVING disease_id = ?1 " +
             "   ORDER BY MAX(confirm_add) DESC LIMIT ?2) d1  " +
             "ON d.country_name_cn = d1.country_name_cn " +
-            "WHERE statistic_date > DATE_SUB(?3,INTERVAL ?4 DAY) AND statistic_date <= ?3" +
+            "WHERE statistic_date > DATE_SUB(?3,INTERVAL ?4 DAY) AND statistic_date <= ?3 " +
             "ORDER BY d.country_name_cn DESC;", nativeQuery = true)
     List<DiseaseCountryCase> getDailyConFirmedAddByDiseaseId(Long diseaseId,int limit,String dateStr, int i);
 
