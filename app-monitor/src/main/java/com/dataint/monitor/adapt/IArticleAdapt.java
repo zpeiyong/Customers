@@ -29,8 +29,7 @@ public interface IArticleAdapt {
 
     Object updateArticle(ArticleUpdateForm articleUpdateForm);
 
-    Object queryReportContent(String startTime, String endTime, String type);
-
+    Object queryEventList(Long diseaseId,Long pageSize, Long current,String  releaseTime);
 
     JSONObject queryArticlesByIdList(List<Long> articleIdList);
 }

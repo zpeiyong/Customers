@@ -24,13 +24,12 @@ import java.util.Map;
 public class ArticleServiceImpl implements IArticleService {
     @Autowired
     private IArticleAdapt articleAdapt;
-    
     @Autowired
     private IArticleUserDao articleUserDao;
     @Autowired
-    private IArticleAuditDao articleAuditDao;
-    @Autowired
     private IArticleLikeDao articleLikeDao;
+    @Autowired
+    private IArticleAuditDao articleAuditDao;
     @Autowired
     private ICommentDao commentDao;
     @Autowired
@@ -192,6 +191,14 @@ public class ArticleServiceImpl implements IArticleService {
 //            return rebuildArticle(userId, retJO);
 //
 //        return new JSONObject();
+    }
+
+    @Override
+    public JSONObject queryEventList(Long diseaseId,Long pageSize, Long current, String releaseTime) {
+        JSONObject jsonObject = new JSONObject();
+        Object queryEventList = articleAdapt.queryEventList(diseaseId, pageSize, current,releaseTime);
+          jsonObject= (JSONObject) queryEventList;
+        return jsonObject;
     }
 
 

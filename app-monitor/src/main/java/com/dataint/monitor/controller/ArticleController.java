@@ -1,5 +1,6 @@
 package com.dataint.monitor.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.dataint.cloud.common.model.Constants;
 import com.dataint.cloud.common.model.ResultVO;
 import com.dataint.cloud.common.model.param.PageParam;
@@ -25,6 +26,14 @@ public class ArticleController {
 
     @Autowired
     private IArticleAdapt articleAdapt;
+
+    @RequestMapping(value = "/queryEventList",method = RequestMethod.GET)
+    @ApiOperation(value = "BI大屏事件信息查询",notes = "BI大屏事件查询")
+    @ResponseBody
+    public  Object  queryEventList(Long diseaseId,Long pageSize, Long current,String releaseTime){
+        JSONObject eventList = articleService.queryEventList(diseaseId, pageSize, current,releaseTime);
+        return  eventList;
+    }
 
     /**
      * BI展示模块
