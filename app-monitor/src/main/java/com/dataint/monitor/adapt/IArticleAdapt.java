@@ -17,7 +17,7 @@ public interface IArticleAdapt {
 
     JSONObject getArticleList(ArticleListQueryParam articleListQueryParam);
 
-    Object getArticleById(Long id);
+    JSONObject getArticleById(Long id);
 
     Object delArticles(String idListStr);
 

@@ -6,16 +6,18 @@ import com.alibaba.fastjson.JSONObject;
 import com.dataint.cloud.common.model.ResultVO;
 import com.dataint.cloud.common.model.param.PageParam;
 import com.dataint.monitor.adapt.IArticleAdapt;
-import com.dataint.monitor.dao.*;
+import com.dataint.monitor.dao.IArticleLikeDao;
+import com.dataint.monitor.dao.IArticleReportDao;
+import com.dataint.monitor.dao.IArticleUserDao;
+import com.dataint.monitor.dao.ICommentDao;
 import com.dataint.monitor.dao.entity.ArticleUser;
-import com.dataint.monitor.model.ArticleBasicAdminVO;
-import com.dataint.monitor.model.ArticleBasicVO;
 import com.dataint.monitor.model.form.ArticleUpdateForm;
 import com.dataint.monitor.model.param.ArticleListQueryParam;
 import com.dataint.monitor.service.IArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -29,8 +31,6 @@ public class ArticleServiceImpl implements IArticleService {
     @Autowired
     private IArticleLikeDao articleLikeDao;
     @Autowired
-    private IArticleAuditDao articleAuditDao;
-    @Autowired
     private ICommentDao commentDao;
     @Autowired
     private IArticleReportDao articleReportDao;
@@ -39,14 +39,12 @@ public class ArticleServiceImpl implements IArticleService {
     public ResultVO getLatestList(PageParam pageParam) {
 
         return null;
-//        return articleProvider.getLatestList(pageParam.getCurrent(), pageParam.getPageSize());
     }
 
     @Override
     public ResultVO getArticleBasicById(Integer articleId) {
 
         return null;
-//        return articleProvider.getArticleBasicById(articleId);
     }
 
     @Override
@@ -57,30 +55,12 @@ public class ArticleServiceImpl implements IArticleService {
         // 解析并构造最终返回的ArticleBasicVO
         JSONObject data = responseJO.getJSONObject("data");
         if (data != null && data.containsKey("list")) {
-            // 后台管理界面视点模块
-            if ("admin".equals(systemType)) {
-                List<ArticleBasicAdminVO> abVOList = JSONArray.parseArray(data.get("list").toString(), ArticleBasicAdminVO.class);
-                for (ArticleBasicAdminVO abVO : abVOList) {
-                    // 当前用户是否关注 ifLike
-                    boolean ifLike = articleLikeDao.existsByArticleIdAndUserId(abVO.getId(), userId);
-                    abVO.setIfLike(ifLike);
-                    // 评审数量
-                    Integer commentCnt = commentDao.countByArticleId(abVO.getId());
-                    abVO.setReviewCount(commentCnt);
-                    // 是否已加入日报
-                    boolean ifInReport = articleReportDao.existsByArticleId(abVO.getId());
-                    abVO.setIfInReport(ifInReport);
-                }
-                data.put("list", abVOList);
-            } else {
-                List<ArticleBasicVO> abVOList = JSONArray.parseArray(data.get("list").toString(), ArticleBasicVO.class);
-                for (ArticleBasicVO abVO : abVOList) {
-                    // 当前用户是否关注 ifLike
-                    boolean ifLike = articleLikeDao.existsByArticleIdAndUserId(abVO.getId(), userId);
-                    abVO.setIfLike(ifLike);
-                }
-                data.put("list", abVOList);
+            List<JSONObject> rebuildJA = new ArrayList<>();
+            for (Object object : data.getJSONArray("list")) {
+                JSONObject rebuildJO = rebuildArticle(userId, (Map)object, systemType);
+                rebuildJA.add(rebuildJO);
             }
+            data.put("list", rebuildJA);
         } else {
             return JSON.parseObject(responseJO.toString(), ResultVO.class);
         }
@@ -89,9 +69,20 @@ public class ArticleServiceImpl implements IArticleService {
     }
 
     @Override
-    public JSONObject getArticleById(Integer userId, Integer id) {
+    public ResultVO getArticleById(Long userId, Long id, String systemType) {
+        // 从datapack服务获取详情信息
+        JSONObject responseJO = articleAdapt.getArticleById(id);
 
-        return null;
+        JSONObject data = responseJO.getJSONObject("data");
+
+        if (data != null) {
+            data = rebuildArticle(userId, data, systemType);
+        } else {
+            return JSON.parseObject(responseJO.toString(), ResultVO.class);
+        }
+
+        return ResultVO.success(data);
+
 //        JSONObject retJO = (JSONObject) articleProvider.getArticleById(id).getData();
 //
 //        if (retJO != null)
@@ -208,30 +199,42 @@ public class ArticleServiceImpl implements IArticleService {
      * @param articleMap
      * @return
      */
-    private JSONObject rebuildArticle(int userId, Map articleMap) {
+    private JSONObject rebuildArticle(Long userId, Map articleMap, String systemType) {
         if (articleMap == null) {
             return new JSONObject();
         }
 
         JSONObject jsonObject = new JSONObject();
-
         Iterator it = articleMap.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry entry = (Map.Entry) it.next();
             jsonObject.put((String) entry.getKey(), entry.getValue());
 
             if ("id".equals(entry.getKey())) {
-                // 当前用户是否收藏(1:已收藏；0:未收藏)
-                if (articleUserDao.findByUserIdAndArticleId(userId, (int)entry.getValue()) != null)
-                    jsonObject.put("favorite", 1);
-                else
-                    jsonObject.put("favorite", 0);
+                // 当前用户是否关注 ifLike
+                boolean ifLike = articleLikeDao.existsByArticleIdAndUserId((Long.valueOf((Integer)entry.getValue())), userId);
+                jsonObject.put("ifLike", ifLike);
 
-                // 当前舆情是否已审核(1:已审核；0:未审核)
-                if (articleAuditDao.findByArticleId((int)entry.getValue()) != null)
-                    jsonObject.put("audit", 1);
-                else
-                    jsonObject.put("audit", 0);
+                // 后台管理界面视点模块
+                if ("admin".equals(systemType)) {
+                    // 评审数量
+                    Integer commentCnt = commentDao.countByArticleId((Long.valueOf((Integer)entry.getValue())));
+                    jsonObject.put("reviewCount", commentCnt);
+                    // 是否已加入日报
+                    boolean ifInReport = articleReportDao.existsByArticleId((Long.valueOf((Integer)entry.getValue())));
+                    jsonObject.put("ifReport", ifInReport);
+                }
+//                // 当前用户是否收藏(1:已收藏；0:未收藏)
+//                if (articleUserDao.findByUserIdAndArticleId(userId, (int)entry.getValue()) != null)
+//                    jsonObject.put("favorite", 1);
+//                else
+//                    jsonObject.put("favorite", 0);
+//
+//                // 当前舆情是否已审核(1:已审核；0:未审核)
+//                if (articleAuditDao.findByArticleId((int)entry.getValue()) != null)
+//                    jsonObject.put("audit", 1);
+//                else
+//                    jsonObject.put("audit", 0);
             }
         }
 

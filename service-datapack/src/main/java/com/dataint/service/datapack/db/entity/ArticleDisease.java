@@ -63,19 +63,4 @@ public class ArticleDisease implements Serializable {
     @Column(name = "cure_cases")
     private Integer cureCases;  // 总治愈人数
 
-
-//    @Column(name = "new_cases")
-//    private Integer newCases;  //新增病例
-//
-//    @Column(name = "cumulative_cases")
-//    private Integer cumulativeCases;  //累计病例
-//
-//    @Column(name = "confirmed_cases")
-//    private Integer confirmedCases; //确诊病例
-//
-//    @Column(name = "suspected_cases")
-//    private Integer suspectedCases; //疑似病例
-//
-//    @Column(name = "death_toll")
-//    private Integer deathToll;  //死亡病例
 }

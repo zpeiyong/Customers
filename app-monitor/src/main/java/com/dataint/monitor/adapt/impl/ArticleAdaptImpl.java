@@ -4,12 +4,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.dataint.cloud.common.model.param.PageParam;
 import com.dataint.cloud.common.utils.GetPostUtil;
 import com.dataint.monitor.adapt.IArticleAdapt;
-import com.dataint.monitor.dao.IArticleLikeDao;
-import com.dataint.monitor.dao.ICommentDao;
 import com.dataint.monitor.model.form.ArticleUpdateForm;
 import com.dataint.monitor.model.param.ArticleListQueryParam;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -21,12 +18,6 @@ public class ArticleAdaptImpl implements IArticleAdapt {
 
     @Value("${service.datapack.baseUrl}")
     private String baseUrl;
-
-    @Autowired
-    private IArticleLikeDao articleLikeDao;
-
-    @Autowired
-    private ICommentDao commentDao;
 
     @Override
     public Object queryBasicList(PageParam pageParam) {
@@ -80,7 +71,7 @@ public class ArticleAdaptImpl implements IArticleAdapt {
     }
 
     @Override
-    public Object getArticleById(Long id) {
+    public JSONObject getArticleById(Long id) {
         String url = "http://" +  baseUrl + "/article/normal/" + id.toString();
         return GetPostUtil.sendGet(url);
     }

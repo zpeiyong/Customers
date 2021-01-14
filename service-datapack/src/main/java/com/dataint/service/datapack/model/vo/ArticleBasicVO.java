@@ -19,13 +19,15 @@ public class ArticleBasicVO extends BaseVO {
     public ArticleBasicVO(Article article) {
         BeanUtils.copyProperties(article, this);
 
-        if (!StringUtils.isEmpty(article.getKeywords()))
+        if (!StringUtils.isEmpty(article.getKeywords())) {
             this.keywordList = Arrays.asList(article.getKeywords().split(Constants.SPLITTER));
-        if (article.getSite() != null && !StringUtils.isEmpty(article.getSite().getNameCn()))
-            this.siteName = article.getSite().getNameCn();
-        if (article.getArticleOrigin() != null) {
-            this.articleOriginVO = new ArticleOrigBasicVO(article.getArticleOrigin());
         }
+        if (article.getSite() != null && !StringUtils.isEmpty(article.getSite().getNameCn())) {
+            this.siteName = article.getSite().getNameCn();
+        }
+//        if (article.getArticleOrigin() != null) {
+//            this.articleOriginVO = new ArticleOrigBasicVO(article.getArticleOrigin());
+//        }
     }
 
     private String title;  // 标题
@@ -44,7 +46,7 @@ public class ArticleBasicVO extends BaseVO {
 
     private String articleUrl; // 文章链接
 
-    private ArticleOrigBasicVO articleOriginVO;  //
+//    private ArticleOrigBasicVO articleOriginVO;  //
 
     private String articleType;  //舆情类型： pubinfo|statistic
 
@@ -52,7 +54,5 @@ public class ArticleBasicVO extends BaseVO {
     private Integer similarArticleCnt;  // 相似文章数量
 
     private Boolean ifSimilar;  // 是否已关联到相似文章
-
-
 
 }

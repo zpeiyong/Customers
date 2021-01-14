@@ -14,28 +14,13 @@ public class ArticleDiseaseVO extends BaseVO {
 
     public ArticleDiseaseVO(ArticleDisease articleDisease) {
         BeanUtils.copyProperties(articleDisease, this);
-
-//        // 分隔多个countryId为List
-//        if (!StringUtils.isEmpty(articleDisease.getCountryIds())) {
-//            this.countryIdList = Arrays.stream(articleDisease.getCountryIds().split(Constants.SPLITTER))
-//                    .map(Integer::valueOf).collect(Collectors.toList());
-//        }
-//        // 分隔多个countryCode为List
-//        if (!StringUtils.isEmpty(articleDisease.getCountryCodes())) {
-//            this.countryCodeList = Arrays.stream(articleDisease.getCountryCodes().split(Constants.SPLITTER))
-//                    .collect(Collectors.toList());
-//        }
     }
 
-    private Integer articleId;
+    private Long articleId;
 
-    private Integer diseaseId;
+    private Long diseaseId;
 
     private String diseaseCode;
-
-//    private List<Long> countryIdList;
-//
-//    private List<String> countryCodeList;
 
     private Long countryId;
 
@@ -45,13 +30,16 @@ public class ArticleDiseaseVO extends BaseVO {
 
     private Date diseaseEnd;
 
-    private Integer newCases;  //新增病例
+    private Integer periodConfirm;  // 当前时间段新增人数
 
-    private Integer cumulativeCases;    //累计病例
+    private Integer periodDeath;  // 当前时间段死亡人数
 
-    private Integer confirmedCases;     //确诊病例
+    private Integer periodCure;  // 当前时间段治愈人数
 
-    private Integer suspectedCases;     //疑似病例
+    private Integer confirmCases;  // 总确诊人数
 
-    private Integer deathToll; //死亡病例
+    private Integer deathCases;  // 总死亡人数
+
+    private Integer cureCases;  // 总治愈人数
+
 }
