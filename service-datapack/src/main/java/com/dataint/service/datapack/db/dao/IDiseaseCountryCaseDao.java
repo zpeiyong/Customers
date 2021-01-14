@@ -35,7 +35,7 @@ public interface IDiseaseCountryCaseDao extends JpaRepository<DiseaseCountryCase
             "where dcc.statisticDate = ?1 and dcc.countryId = ?2 and dcc.diseaseId = ?3")
     DiseaseCountryCaseVO getCasesByCountryIdAndDiseaseId(Date statisticDate, Long countryId, Long diseaseId);
 
-    @Query(value = "select dcc.diseaseId, fd.name_cn as diseaseNameCn, t2.country_id, c.name_cn as countryNameCn, dcc.statisticDate, " +
+    @Query(value = "select t2.id, dcc.diseaseId, fd.name_cn as diseaseNameCn, t2.country_id, c.name_cn as countryNameCn, dcc.statisticDate, " +
             "t2.period_start, t2.period_end, t2.confirm_total, t2.confirm_add, t2.death_total, t2.death_add, t2.cure_total, t2.cure_add, fd.show_type " +
             "from ( " +
             "   select t1.disease_id as diseaseId, MAX(t1.statistic_date) as statisticDate " +

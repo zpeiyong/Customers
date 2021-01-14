@@ -212,26 +212,26 @@ public class DiseaseServiceImpl implements IDiseaseService {
         String finalWeeklyStartStr = weeklyStartStr;
         List<DiseaseCountryCaseVO> latestCaseVOList = latestCaseList.stream()
                 .map((e) -> JSON.parseObject(JSON.toJSONString(e), DiseaseCountryCaseVO.class))
-                // 根据不同传染病的不同统计周期, 过滤前一周期内没有数据更新的数据
-                .filter((e) -> {
-                    if (!StringUtils.isEmpty(e.getShowType())) {
-                        String showType = e.getShowType();
-                        String startTimeStr;
-                        if ("daily".equals(showType)) {
-                            startTimeStr = finalDailyStartStr;
-                        } else if ("weekly".equals(showType)) {
-                            startTimeStr = finalWeeklyStartStr;
-                        } else if ("quarterly".equals(showType)) {
-                            startTimeStr = quarterlyStartStr;
-                        } else {
-                            return false;
-                        }
-                        // 与统计起始时间比较
-                        return startTimeStr.equals(Constants.getDateTimeFormat().format(e.getPeriodStart()));
-                    } else {
-                        return false;
-                    }
-                })
+//                // 根据不同传染病的不同统计周期, 过滤前一周期内没有数据更新的数据
+//                .filter((e) -> {
+//                    if (!StringUtils.isEmpty(e.getShowType())) {
+//                        String showType = e.getShowType();
+//                        String startTimeStr;
+//                        if ("daily".equals(showType)) {
+//                            startTimeStr = finalDailyStartStr;
+//                        } else if ("weekly".equals(showType)) {
+//                            startTimeStr = finalWeeklyStartStr;
+//                        } else if ("quarterly".equals(showType)) {
+//                            startTimeStr = quarterlyStartStr;
+//                        } else {
+//                            return false;
+//                        }
+//                        // 与统计起始时间比较
+//                        return startTimeStr.equals(Constants.getDateTimeFormat().format(e.getPeriodStart()));
+//                    } else {
+//                        return false;
+//                    }
+//                })
                 .collect(Collectors.toList());
 
         int rstSize = latestCaseVOList.size();
