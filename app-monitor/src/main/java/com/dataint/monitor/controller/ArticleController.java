@@ -1,10 +1,13 @@
 package com.dataint.monitor.controller;
 
+import com.dataint.cloud.common.model.Constants;
+import com.dataint.cloud.common.model.ResultVO;
 import com.dataint.cloud.common.model.param.PageParam;
+import com.dataint.cloud.common.utils.JWTUtil;
 import com.dataint.monitor.adapt.IArticleAdapt;
 import com.dataint.monitor.model.form.ArticleUpdateForm;
-import com.dataint.monitor.model.form.StoreDataForm;
 import com.dataint.monitor.model.param.ArticleListQueryParam;
+import com.dataint.monitor.service.IArticleService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -12,12 +15,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-
 @RestController
 @RequestMapping(value = "/article")
 @Slf4j
 public class ArticleController {
+    
+    @Autowired
+    private IArticleService articleService;
 
     @Autowired
     private IArticleAdapt articleAdapt;
@@ -53,14 +57,23 @@ public class ArticleController {
 
 
     /**
-     * Web疫情讯息模块
+     * Web视点模块
      */
     @ApiOperation(value = "获取舆情列表", notes = "获取舆情信息列表")
-    @GetMapping("/normal/getArticleList")
-    public Object getArticleList(@ModelAttribute ArticleListQueryParam articleListQueryParam) {
+    @GetMapping(value = "/normal/getArticleList")
+    public ResultVO getArticleList(@ModelAttribute ArticleListQueryParam articleListQueryParam, 
+                                   @RequestHeader(Constants.AUTHORIZE_ACCESS_TOKEN) String accessToken) {
+        log.debug("get article: {}", articleListQueryParam);
 
-        return articleAdapt.getArticleList(articleListQueryParam);
+        // 解析token获取userId
+        Long userId = JWTUtil.getUserId(accessToken);
+        String systemType = JWTUtil.getSystemType(accessToken);
+
+        return articleService.getArticleList(articleListQueryParam, userId, systemType);
     }
+
+
+
 
     @ApiOperation(value = "根据舆情id获取舆情信息", notes = "根据舆情id获取舆情信息")
     @ApiImplicitParam(paramType = "path", name = "id", value = "舆情ID", required = true, dataType = "long")
@@ -69,7 +82,6 @@ public class ArticleController {
         log.debug("get with id: {}", id);
 
         return articleAdapt.getArticleById(id);
-
     }
 
     @ApiOperation(value = "单个/批量删除舆情", notes = "根据舆情id列表删除舆情信息")

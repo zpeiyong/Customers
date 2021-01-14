@@ -99,7 +99,7 @@ public class DiseaseCountryCaseServiceImpl implements IDiseaseCountryCaseService
             String periodEndStr;
             try {
                 if ("daily".equals(diseaseCountryCase.getShowType())) {
-                    periodEndStr = DateUtil.getTodayEnd(periodStartStr);
+                    periodEndStr = DateUtil.getDayEnd(periodStartStr);
                 } else if ("weekly".equals(diseaseCountryCase.getShowType())) {
                     periodEndStr = DateUtil.getWeekEnd(periodStartStr);
                 } else if ("monthly".equals(diseaseCountryCase.getShowType())) {

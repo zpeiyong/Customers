@@ -1,5 +1,6 @@
 package com.dataint.service.datapack.service;
 
+import com.dataint.cloud.common.model.ResultVO;
 import com.dataint.cloud.common.model.param.PageParam;
 import com.dataint.service.datapack.model.form.ArticleUpdateForm;
 import com.dataint.service.datapack.model.form.StoreDataForm;
@@ -51,7 +52,7 @@ public interface IArticleService {
      * @param articleListQueryParam
      * @return
      */
-    Page<Object> getArticleList(ArticleListQueryParam articleListQueryParam);
+    ResultVO getArticleList(ArticleListQueryParam articleListQueryParam);
 
     /**
      *
