@@ -5,7 +5,6 @@ import com.dataint.cloud.common.model.Pagination;
 import com.dataint.cloud.common.model.ResultVO;
 import com.dataint.cloud.common.utils.JWTUtil;
 import com.dataint.monitor.dao.IComment;
-import com.dataint.monitor.dao.entity.Comment;
 import com.dataint.monitor.model.form.CommentForm;
 import com.dataint.monitor.service.ICommentService;
 import io.swagger.annotations.ApiImplicitParam;
