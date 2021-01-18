@@ -110,5 +110,5 @@ public interface IArticleService {
      */
     List<ArticleReportVO> queryReportContent(List<Long> articleIdList);
 
-    List<Map<String, Object>> queryEventList(Long diseaseId, int pageSize, int current, String  releaseTime);
+    List<Map<String, Object>> queryEventList(Long diseaseId, int pageSize, int current, String  releaseTime,String searchTime);
 }

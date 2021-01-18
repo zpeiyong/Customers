@@ -54,22 +54,19 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
     private IFocusDiseaseDao diseaseDao;
 
     @Override
-    public List<Map<String, Object>> queryEventList(Long diseaseId, int pageSize, int current, String  releaseTime) {
-        String s = "2020-01-25";
-        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
-        Date d2 = null;
-        try {
-            d2 = sdf2.parse(s);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        if (diseaseId==null || pageSize<0 || current<0){
-//            throw  new  Exception("");
-        }
+    public List<Map<String, Object>> queryEventList(Long diseaseId, int pageSize, int current, String  releaseTime,String searchTime) {
+        SimpleDateFormat sdformat = new SimpleDateFormat("yyyy-MM-dd");
 
-        List<Map<String, Object>> utilTimeList = buildRespList(d2, 7);
+
         //默认查询情况，查询最近七天的事件列表信息
         if (releaseTime==null){
+            Date searchingTime = null;
+            try {
+                searchingTime = sdformat.parse(searchTime);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            List<Map<String, Object>> utilTimeList = buildRespList(searchingTime, 7);
             for (int i=0; i<utilTimeList.size(); i++){
                 String day = utilTimeList.get(i).get("day").toString();
                 Page<IArticleEvent> releaseLike = articleDao.findGmtTime(diseaseId,day+"%", PageRequest.of(current-1, pageSize));
@@ -89,8 +86,6 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
         }
         //查询指定日期的事件记录
         else {
-            SimpleDateFormat sdformat = new SimpleDateFormat("yyyy-MM-dd");
-
             Date dates = null;
             try {
                 dates = sdformat.parse(releaseTime);
@@ -98,7 +93,7 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
                 e.printStackTrace();
             }
             List<Map<String, Object>> listOneDay = buildRespListOneDay(dates);
-            Page<IArticleEvent> releaseLike = articleDao.findGmtTime(diseaseId,releaseTime+"%", PageRequest.of(current, pageSize));
+            Page<IArticleEvent> releaseLike = articleDao.findGmtTime(diseaseId,releaseTime+"%", PageRequest.of(current-1, pageSize));
 
             Pagination pagination  = new Pagination();
             pagination.setCurrent(current);
@@ -142,7 +137,7 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
         }
 
             Map<String, Object> dataMap = new HashMap<>(2);
-            calendar.add(Calendar.DAY_OF_YEAR, 1);
+            calendar.add(Calendar.DAY_OF_YEAR, 0);
             dataMap.put("day", sdf.format(calendar.getTime()));
             dataMap.put("value", "");
             respList.add(dataMap);

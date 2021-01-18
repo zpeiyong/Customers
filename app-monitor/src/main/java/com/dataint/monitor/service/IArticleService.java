@@ -1,6 +1,5 @@
 package com.dataint.monitor.service;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.dataint.cloud.common.model.ResultVO;
 import com.dataint.cloud.common.model.param.PageParam;
@@ -23,7 +22,7 @@ public interface IArticleService {
      * @param articleId
      * @return
      */
-    ResultVO getArticleBasicById(Integer articleId);
+    ResultVO getArticleBasicById(Long articleId);
 
     /**
      * 
@@ -47,7 +46,7 @@ public interface IArticleService {
      * @param idList
      * @return
      */
-    ResultVO delArticles(List<Integer> idList);
+    Object delArticles(String idList);
 
     /**
      *
@@ -63,7 +62,7 @@ public interface IArticleService {
      * @param keyword
      * @return
      */
-    JSONArray addKeyword(Integer userId, List<Integer> idList, String keyword);
+    Object addKeyword(Long userId, String idList, String keyword);
 
     /**
      *
@@ -71,7 +70,7 @@ public interface IArticleService {
      * @param keyword
      * @return
      */
-    JSONObject delKeyword(Integer userId, Integer id, String keyword);
+    Object delKeyword(Long userId, Long id, String keyword);
 
     /**
      *
@@ -79,7 +78,7 @@ public interface IArticleService {
      * @param levelId
      * @return
      */
-    ResultVO updateLevel(Integer id, Integer levelId);
+    Object updateLevel(Long id, Long levelId);
 
     /**
      *
@@ -87,7 +86,7 @@ public interface IArticleService {
      * @param articleUpdateForm
      * @return
      */
-    JSONObject updateArticle(int userId, ArticleUpdateForm articleUpdateForm);
+    JSONObject updateArticle(Long userId, ArticleUpdateForm articleUpdateForm);
 
     /**
      *
@@ -97,6 +96,6 @@ public interface IArticleService {
      * @param releaseTime
      * @return
      */
-    JSONObject queryEventList(Long diseaseId,Long pageSize, Long current, String releaseTime);
+    JSONObject queryEventList(Long diseaseId,Long pageSize, Long current, String releaseTime,String searchTime);
 
 }

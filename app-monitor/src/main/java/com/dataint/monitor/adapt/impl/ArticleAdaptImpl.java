@@ -78,13 +78,13 @@ public class ArticleAdaptImpl implements IArticleAdapt {
 
     @Override
     public Object delArticles(String idListStr) {
-        String url = "http://" +  baseUrl + "/normal/delArticles?idListStr=" + idListStr;
+        String url = "http://" +  baseUrl + "/article/normal/delArticles?idListStr=" + idListStr;
         return GetPostUtil.sendDelete(url);
     }
 
     @Override
     public Object addKeyword(String idListStr, String keyword) {
-        String url = "http://" +  baseUrl + "/addKeyword";
+        String url = "http://" +  baseUrl + "/article/addKeyword";
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("idListStr", idListStr);
         jsonObject.put("keyword", keyword);
@@ -94,13 +94,16 @@ public class ArticleAdaptImpl implements IArticleAdapt {
 
     @Override
     public Object delKeyword(Long id, String keyword) {
-        String url = "http://" +  baseUrl + "/delKeyword/" + id.toString()+"?keyword="+keyword;
-        return GetPostUtil.sendDelete(url);
+        String url = "http://" +  baseUrl + "/article/delKeyword/"+id.toString();
+        JSONObject jsonObject  = new JSONObject();
+        jsonObject.put("keyword", keyword);
+        String jsonString = jsonObject.toJSONString();
+        return GetPostUtil.sendPut(url, jsonString,3000 );
     }
 
     @Override
     public Object updateLevel(Long id, Long levelId) {
-        String url = "http://" + baseUrl + "/updateLevel/" + id.toString() + "?levelId=" + levelId.toString();
+        String url = "http://" + baseUrl + "/article/updateLevel/" + id.toString();
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("levelId", levelId);
         String jsonString = jsonObject.toJSONString();
@@ -109,13 +112,13 @@ public class ArticleAdaptImpl implements IArticleAdapt {
 
     @Override
     public Object updateArticle(ArticleUpdateForm articleUpdateForm) {
-        String url = "http://" + baseUrl + "/updateArticle";
+        String url = "http://" + baseUrl + "/article/updateArticle";
         String jsonString = JSONObject.toJSONString(articleUpdateForm);
         return GetPostUtil.sendPut(url, jsonString, 3000);
     }
 
     @Override
-    public Object queryEventList(Long diseaseId,Long pageSize, Long current,String  releaseTime) {
+    public Object queryEventList(Long diseaseId,Long pageSize, Long current,String  releaseTime,String searchTime) {
         String url = "http://" + baseUrl + "/article/queryEventList";
         HashMap<String, String> map = new HashMap<>();
         if (diseaseId != null)
@@ -126,6 +129,8 @@ public class ArticleAdaptImpl implements IArticleAdapt {
             map.put("current", current.toString());
         if (releaseTime != null)
             map.put("releaseTime", releaseTime);
+        if (searchTime!=null)
+            map.put("searchTime", searchTime);
         return GetPostUtil.sendGet(url, map);
     }
 
