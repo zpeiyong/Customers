@@ -1,7 +1,6 @@
 package com.dataint.monitor.adapt.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.dataint.cloud.common.model.ResultVO;
 import com.dataint.cloud.common.utils.GetPostUtil;
 import com.dataint.monitor.adapt.IDiseaseCountryCaseAdapt;
 import com.dataint.monitor.model.DiseaseCountryCase;
@@ -40,7 +39,7 @@ public class DiseaseCountryCaseAdaptImpl implements IDiseaseCountryCaseAdapt {
     }
 
     @Override
-    public Object addDieaseCountry(DiseaseCountryCase countryCase) {
+    public Object addDiseaseCountry(DiseaseCountryCase countryCase) {
         String url ="http://" +  baseUrl + "/countryCase/addDiseaseCountry";
         String jsonString = JSONObject.toJSONString(countryCase);
         return GetPostUtil.sendPost(url, jsonString);
@@ -60,6 +59,16 @@ public class DiseaseCountryCaseAdaptImpl implements IDiseaseCountryCaseAdapt {
 
         }
         String url ="http://" +  baseUrl + "/countryCase/getCountriesByParam";
+        return GetPostUtil.sendGet(url, map);
+    }
+
+    @Override
+    public JSONObject getLatestCasesByParam(Long diseaseId, Long countryId) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("diseaseId", diseaseId.toString());
+        map.put("countryId", countryId.toString());
+
+        String url ="http://" +  baseUrl + "/countryCase/getLatestCasesByParam";
         return GetPostUtil.sendGet(url, map);
     }
 }

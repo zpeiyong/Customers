@@ -178,7 +178,6 @@ public class StatisticController {
         return ResultVO.success(statisticService.getConfirmedTotalCntRank(diseaseId, dateStr));
     }
 
-
     @ApiOperation(value = "[治愈趋势]获取过去7天新增治愈数(折线图)", notes = "获取过去7天新增治愈数(折线图)")
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "diseaseId", value = "传染病id", required = true, dataType = "long"),
@@ -202,8 +201,6 @@ public class StatisticController {
 
         return ResultVO.success(statisticService.getCuredTotalCntRank(diseaseId, dateStr));
     }
-
-
 
     @ApiOperation(value = "[死亡趋势]获取过去7天新增死亡数(折线图)", notes = "获取过去7天新增死亡数(折线图)")
     @ApiImplicitParams({

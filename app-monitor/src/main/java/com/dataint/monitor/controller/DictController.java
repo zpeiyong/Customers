@@ -30,6 +30,13 @@ public class DictController {
         return dictAdapt.queryRegions();
     }
 
+    @ApiOperation(value = "获取国家列表", notes = "获取国家列表")
+    @GetMapping("/queryCountries")
+    public Object queryCountries() {
+
+        return dictAdapt.queryCountries();
+    }
+
 
     @ApiOperation(value = "获取舆情媒体类型列表", notes = "获取舆情媒体类型列表")
     @GetMapping("/queryMediaTypes")

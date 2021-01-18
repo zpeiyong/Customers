@@ -19,6 +19,12 @@ public class DictAdaptImpl implements IDictAdapt {
     }
 
     @Override
+    public Object queryCountries() {
+        String url ="http://" +  baseUrl + "/dict/queryCountries";
+        return GetPostUtil.sendGet(url);
+    }
+
+    @Override
     public Object queryMediaTypes() {
         String url ="http://" +  baseUrl + "/dict/queryMediaTypes";
         return GetPostUtil.sendGet(url);

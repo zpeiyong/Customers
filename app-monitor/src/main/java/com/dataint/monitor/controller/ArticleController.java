@@ -55,13 +55,13 @@ public class ArticleController {
 
     @ApiOperation(value = "获取地图上国家疫情统计下的舆情列表", notes = "获取地图上国家疫情统计下的舆情列表")
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", name = "countryId", value = "国家ID", required = true, dataType = "long"),
-            @ApiImplicitParam(paramType = "query", name = "diseaseName", value = "疫情名称", required = true, dataType = "string")
+            @ApiImplicitParam(paramType = "query", name = "countryId", value = "国家ID", required = false, dataType = "long"),
+            @ApiImplicitParam(paramType = "query", name = "diseaseId", value = "疫情名称", required = true, dataType = "long")
     })
     @GetMapping("/queryMapBasicList")
-    public Object queryMapBasicList(@RequestParam Long countryId, @RequestParam String diseaseName, @ModelAttribute PageParam pageParam) {
+    public Object queryMapBasicList(@RequestParam(required = false) Long countryId, @RequestParam Long diseaseId, @ModelAttribute PageParam pageParam) {
 
-        return articleAdapt.queryMapBasicList(countryId, diseaseName, pageParam);
+        return articleAdapt.queryMapBasicList(countryId, diseaseId, pageParam);
     }
 
 
@@ -93,6 +93,21 @@ public class ArticleController {
         String systemType = JWTUtil.getSystemType(accessToken);
 
         return articleService.getArticleById(userId, id, systemType);
+    }
+
+    @ApiOperation(value = "获取舆情信息相似文章", notes = "根据id获取舆情信息相似文章")
+    @ApiImplicitParam(paramType = "path", name = "id", value = "舆情ID", required = true, dataType = "long")
+    @GetMapping(value = "/normal/similar/{id}")
+    public ResultVO getSimilarArticlesById(@PathVariable Long id,
+                                           @ModelAttribute PageParam pageParam,
+                                           @RequestHeader(Constants.AUTHORIZE_ACCESS_TOKEN) String accessToken) {
+        log.debug("get with id: {}", id);
+
+        // 解析token获取userId
+        Long userId = JWTUtil.getUserId(accessToken);
+        String systemType = JWTUtil.getSystemType(accessToken);
+
+        return articleService.getSimilarArticlesById(userId, id, pageParam, systemType);
     }
 
 

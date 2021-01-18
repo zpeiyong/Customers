@@ -36,6 +36,16 @@ public interface IArticleDao extends JpaRepository<Article, Long>, JpaSpecificat
 //                    "WHERE (locate(?1, a.country_code) OR locate(?1, ad.country_codes)) AND ad.disease_code = ?2 AND a.if_deleted = ?3", nativeQuery = true)
 //    Page<Article> findMapBasicListByIfDeleted(String countryCode, String diseaseName, Boolean ifDeleted, Pageable pageable);
 
+    @Query(value = "select a from Article a " +
+            "left join ArticleDisease ad on a.id = ad.articleId " +
+            "where ad.countryId = ?1 and ad.diseaseId = ?2")
+    Page<Article> findMapBasicList(Long countryId, Long diseaseId, Pageable pageable);
+
+    @Query(value = "select a from Article a " +
+            "left join ArticleDisease ad on a.id = ad.articleId " +
+            "where ad.diseaseId = ?1")
+    Page<Article> findMapBasicList(Long diseaseId, Pageable pageable);
+
     /* Statistic */
     int countByGmtCrawlBetween(Date startTime, Date endTime);
 
@@ -90,4 +100,9 @@ public interface IArticleDao extends JpaRepository<Article, Long>, JpaSpecificat
                     "where ad.disease_id=?1  and a.similar_article_id=0  and a.gmt_release LIKE ?2 GROUP BY ad.article_id ")
     Page<IArticleEvent> findGmtTime(long diseaseId, String releaseTime, Pageable pageable);
 
+    Page<Article> findAllBySimilarArticleId(Long similarId, Pageable pageable);
+
+    @Query(value = "from Article a " +
+            "where (a.similarArticleId = ?1 and a.similarArticleId != ?2) or a.id = ?2")
+    Page<Article> findAllBySimilarArticleIdOrId(Long similarId, Long articleId, Pageable pageable);
 }
