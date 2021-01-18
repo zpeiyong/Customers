@@ -8,11 +8,13 @@ public interface IArticleEvent {
 
     String getContent();
 
-    String getarticleUrl();
+    String getArticleUrl();
 
-    String getkeywords();
+    String getKeywords();
 
     Long getId();
 
-    String getnameCn();
+    String getNameCn();
+
+    String getReleaseTime();
 }
