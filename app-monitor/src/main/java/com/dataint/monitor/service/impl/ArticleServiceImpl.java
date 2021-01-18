@@ -1,7 +1,6 @@
 package com.dataint.monitor.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.dataint.cloud.common.model.ResultVO;
 import com.dataint.cloud.common.model.param.PageParam;
@@ -37,14 +36,18 @@ public class ArticleServiceImpl implements IArticleService {
 
     @Override
     public ResultVO getLatestList(PageParam pageParam) {
-
         return null;
     }
+//    @Override
+//    public ResultVO getLatestList(PageParam param) {
+//
+//        return null;
+//    }
 
     @Override
-    public ResultVO getArticleBasicById(Integer articleId) {
+    public ResultVO getArticleBasicById(Long articleId) {
+        return ResultVO.success(articleAdapt.getArticleById(articleId));
 
-        return null;
     }
 
     @Override
@@ -99,9 +102,9 @@ public class ArticleServiceImpl implements IArticleService {
     }
 
     @Override
-    public ResultVO delArticles(List<Integer> idList) {
-
-        return null;
+    public Object delArticles(String idList) {
+        Object delArticles = articleAdapt.delArticles(idList);
+        return delArticles;
 //        return articleProvider.delArticle(StringUtils.join(idList, Constants.JOINER));
     }
 
@@ -131,10 +134,11 @@ public class ArticleServiceImpl implements IArticleService {
     }
 
     @Override
-    public JSONArray addKeyword(Integer userId, List<Integer> idList, String keyword) {
-
-        return null;
+    public Object addKeyword(Long userId, String idList, String keyword) {
+        Object addKeyword = articleAdapt.addKeyword(idList, keyword);
+//        return null;
 //        JSONArray retJA = articleProvider.addKeyword(StringUtils.join(idList, Constants.JOINER), keyword).getData();
+//        JSONArray  jsonArray = articleAdapt.addKeyword(, );
 //
 //        JSONArray rebuildJA = new JSONArray();
 //        if (retJA != null) {
@@ -146,31 +150,32 @@ public class ArticleServiceImpl implements IArticleService {
 //        }
 //
 //        return rebuildJA;
+        return addKeyword;
     }
 
     @Override
-    public JSONObject delKeyword(Integer userId, Integer id, String keyword) {
+    public Object delKeyword(Long userId, Long id, String keyword) {
 
-        return null;
-//        JSONObject retJO = articleProvider.delKeyword(id, keyword).getData();
-//
-//        if (retJO != null)
-//            return rebuildArticle(userId, retJO);
-//
-//        return new JSONObject();
+        Object delKeyword = articleAdapt.delKeyword(id, keyword);
+        return  delKeyword;
     }
 
     @Override
-    public ResultVO updateLevel(Integer id, Integer levelId) {
+    public Object updateLevel(Long id, Long levelId) {
 
-        return null;
-//        return articleProvider.updateLevel(id, levelId);
+
+
+        Object updateLevel = articleAdapt.updateLevel(id, levelId);
+        return updateLevel;
     }
 
     @Override
-    public JSONObject updateArticle(int userId, ArticleUpdateForm articleUpdateForm) {
+    public JSONObject updateArticle(Long userId, ArticleUpdateForm articleUpdateForm) {
 
-        return null;
+        Object updateArticle = articleAdapt.updateArticle(articleUpdateForm);
+        JSONObject jsonObject = JSONObject.parseObject((String) updateArticle);
+        return  jsonObject;
+//        return null;
 //        ResultVO<JSONObject> retVO = articleProvider.updateArticle(articleUpdateForm);
 //        if (retVO.getCode() == 200) {
 //            ArticleAudit ifExist = articleAuditDao.findByArticleId(articleUpdateForm.getArticleId());
@@ -192,9 +197,9 @@ public class ArticleServiceImpl implements IArticleService {
     }
 
     @Override
-    public JSONObject queryEventList(Long diseaseId,Long pageSize, Long current, String releaseTime) {
+    public JSONObject queryEventList(Long diseaseId,Long pageSize, Long current, String releaseTime,String searchTime) {
         JSONObject jsonObject = new JSONObject();
-        Object queryEventList = articleAdapt.queryEventList(diseaseId, pageSize, current,releaseTime);
+        Object queryEventList = articleAdapt.queryEventList(diseaseId, pageSize, current,releaseTime,searchTime);
           jsonObject= (JSONObject) queryEventList;
         return jsonObject;
     }

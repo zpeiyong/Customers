@@ -3,6 +3,7 @@ package com.dataint.service.datapack.controller;
 import com.dataint.cloud.common.model.Constants;
 import com.dataint.cloud.common.model.ResultVO;
 import com.dataint.cloud.common.model.param.PageParam;
+import com.dataint.service.datapack.model.form.ArticleKeyWordsForm;
 import com.dataint.service.datapack.model.form.ArticleUpdateForm;
 import com.dataint.service.datapack.model.form.StoreDataForm;
 import com.dataint.service.datapack.model.param.ArticleListQueryParam;
@@ -43,9 +44,9 @@ public class ArticleController {
     @RequestMapping(value = "/queryEventList",method = RequestMethod.GET)
     @ApiOperation(value = "BI大屏事件信息查询",notes = "BI大屏事件查询")
     @ResponseBody
-    public ResultVO queryArticleList(Long diseaseId,int pageSize, int current,String  releaseTime) {
+    public ResultVO queryArticleList(Long diseaseId,int pageSize, int current,String  releaseTime,String searchTime) {
 
-        return ResultVO.success(articleService.queryEventList(diseaseId,pageSize,current,releaseTime));
+        return ResultVO.success(articleService.queryEventList(diseaseId,pageSize,current,releaseTime,searchTime));
     }
 
     @ApiOperation(value = "获取BI舆情列表", notes = "获取BI舆情信息列表")
@@ -125,7 +126,9 @@ public class ArticleController {
             @ApiImplicitParam(paramType = "query", name = "keyword", value = "关键词", required = true, dataType = "string")
     })
     @PutMapping(value = "/addKeyword")
-    public ResultVO addKeyword(@RequestParam String idListStr, @RequestParam String keyword) {
+    public ResultVO addKeyword(@RequestBody ArticleKeyWordsForm articleKeyWordsForm) {
+        String keyword = articleKeyWordsForm.getKeyword();
+        String idListStr = articleKeyWordsForm.getIdListStr();
         log.debug("add keyword with ids: {}", idListStr);
 
         List<Long> idList = Arrays.stream(idListStr.split(Constants.SPLITTER)).map(Long::valueOf).collect(Collectors.toList());
@@ -139,9 +142,9 @@ public class ArticleController {
             @ApiImplicitParam(paramType = "query", name = "keyword", value = "关键词", required = true, dataType = "string")
     })
     @PutMapping(value = "/delKeyword/{id}")
-    public ResultVO delKeyword(@PathVariable Long id, @RequestParam String keyword) {
+    public ResultVO delKeyword(@PathVariable Long id, @RequestBody ArticleKeyWordsForm articleKeyWordsForm) {
         log.debug("delete keyword with id: {}", id);
-
+        String keyword = articleKeyWordsForm.getKeyword();
         return ResultVO.success(articleService.delKeyword(id, keyword));
     }
 
@@ -151,9 +154,9 @@ public class ArticleController {
             @ApiImplicitParam(paramType = "query", name = "levelId", value = "舆情等级ID", required = true, dataType = "long")
     })
     @PutMapping(value = "/updateLevel/{id}")
-    public ResultVO updateLevel(@PathVariable Long id, @RequestParam Long levelId) {
+    public ResultVO updateLevel(@PathVariable Long id,@RequestBody  ArticleKeyWordsForm articleKeyWordsForm) {
         log.debug("update level with id: {}", id);
-
+        Long levelId = articleKeyWordsForm.getLevelId();
         return ResultVO.success(articleService.updateLevel(id, levelId));
     }
 
@@ -177,7 +180,7 @@ public class ArticleController {
         return ResultVO.success(articleService.searchByKeyword(keyword));
     }
 
-    @ApiOperation(value = "获取报告需要的舆情数据", notes = "根据舆情id列表获取报告需要的舆情数据")
+    @ApiOperation(value = "获取报告需要的舆情数据", notes = "根据舆情id列   表获取报告需要的舆情数据")
     @ApiImplicitParam(paramType = "query", name = "idListStr", value = "舆情数据id列表", allowMultiple = true, required = true, dataType = "string")
     @GetMapping("/queryArticlesByIdList")
     public ResultVO queryArticlesByIdList(@RequestParam List<Long> idListStr) {

@@ -7,6 +7,12 @@ public interface IArticleEvent {
     String getSummary();
 
     String getContent();
+
     String getarticleUrl();
+
     String getkeywords();
+
+    Long getId();
+
+    String getnameCn();
 }

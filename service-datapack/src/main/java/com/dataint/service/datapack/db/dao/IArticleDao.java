@@ -89,12 +89,14 @@ public interface IArticleDao extends JpaRepository<Article, Long>, JpaSpecificat
      */
     Integer countBySimilarArticleId(Long similarArticleId);
 
-    @Query(nativeQuery =true,value = "SELECT a.title as title, a.summary as summary, a.content as content, " +
+    @Query(nativeQuery =true,value = "SELECT a.id as id, s.name_cn as nameCn,a.title as title, a.summary as summary, a.content as content, " +
             "a.article_url as articleUrl, a.keywords as keywords " +
             "from article a LEFT JOIN  article_disease  ad ON a.id=ad.article_id " +
+            "left join site s on a.site_id=s.id " +
             "where ad.disease_id=?1  and a.similar_article_id=0  and a.gmt_release LIKE ?2 GROUP BY ad.article_id ",
             countQuery = "SELECT count(*) " +
                     "from article a LEFT JOIN  article_disease  ad ON a.id=ad.article_id " +
+                    "left join site s on a.site_id=s.id " +
                     "where ad.disease_id=?1  and a.similar_article_id=0  and a.gmt_release LIKE ?2 GROUP BY ad.article_id ")
     Page<IArticleEvent> findGmtTime(long diseaseId, String releaseTime, Pageable pageable);
 

@@ -5,4 +5,5 @@ public interface IComment {
     Long getArticleId();
     Long getUserId();
     String getUserName();
+    String getCreateTime();
 }

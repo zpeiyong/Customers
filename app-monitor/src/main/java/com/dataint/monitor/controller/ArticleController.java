@@ -7,6 +7,7 @@ import com.dataint.cloud.common.model.param.PageParam;
 import com.dataint.cloud.common.utils.JWTUtil;
 import com.dataint.monitor.adapt.IArticleAdapt;
 import com.dataint.monitor.model.form.ArticleUpdateForm;
+import com.dataint.monitor.model.param.ArticleKeyWordsForm;
 import com.dataint.monitor.model.param.ArticleListQueryParam;
 import com.dataint.monitor.service.IArticleService;
 import io.swagger.annotations.ApiImplicitParam;
@@ -32,8 +33,8 @@ public class ArticleController {
      */
     @ApiOperation(value = "BI大屏事件信息查询",notes = "BI大屏事件查询")
     @RequestMapping(value = "/queryEventList",method = RequestMethod.GET)
-    public Object queryEventList(Long diseaseId, Long pageSize, Long current, String releaseTime) {
-        JSONObject eventList = articleService.queryEventList(diseaseId, pageSize, current,releaseTime);
+    public Object queryEventList(Long diseaseId, Long pageSize, Long current, String releaseTime,String searchTime) {
+        JSONObject eventList = articleService.queryEventList(diseaseId, pageSize, current, releaseTime,searchTime);
         return eventList;
     }
 
@@ -115,10 +116,11 @@ public class ArticleController {
     @ApiOperation(value = "单个/批量删除舆情", notes = "根据舆情id列表删除舆情信息")
     @ApiImplicitParam(paramType = "query", name = "idListStr", value = "舆情IDs", required = true, dataType = "string")
     @DeleteMapping(value = "/normal/delArticles")
-    public Object delArticles(@RequestParam String idListStr) {
+    public Object delArticles(@RequestBody ArticleKeyWordsForm articleKeyWordsForm) {
+        String idListStr = articleKeyWordsForm.getIdListStr();
         log.debug("delete with id: {}", idListStr);
 
-        return articleAdapt.delArticles(idListStr);
+        return articleService.delArticles(idListStr);
     }
 
     @ApiOperation(value = "增加关键词", notes = "增加关键词(单条/批量)")
@@ -127,9 +129,13 @@ public class ArticleController {
             @ApiImplicitParam(paramType = "query", name = "keyword", value = "关键词", required = true, dataType = "string")
     })
     @PutMapping(value = "/addKeyword")
-    public Object addKeyword(@RequestParam String idListStr, @RequestParam String keyword) {
+    public Object addKeyword(@RequestBody ArticleKeyWordsForm articleKeyWordsForm,@RequestHeader(Constants.AUTHORIZE_ACCESS_TOKEN) String accessToken) {
+        String keyword = articleKeyWordsForm.getKeyword();
+        String idListStr = articleKeyWordsForm.getIdListStr();
         log.debug("add keyword with ids: {}", idListStr);
-        return articleAdapt.addKeyword(idListStr, keyword);
+        Long userId = JWTUtil.getUserId(accessToken);
+
+        return  articleService.addKeyword(userId, idListStr, keyword);
     }
 
     @ApiOperation(value = "删除关键词", notes = "删除关键词(单条)")
@@ -138,10 +144,12 @@ public class ArticleController {
             @ApiImplicitParam(paramType = "query", name = "keyword", value = "关键词", required = true, dataType = "string")
     })
     @PutMapping(value = "/delKeyword/{id}")
-    public Object delKeyword(@PathVariable Long id, @RequestParam String keyword) {
+    public Object delKeyword(@PathVariable Long id, @RequestBody ArticleKeyWordsForm articleKeyWordsParam, @RequestHeader(Constants.AUTHORIZE_ACCESS_TOKEN) String accessToken) {
         log.debug("delete keyword with id: {}", id);
+        String keyword = articleKeyWordsParam.getKeyword();
+        Long userId = JWTUtil.getUserId(accessToken);
 
-        return articleAdapt.delKeyword(id, keyword);
+        return articleService.delKeyword(userId, id, keyword);
     }
 
     @ApiOperation(value = "更新舆情等级", notes = "根据舆情id更新舆情等级")
@@ -150,16 +158,19 @@ public class ArticleController {
             @ApiImplicitParam(paramType = "query", name = "levelId", value = "舆情等级ID", required = true, dataType = "long")
     })
     @PutMapping(value = "/updateLevel/{id}")
-    public Object updateLevel(@PathVariable Long id, @RequestParam Long levelId) {
+    public Object updateLevel(@PathVariable Long id,@RequestBody ArticleKeyWordsForm articleKeyWordsParam) {
         log.debug("update level with id: {}", id);
+        Long levelId = articleKeyWordsParam.getLevelId();
 
-        return articleAdapt.updateLevel(id, levelId);
+        return  articleService.updateLevel(id, levelId);
     }
 
     @ApiOperation(value = "更新舆情详情信息", notes = "根据舆情id更新舆情详情信息")
     @ApiImplicitParam(paramType = "query", name = "articleUpdateForm", value = "舆情详情信息", required = true, dataType = "ArticleUpdateForm")
     @PutMapping(value = "/updateArticle")
-    public Object updateArticle(@RequestBody ArticleUpdateForm articleUpdateForm) {
-        return articleAdapt.updateArticle(articleUpdateForm);
+    public Object updateArticle(@RequestBody ArticleUpdateForm articleUpdateForm,@RequestHeader(Constants.AUTHORIZE_ACCESS_TOKEN) String accessToken) {
+        Long userId = JWTUtil.getUserId(accessToken);
+
+        return  articleService.updateArticle(userId, articleUpdateForm);
     }
 }

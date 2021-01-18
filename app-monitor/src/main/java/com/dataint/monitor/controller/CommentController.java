@@ -37,7 +37,7 @@ public class CommentController {
         pagination.setPageSize(pageSize);
         pagination.setCurrent(current);
         pagination.setTotal(commentPage.getTotalElements());
-        return ResultVO.success(commentPage,pagination);
+        return ResultVO.success(commentPage.getContent(),pagination);
 
     }
 
