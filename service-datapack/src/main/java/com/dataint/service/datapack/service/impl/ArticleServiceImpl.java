@@ -1,7 +1,9 @@
 package com.dataint.service.datapack.service.impl;
 
+import com.dataint.cloud.common.dim.BaseExceptionEnum;
 import com.dataint.cloud.common.exception.DataAlreadyExistException;
 import com.dataint.cloud.common.exception.DataNotExistException;
+import com.dataint.cloud.common.exception.DataintBaseException;
 import com.dataint.cloud.common.model.Constants;
 import com.dataint.cloud.common.model.Pagination;
 import com.dataint.cloud.common.model.ResultVO;
@@ -352,13 +354,48 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
     }
 
     @Override
-    public ResultVO queryMapBasicList(Long countryId, Long diseaseId, PageParam pageParam) {
-        Page<Article> mapArticlePage;
-        if (countryId != null) {
-            mapArticlePage = articleDao.findMapBasicList(countryId, diseaseId, pageParam.toPageRequest("gmtRelease"));
-        } else {
-            mapArticlePage = articleDao.findMapBasicList(diseaseId, pageParam.toPageRequest("gmtRelease"));
-        }
+    public ResultVO queryMapBasicList(Long countryId, Long diseaseId, String searchTime, PageParam pageParam) {
+        Page<Article> mapArticlePage = articleDao.findAll(new Specification<Article>() {
+            @Override
+            public Predicate toPredicate(Root<Article> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                List<Predicate> list = new ArrayList<>();
+
+                // 疫情id and 国家id
+                if (!ObjectUtils.isEmpty(diseaseId) && diseaseId != 0) {
+                    Subquery<Long> subQuery = criteriaQuery.subquery(Long.class);
+                    Root<ArticleDisease> adSubRoot = subQuery.from(ArticleDisease.class);
+
+                    // 子查询的条件列表
+                    List<Predicate> subList = new ArrayList<>();
+
+                    subList.add(criteriaBuilder.equal(adSubRoot.get("diseaseId").as(Long.class), diseaseId));
+                    if (!ObjectUtils.isEmpty(countryId) && countryId != 0) {
+                        subList.add(criteriaBuilder.equal(adSubRoot.get("countryId").as(Long.class), countryId));
+                    }
+                    subQuery.distinct(true)
+                            .select(adSubRoot.get("articleId").as(Long.class))
+                            .where(subList.toArray(new Predicate[subList.size()]));
+
+                    //
+                    list.add(criteriaBuilder.in(root.get("id")).value(subQuery));
+                }
+
+                // 查询日期
+                if (!StringUtils.isEmpty(searchTime)) {
+                    // 转换日期格式
+                    Date searchDate;
+                    try {
+                        searchDate = Constants.getDateTimeFormat().parse(searchTime);
+                    } catch (ParseException e) {
+                        throw new DataintBaseException(BaseExceptionEnum.DATE_PARSE_ERROR);
+                    }
+                    list.add(criteriaBuilder.lessThanOrEqualTo(root.get("gmtRelease").as(Date.class), searchDate));
+                }
+
+                Predicate[] p = new Predicate[list.size()];
+                return criteriaBuilder.and(list.toArray(p));
+            }
+        }, pageParam.toPageRequest( "gmtRelease"));
 
         List<BIArticleBasicVO> mapBasicVOList = mapArticlePage.getContent().stream().map(BIArticleBasicVO::new).collect(Collectors.toList());
         Pagination pagination = new Pagination(pageParam.getPageSize(), mapArticlePage.getTotalElements(), pageParam.getCurrent());

@@ -67,12 +67,16 @@ public class ArticleController {
     @ApiOperation(value = "获取地图上国家疫情统计下的舆情列表", notes = "获取地图上国家疫情统计下的舆情列表")
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "countryId", value = "国家ID", required = false, dataType = "long"),
-            @ApiImplicitParam(paramType = "query", name = "diseaseId", value = "疫情名称", required = true, dataType = "long")
+            @ApiImplicitParam(paramType = "query", name = "diseaseId", value = "疫情名称", required = true, dataType = "long"),
+            @ApiImplicitParam(paramType = "query", name = "searchTime", value = "查询时间", required = false, dataType = "string")
     })
     @GetMapping("/queryMapBasicList")
-    public ResultVO queryMapBasicList(@RequestParam(required = false) Long countryId, @RequestParam Long diseaseId, @ModelAttribute PageParam pageParam) {
+    public ResultVO queryMapBasicList(@RequestParam(required = false) Long countryId,
+                                      @RequestParam Long diseaseId,
+                                      @RequestParam(required = false) String searchTime,
+                                      @ModelAttribute PageParam pageParam) {
 
-        return articleService.queryMapBasicList(countryId, diseaseId, pageParam);
+        return articleService.queryMapBasicList(countryId, diseaseId, searchTime, pageParam);
     }
 
 

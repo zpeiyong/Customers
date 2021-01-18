@@ -13,7 +13,7 @@ public interface IArticleAdapt {
 
     Object queryBasicById(Long id);
 
-    Object queryMapBasicList(Long countryId, Long diseaseId, PageParam pageParam);
+    Object queryMapBasicList(Long countryId, Long diseaseId, String searchTime, PageParam pageParam);
 
     JSONObject getArticleList(ArticleListQueryParam articleListQueryParam);
 

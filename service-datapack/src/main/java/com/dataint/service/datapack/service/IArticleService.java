@@ -44,7 +44,7 @@ public interface IArticleService {
      * @param pageParam
      * @return
      */
-    ResultVO queryMapBasicList(Long countryId, Long diseaseId, PageParam pageParam);
+    ResultVO queryMapBasicList(Long countryId, Long diseaseId, String searchTime, PageParam pageParam);
 
 
     /* Web疫情讯息模块 */

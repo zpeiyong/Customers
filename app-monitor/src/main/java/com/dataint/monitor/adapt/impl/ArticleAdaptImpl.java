@@ -35,11 +35,14 @@ public class ArticleAdaptImpl implements IArticleAdapt {
     }
 
     @Override
-    public Object queryMapBasicList(Long countryId, Long diseaseId, PageParam pageParam) {
+    public Object queryMapBasicList(Long countryId, Long diseaseId, String searchTime, PageParam pageParam) {
         String url = "http://" +  baseUrl + "/article/queryMapBasicList";
         HashMap<String, String> map = new HashMap<>();
         if (countryId != null) {
             map.put("countryId", countryId.toString());
+        }
+        if (!StringUtils.isEmpty(searchTime)) {
+            map.put("searchTime", searchTime);
         }
         map.put("diseaseId", diseaseId.toString());
         map.put("current",pageParam.getCurrent().toString());
