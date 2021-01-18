@@ -385,7 +385,7 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
                     // 转换日期格式
                     Date searchDate;
                     try {
-                        searchDate = Constants.getDateTimeFormat().parse(searchTime);
+                        searchDate = Constants.getDateTimeFormat().parse(searchTime + " 23:59:59");
                     } catch (ParseException e) {
                         throw new DataintBaseException(BaseExceptionEnum.DATE_PARSE_ERROR);
                     }
