@@ -6,7 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ArticleKeyWordsForm {
-        private  String keyword;
-        private String idListStr;
-        private  Long levelId;
+    private String keyword;
+
+    private String idListStr;
 }

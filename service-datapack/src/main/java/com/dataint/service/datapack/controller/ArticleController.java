@@ -153,25 +153,12 @@ public class ArticleController {
         return ResultVO.success(articleService.delKeyword(id, keyword));
     }
 
-    @ApiOperation(value = "更新舆情等级", notes = "根据舆情id更新舆情等级")
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "path", name = "id", value = "舆情ID", required = true, dataType = "long"),
-            @ApiImplicitParam(paramType = "query", name = "levelId", value = "舆情等级ID", required = true, dataType = "long")
-    })
-    @PutMapping(value = "/updateLevel/{id}")
-    public ResultVO updateLevel(@PathVariable Long id,@RequestBody  ArticleKeyWordsForm articleKeyWordsForm) {
-        log.debug("update level with id: {}", id);
-        Long levelId = articleKeyWordsForm.getLevelId();
-        return ResultVO.success(articleService.updateLevel(id, levelId));
-    }
-
     @ApiOperation(value = "更新舆情详情信息", notes = "根据舆情id更新舆情详情信息")
     @ApiImplicitParam(paramType = "query", name = "articleUpdateForm", value = "舆情详情信息", required = true, dataType = "ArticleUpdateForm")
     @PutMapping(value = "/updateArticle")
     public ResultVO updateArticle(@RequestBody ArticleUpdateForm articleUpdateForm) {
         return ResultVO.success(articleService.updateArticle(articleUpdateForm));
     }
-
 
 
     /**

@@ -189,13 +189,6 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
         List<ArticleAttach> attachList = buildArticleAttaches(storeDataForm.getArticleAttachFormList(), article.getId());
         article.setAttachList(attachList);
 
-//        // 查询默认舆情等级(若不存在则添加)
-//        OutbreakLevel outbreakLevel = outbreakLevelDao.findByLevelCode("00");  // 00(default): 未评价
-//        if (outbreakLevel == null) {
-//            outbreakLevelDao.save(new OutbreakLevel("未评价", "00"));
-//        }
-//        article.setOutbreakLevel(outbreakLevel);
-
         // 组装 ArticleDisease 国家传染病对应关系
         List<ArticleDisease> diseaseList = buildArticleDisease(storeDataForm.getStaDiseaseFormList(), articleForm.getCountryDiseaseRels());
         article.setDiseaseList(diseaseList);
@@ -646,27 +639,6 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
 
     @Transactional
     @Override
-    public ArticleBasicVO updateLevel(Long articleId, Long levelId) {
-        // check if article exist
-        Optional<Article> articleOpt = articleDao.findById(articleId);
-        if (!articleOpt.isPresent()) {
-            throw new DataNotExistException();
-        }
-        Article article = articleOpt.get();
-//        // check if outbreakLevel exist
-//        Optional<OutbreakLevel> levelOpt = outbreakLevelDao.findById(levelId);
-//        if (!levelOpt.isPresent()) {
-//            throw new DataNotExistException();
-//        }
-//        OutbreakLevel outbreakLevel = levelOpt.get();
-//        article.setOutbreakLevel(outbreakLevel);
-        articleDao.save(article);
-
-        return new ArticleBasicVO(article);
-    }
-
-    @Transactional
-    @Override
     public ArticleVO updateArticle(ArticleUpdateForm articleUpdateForm) {
         // check if article exist
         Optional<Article> articleOpt = articleDao.findById(articleUpdateForm.getArticleId());
@@ -708,11 +680,6 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
                 diseaseList.add(articleDisease);
             }
 //            article.setDiseaseList(diseaseList);
-        }
-        // outbreakLevel
-        if (articleUpdateForm.getLevelId() != null) {
-//            OutbreakLevel outbreakLevel = outbreakLevelDao.getOne(articleUpdateForm.getLevelId());
-//            article.setOutbreakLevel(outbreakLevel);
         }
         // summary
         if (!StringUtils.isEmpty(articleUpdateForm.getSummary()))

@@ -1,4 +1,4 @@
-package com.dataint.monitor.model.param;
+package com.dataint.monitor.model.form;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,6 +7,6 @@ import lombok.Setter;
 @Setter
 public class ArticleKeyWordsForm {
     private String keyword;
+
     private String idListStr;
-    private Long levelId;
 }

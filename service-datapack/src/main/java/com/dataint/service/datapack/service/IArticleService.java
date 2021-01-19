@@ -94,14 +94,6 @@ public interface IArticleService {
 
     /**
      *
-     * @param articleId
-     * @param levelId
-     * @return
-     */
-    ArticleBasicVO updateLevel(Long articleId, Long levelId);
-
-    /**
-     *
      * @param articleUpdateForm
      * @return
      */

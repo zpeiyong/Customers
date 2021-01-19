@@ -41,19 +41,4 @@ public class ArticleDiseaseForm {
     @ApiModelProperty(value = "总治愈人数")
     private Integer cureCases;
 
-
-//    @ApiModelProperty(value = "新增病例")
-//    private Integer newCases;
-//
-//    @ApiModelProperty(value = "累计病例")
-//    private Integer cumulativeCases;
-//
-//    @ApiModelProperty(value = "确诊病例")
-//    private Integer confirmedCases;
-//
-//    @ApiModelProperty(value = "疑似病例")
-//    private Integer suspectedCases;
-//
-//    @ApiModelProperty(value = "死亡病例")
-//    private Integer deathToll;
 }

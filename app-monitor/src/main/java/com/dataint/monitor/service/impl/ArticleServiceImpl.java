@@ -173,7 +173,7 @@ public class ArticleServiceImpl implements IArticleService {
     public Object updateArticle(Long userId, ArticleUpdateForm articleUpdateForm) {
 
         Object updateArticle = articleAdapt.updateArticle(articleUpdateForm);
-        return  updateArticle;
+        return updateArticle;
 //        return null;
 //        ResultVO<JSONObject> retVO = articleProvider.updateArticle(articleUpdateForm);
 //        if (retVO.getCode() == 200) {
@@ -197,9 +197,9 @@ public class ArticleServiceImpl implements IArticleService {
 
     @Override
     public JSONObject queryEventList(Long diseaseId,Long pageSize, Long current, String releaseTime,String searchTime) {
-        JSONObject jsonObject = new JSONObject();
         Object queryEventList = articleAdapt.queryEventList(diseaseId, pageSize, current,releaseTime,searchTime);
-          jsonObject= (JSONObject) queryEventList;
+        JSONObject jsonObject= (JSONObject) queryEventList;
+
         return jsonObject;
     }
 

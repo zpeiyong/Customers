@@ -7,7 +7,7 @@ import com.dataint.cloud.common.model.param.PageParam;
 import com.dataint.cloud.common.utils.JWTUtil;
 import com.dataint.monitor.adapt.IArticleAdapt;
 import com.dataint.monitor.model.form.ArticleUpdateForm;
-import com.dataint.monitor.model.param.ArticleKeyWordsForm;
+import com.dataint.monitor.model.form.ArticleKeyWordsForm;
 import com.dataint.monitor.model.param.ArticleListQueryParam;
 import com.dataint.monitor.service.IArticleService;
 import io.swagger.annotations.ApiImplicitParam;
@@ -152,19 +152,6 @@ public class ArticleController {
         Long userId = JWTUtil.getUserId(accessToken);
 
         return articleService.delKeyword(userId, id, keyword);
-    }
-
-    @ApiOperation(value = "更新舆情等级", notes = "根据舆情id更新舆情等级")
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "path", name = "id", value = "舆情ID", required = true, dataType = "long"),
-            @ApiImplicitParam(paramType = "query", name = "levelId", value = "舆情等级ID", required = true, dataType = "long")
-    })
-    @PutMapping(value = "/updateLevel/{id}")
-    public Object updateLevel(@PathVariable Long id, @RequestBody ArticleKeyWordsForm articleKeyWordsParam) {
-        log.debug("update level with id: {}", id);
-        Long levelId = articleKeyWordsParam.getLevelId();
-
-        return articleService.updateLevel(id, levelId);
     }
 
     @ApiOperation(value = "更新舆情详情信息", notes = "根据舆情id更新舆情详情信息")

@@ -15,10 +15,6 @@ public class ArticleUpdateForm {
     @NotNull
     private Long articleId;
 
-    @ApiModelProperty(value = "舆情等级表-主键Id")
-    @NotNull
-    private Long levelId;
-
     @ApiModelProperty(value = "舆情摘要")
     private String summary;
 
