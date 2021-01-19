@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/article")
 @Slf4j
 public class ArticleController {
-    
+
     @Autowired
     private IArticleService articleService;
 
@@ -31,10 +31,10 @@ public class ArticleController {
     /**
      * 全景(BI)展示模块
      */
-    @ApiOperation(value = "BI大屏事件信息查询",notes = "BI大屏事件查询")
-    @RequestMapping(value = "/queryEventList",method = RequestMethod.GET)
-    public Object queryEventList(Long diseaseId, Long pageSize, Long current, String releaseTime,String searchTime) {
-        JSONObject eventList = articleService.queryEventList(diseaseId, pageSize, current, releaseTime,searchTime);
+    @ApiOperation(value = "BI大屏事件信息查询", notes = "BI大屏事件查询")
+    @RequestMapping(value = "/queryEventList", method = RequestMethod.GET)
+    public Object queryEventList(Long diseaseId, Long pageSize, Long current, String releaseTime, String searchTime) {
+        JSONObject eventList = articleService.queryEventList(diseaseId, pageSize, current, releaseTime, searchTime);
         return eventList;
     }
 
@@ -74,7 +74,7 @@ public class ArticleController {
      */
     @ApiOperation(value = "获取舆情列表", notes = "获取舆情信息列表")
     @GetMapping(value = "/normal/getArticleList")
-    public ResultVO getArticleList(@ModelAttribute ArticleListQueryParam articleListQueryParam, 
+    public ResultVO getArticleList(@ModelAttribute ArticleListQueryParam articleListQueryParam,
                                    @RequestHeader(Constants.AUTHORIZE_ACCESS_TOKEN) String accessToken) {
         log.debug("get article: {}", articleListQueryParam);
 
@@ -115,11 +115,9 @@ public class ArticleController {
     }
 
 
-
-
     @ApiOperation(value = "单个/批量删除舆情", notes = "根据舆情id列表删除舆情信息")
     @ApiImplicitParam(paramType = "query", name = "idListStr", value = "舆情IDs", required = true, dataType = "string")
-    @DeleteMapping(value = "/normal/delArticles")
+    @PutMapping(value = "/normal/delArticles")
     public Object delArticles(@RequestBody ArticleKeyWordsForm articleKeyWordsForm) {
         String idListStr = articleKeyWordsForm.getIdListStr();
         log.debug("delete with id: {}", idListStr);
@@ -133,13 +131,13 @@ public class ArticleController {
             @ApiImplicitParam(paramType = "query", name = "keyword", value = "关键词", required = true, dataType = "string")
     })
     @PutMapping(value = "/addKeyword")
-    public Object addKeyword(@RequestBody ArticleKeyWordsForm articleKeyWordsForm,@RequestHeader(Constants.AUTHORIZE_ACCESS_TOKEN) String accessToken) {
+    public Object addKeyword(@RequestBody ArticleKeyWordsForm articleKeyWordsForm, @RequestHeader(Constants.AUTHORIZE_ACCESS_TOKEN) String accessToken) {
         String keyword = articleKeyWordsForm.getKeyword();
         String idListStr = articleKeyWordsForm.getIdListStr();
         log.debug("add keyword with ids: {}", idListStr);
         Long userId = JWTUtil.getUserId(accessToken);
 
-        return  articleService.addKeyword(userId, idListStr, keyword);
+        return articleService.addKeyword(userId, idListStr, keyword);
     }
 
     @ApiOperation(value = "删除关键词", notes = "删除关键词(单条)")
@@ -162,19 +160,19 @@ public class ArticleController {
             @ApiImplicitParam(paramType = "query", name = "levelId", value = "舆情等级ID", required = true, dataType = "long")
     })
     @PutMapping(value = "/updateLevel/{id}")
-    public Object updateLevel(@PathVariable Long id,@RequestBody ArticleKeyWordsForm articleKeyWordsParam) {
+    public Object updateLevel(@PathVariable Long id, @RequestBody ArticleKeyWordsForm articleKeyWordsParam) {
         log.debug("update level with id: {}", id);
         Long levelId = articleKeyWordsParam.getLevelId();
 
-        return  articleService.updateLevel(id, levelId);
+        return articleService.updateLevel(id, levelId);
     }
 
     @ApiOperation(value = "更新舆情详情信息", notes = "根据舆情id更新舆情详情信息")
     @ApiImplicitParam(paramType = "query", name = "articleUpdateForm", value = "舆情详情信息", required = true, dataType = "ArticleUpdateForm")
     @PutMapping(value = "/updateArticle")
-    public Object updateArticle(@RequestBody ArticleUpdateForm articleUpdateForm,@RequestHeader(Constants.AUTHORIZE_ACCESS_TOKEN) String accessToken) {
+    public Object updateArticle(@RequestBody ArticleUpdateForm articleUpdateForm, @RequestHeader(Constants.AUTHORIZE_ACCESS_TOKEN) String accessToken) {
         Long userId = JWTUtil.getUserId(accessToken);
 
-        return  articleService.updateArticle(userId, articleUpdateForm);
+        return articleService.updateArticle(userId, articleUpdateForm);
     }
 }

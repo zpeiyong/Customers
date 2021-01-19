@@ -92,8 +92,11 @@ public class ArticleAdaptImpl implements IArticleAdapt {
 
     @Override
     public Object delArticles(String idListStr) {
-        String url = "http://" +  baseUrl + "/article/normal/delArticles?idListStr=" + idListStr;
-        return GetPostUtil.sendDelete(url);
+        String url = "http://" +  baseUrl + "/article/normal/delArticles";
+        JSONObject jsonObject  = new JSONObject();
+        jsonObject.put("idListStr", idListStr);
+        String jsonString = jsonObject.toJSONString();
+        return GetPostUtil.sendPut(url, jsonString, 3000);
     }
 
     @Override
