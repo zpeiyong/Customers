@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.ParseException;
 import java.util.List;
 
 @RestController
@@ -20,7 +19,7 @@ import java.util.List;
 @Slf4j
 public class DiseaseCountryCaseController {
     @Autowired
-    private IDiseaseCountryCaseService countryCaseService;
+    private IDiseaseCountryCaseService dcCaseService;
 
     @RequestMapping(value = "/getCountriesByParam",method = RequestMethod.GET)
     @ApiOperation(value = "过滤国家查询",notes = "列表查询")
@@ -30,8 +29,8 @@ public class DiseaseCountryCaseController {
             @ApiImplicitParam(name = "periodStart",required = false, value = "统计时间段开始时间",dataType ="String",paramType = "query")
     })
     @ResponseBody
-    public ResultVO getCountriesByParam(Long diseaseId, String showType, String periodStart) throws  ParseException{
-        List<CountryVO> countriesByParamList = countryCaseService.getCountriesByParam(diseaseId, showType, periodStart);
+    public ResultVO getCountriesByParam(Long diseaseId, String showType, String periodStart){
+        List<CountryVO> countriesByParamList = dcCaseService.getCountriesByParam(diseaseId, showType, periodStart);
 
         return ResultVO.success(countriesByParamList);
     }
@@ -42,7 +41,7 @@ public class DiseaseCountryCaseController {
     @ResponseBody
     public ResultVO getDiseaseCountryList(@ModelAttribute DiseaseCountryParam diseaseCountryParam) {
 
-        return ResultVO.success(countryCaseService.listDiseaseCountry(diseaseCountryParam));
+        return ResultVO.success(dcCaseService.listDiseaseCountry(diseaseCountryParam));
     }
 
     @RequestMapping(value = "/addDiseaseCountry",method = RequestMethod.POST)
@@ -50,6 +49,17 @@ public class DiseaseCountryCaseController {
     @ApiImplicitParam(paramType = "query", name = "DiseaseCountryCase", value = "保存病种数据", required = true, dataType = "DiseaseCountryCase")
     public ResultVO addDiseaseCountry(@RequestBody DiseaseCountryForm country)  {
 
-        return ResultVO.success(countryCaseService.addDiseaseCountryCase(country));
+        return ResultVO.success(dcCaseService.addDiseaseCountryCase(country));
+    }
+
+    @ApiOperation(value = "获取地图国家当前病种最新的统计信息", notes = "获取地图国家当前病种最新的统计信息")
+    @GetMapping(value = "/getLatestCasesByParam")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "diseaseId", required = true, value = "传染病id", dataType ="Long", paramType = "query"),
+            @ApiImplicitParam(name = "countryId", required = true, value = "国家ID", dataType ="Long", paramType = "query"),
+    })
+    public ResultVO getLatestCasesByParam(@RequestParam Long diseaseId, @RequestParam Long countryId) {
+
+        return ResultVO.success(dcCaseService.getLatestCasesByParam(diseaseId, countryId));
     }
 }

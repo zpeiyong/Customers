@@ -12,7 +12,6 @@ import com.dataint.service.datapack.db.dao.*;
 import com.dataint.service.datapack.db.entity.Country;
 import com.dataint.service.datapack.db.entity.DiseaseCountryCase;
 import com.dataint.service.datapack.db.entity.StatisticBasic;
-import com.dataint.service.datapack.model.vo.DiseaseCountryCaseVO;
 import com.dataint.service.datapack.model.vo.StatisticBasicBIVO;
 import com.dataint.service.datapack.model.vo.StatisticBasicVO;
 import com.dataint.service.datapack.service.IStatisticService;
@@ -23,11 +22,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -253,11 +250,15 @@ public class StatisticServiceImpl implements IStatisticService {
         }
 
         List<Map<String, Object>> poList = diseaseCountryPODao.getEventCntByDiseaseIdAndStatisticDate(diseaseId, yesStartDate,
-                PageRequest.of(0, 5, Sort.by("eventToTal").descending()));
+                PageRequest.of(0, 5, Sort.by("eventTotal").descending()));
         for (Map<String, Object> poMap : poList) {
             Map<String, Object> itemMap = new HashMap<>();
             itemMap.put("countryNameCn", poMap.get("0"));
-            itemMap.put("eventToTal", poMap.get("1"));
+            if (poMap.get("1") != null) {
+                itemMap.put("eventTotal", poMap.get("1"));
+            } else {
+                itemMap.put("eventTotal", 0);
+            }
             respList.add(itemMap);
         }
 
@@ -313,7 +314,11 @@ public class StatisticServiceImpl implements IStatisticService {
         for (Map<String, Object> poMap : poList) {
             Map<String, Object> itemMap = new HashMap<>();
             itemMap.put("countryNameCn", poMap.get("0"));
-            itemMap.put("articleTotal", poMap.get("1"));
+            if (poMap.get("1") != null) {
+                itemMap.put("articleTotal", poMap.get("1"));
+            } else {
+                itemMap.put("articleTotal", 0);
+            }
             respList.add(itemMap);
         }
 

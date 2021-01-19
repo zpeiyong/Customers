@@ -66,13 +66,17 @@ public class ArticleController {
 
     @ApiOperation(value = "获取地图上国家疫情统计下的舆情列表", notes = "获取地图上国家疫情统计下的舆情列表")
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", name = "countryId", value = "国家ID", required = true, dataType = "long"),
-            @ApiImplicitParam(paramType = "query", name = "diseaseName", value = "疫情名称", required = true, dataType = "string")
+            @ApiImplicitParam(paramType = "query", name = "countryId", value = "国家ID", required = false, dataType = "long"),
+            @ApiImplicitParam(paramType = "query", name = "diseaseId", value = "疫情名称", required = true, dataType = "long"),
+            @ApiImplicitParam(paramType = "query", name = "searchTime", value = "查询时间", required = false, dataType = "string")
     })
     @GetMapping("/queryMapBasicList")
-    public ResultVO queryMapBasicList(@RequestParam Long countryId, @RequestParam String diseaseName, @ModelAttribute PageParam pageParam) {
+    public ResultVO queryMapBasicList(@RequestParam(required = false) Long countryId,
+                                      @RequestParam Long diseaseId,
+                                      @RequestParam(required = false) String searchTime,
+                                      @ModelAttribute PageParam pageParam) {
 
-        return ResultVO.success(articleService.queryMapBasicList(countryId, diseaseName, pageParam));
+        return articleService.queryMapBasicList(countryId, diseaseId, searchTime, pageParam);
     }
 
 
@@ -93,6 +97,15 @@ public class ArticleController {
         log.debug("get with id: {}", id);
 
         return ResultVO.success(articleService.getArticleById(id));
+    }
+
+    @ApiOperation(value = "获取舆情信息相似文章", notes = "根据id获取舆情信息相似文章")
+    @ApiImplicitParam(paramType = "path", name = "id", value = "舆情ID", required = true, dataType = "long")
+    @GetMapping(value = "/normal/similar/{id}")
+    public ResultVO getSimilarArticlesById(@PathVariable Long id, @ModelAttribute PageParam pageParam) {
+        log.debug("get similar articles by id: {}", id);
+
+        return ResultVO.success(articleService.getSimilarArticlesById(id, pageParam));
     }
 
     @ApiOperation(value = "单个/批量删除舆情", notes = "根据舆情id列表删除舆情信息")

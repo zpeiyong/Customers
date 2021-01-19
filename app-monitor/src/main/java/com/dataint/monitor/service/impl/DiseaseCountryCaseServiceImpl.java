@@ -10,24 +10,30 @@ import org.springframework.stereotype.Service;
 @Service
 public class DiseaseCountryCaseServiceImpl implements IDiseaseCountryCaseService {
     @Autowired
-    IDiseaseCountryCaseAdapt caseProvider;
+    private IDiseaseCountryCaseAdapt dcCaseAdapt;
 
     @Override
     public Object listDiseaseCountry(DiseaseCountryParam diseaseCountryParam) {
-        Object resultVO = caseProvider.listDiseaseCountry(diseaseCountryParam);
+        Object resultVO = dcCaseAdapt.listDiseaseCountry(diseaseCountryParam);
         return resultVO;
 
     }
 
     @Override
-    public Object addDieaseCountry(DiseaseCountryCase countryCase) {
-        Object resultVO = caseProvider.addDieaseCountry(countryCase);
+    public Object addDiseaseCountry(DiseaseCountryCase countryCase) {
+        Object resultVO = dcCaseAdapt.addDiseaseCountry(countryCase);
         return resultVO;
     }
 
     @Override
     public Object getCountriesByParam(Long diseaseId, String showType,String periodStart) {
-        Object countriesByParam = caseProvider.getCountriesByParam(diseaseId, showType,periodStart);
+        Object countriesByParam = dcCaseAdapt.getCountriesByParam(diseaseId, showType,periodStart);
         return countriesByParam;
+    }
+
+    @Override
+    public Object getLatestCasesByParam(Long diseaseId, Long countryId) {
+
+        return dcCaseAdapt.getLatestCasesByParam(diseaseId, countryId);
     }
 }

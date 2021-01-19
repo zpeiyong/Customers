@@ -1,7 +1,9 @@
 package com.dataint.service.datapack.service.impl;
 
+import com.dataint.cloud.common.dim.BaseExceptionEnum;
 import com.dataint.cloud.common.exception.DataAlreadyExistException;
 import com.dataint.cloud.common.exception.DataNotExistException;
+import com.dataint.cloud.common.exception.DataintBaseException;
 import com.dataint.cloud.common.model.Constants;
 import com.dataint.cloud.common.model.Pagination;
 import com.dataint.cloud.common.model.ResultVO;
@@ -18,6 +20,7 @@ import com.dataint.service.datapack.model.param.ArticleListQueryParam;
 import com.dataint.service.datapack.model.vo.ArticleBasicVO;
 import com.dataint.service.datapack.model.vo.ArticleReportVO;
 import com.dataint.service.datapack.model.vo.ArticleVO;
+import com.dataint.service.datapack.model.vo.BIArticleBasicVO;
 import com.dataint.service.datapack.service.IArticleService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -345,26 +348,63 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
     }
 
     @Override
-    public ArticleBasicVO queryBasicById(Long articleId) {
+    public BIArticleBasicVO queryBasicById(Long articleId) {
         Optional<Article> articleOpt = articleDao.findById(articleId);
-        if (articleOpt.isPresent())
-            return new ArticleBasicVO(articleOpt.get());
+        if (!articleOpt.isPresent()) {
+            throw new DataNotExistException();
+        }
 
-        return new ArticleBasicVO();
+        return new BIArticleBasicVO(articleOpt.get());
     }
 
     @Override
-    public List<ArticleBasicVO> queryMapBasicList(Long countryId, String diseaseName, PageParam pageParam) {
-        Optional<Country> countryOpt = countryDao.findById(countryId);
-        if (!countryOpt.isPresent())
-            throw new DataNotExistException();
-        Country country = countryOpt.get();
-//        Page<Article> pageResult = articleDao.findMapBasicListByIfDeleted(country.getCode(), diseaseName, false,
-//                pageParam.toPageRequest());
-//
-//        return pageResult.getContent().stream().map(ArticleBasicVO::new).collect(Collectors.toList());
+    public ResultVO queryMapBasicList(Long countryId, Long diseaseId, String searchTime, PageParam pageParam) {
+        Page<Article> mapArticlePage = articleDao.findAll(new Specification<Article>() {
+            @Override
+            public Predicate toPredicate(Root<Article> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                List<Predicate> list = new ArrayList<>();
 
-        return null;
+                // 疫情id and 国家id
+                if (!ObjectUtils.isEmpty(diseaseId) && diseaseId != 0) {
+                    Subquery<Long> subQuery = criteriaQuery.subquery(Long.class);
+                    Root<ArticleDisease> adSubRoot = subQuery.from(ArticleDisease.class);
+
+                    // 子查询的条件列表
+                    List<Predicate> subList = new ArrayList<>();
+
+                    subList.add(criteriaBuilder.equal(adSubRoot.get("diseaseId").as(Long.class), diseaseId));
+                    if (!ObjectUtils.isEmpty(countryId) && countryId != 0) {
+                        subList.add(criteriaBuilder.equal(adSubRoot.get("countryId").as(Long.class), countryId));
+                    }
+                    subQuery.distinct(true)
+                            .select(adSubRoot.get("articleId").as(Long.class))
+                            .where(subList.toArray(new Predicate[subList.size()]));
+
+                    //
+                    list.add(criteriaBuilder.in(root.get("id")).value(subQuery));
+                }
+
+                // 查询日期
+                if (!StringUtils.isEmpty(searchTime)) {
+                    // 转换日期格式
+                    Date searchDate;
+                    try {
+                        searchDate = Constants.getDateTimeFormat().parse(searchTime + " 23:59:59");
+                    } catch (ParseException e) {
+                        throw new DataintBaseException(BaseExceptionEnum.DATE_PARSE_ERROR);
+                    }
+                    list.add(criteriaBuilder.lessThanOrEqualTo(root.get("gmtRelease").as(Date.class), searchDate));
+                }
+
+                Predicate[] p = new Predicate[list.size()];
+                return criteriaBuilder.and(list.toArray(p));
+            }
+        }, pageParam.toPageRequest( "gmtRelease"));
+
+        List<BIArticleBasicVO> mapBasicVOList = mapArticlePage.getContent().stream().map(BIArticleBasicVO::new).collect(Collectors.toList());
+        Pagination pagination = new Pagination(pageParam.getPageSize(), mapArticlePage.getTotalElements(), pageParam.getCurrent());
+
+        return ResultVO.success(mapBasicVOList, pagination);
     }
 
     @Override
@@ -453,7 +493,7 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
                 Predicate[] p = new Predicate[list.size()];
                 return criteriaBuilder.and(list.toArray(p));
             }
-        }, queryParam.toPageRequest( "gmtCrawl"));
+        }, queryParam.toPageRequest( "gmtRelease"));
 
         // 封装为文章基础字段vo对象列表
         List<ArticleBasicVO> basicVOList = articlePage.getContent()
@@ -502,6 +542,33 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
         Article article = articleOpt.get();
 
         return new ArticleVO(article);
+    }
+
+    @Override
+    public ResultVO getSimilarArticlesById(Long articleId, PageParam pageParam) {
+        Optional<Article> articleOpt = articleDao.findById(articleId);
+        if (!articleOpt.isPresent()) {
+            throw new DataNotExistException("当前数据不存在");
+        }
+        Article article = articleOpt.get();
+
+        // 当前舆情similarId=0则根据当前舆情id找，否则同时要找similarId这条舆情
+        Page<Article> similarArticlePage;
+        if (article.getSimilarArticleId() == 0) {
+            similarArticlePage = articleDao.findAllBySimilarArticleId(
+                    article.getId(),
+                    pageParam.toPageRequest());
+        } else {
+            similarArticlePage = articleDao.findAllBySimilarArticleIdOrId(
+                    article.getSimilarArticleId(),
+                    article.getSimilarArticleId(),
+                    pageParam.toPageRequest());
+        }
+
+        List<ArticleBasicVO> articleBasicVOList = similarArticlePage.getContent().stream().map(ArticleBasicVO::new).collect(Collectors.toList());
+        Pagination pagination = new Pagination(pageParam.getPageSize(), similarArticlePage.getTotalElements(), pageParam.getCurrent());
+
+        return ResultVO.success(articleBasicVOList, pagination);
     }
 
     @Transactional

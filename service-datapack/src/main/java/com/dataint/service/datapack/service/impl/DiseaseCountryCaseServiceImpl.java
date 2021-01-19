@@ -1,7 +1,9 @@
 package com.dataint.service.datapack.service.impl;
 
+import com.dataint.cloud.common.dim.BaseExceptionEnum;
 import com.dataint.cloud.common.exception.DataAlreadyExistException;
 import com.dataint.cloud.common.exception.DataNotExistException;
+import com.dataint.cloud.common.exception.DataintBaseException;
 import com.dataint.cloud.common.model.Constants;
 import com.dataint.cloud.common.utils.DateUtil;
 import com.dataint.service.datapack.db.dao.ICountryDao;
@@ -36,9 +38,9 @@ import static java.util.stream.Collectors.toList;
 public class DiseaseCountryCaseServiceImpl implements IDiseaseCountryCaseService {
 
     @Autowired
-    private IDiseaseCountryCaseDao caseDao;
+    private IDiseaseCountryCaseDao dcCaseDao;
     @Autowired
-    private  ICountryDao countryDao;
+    private ICountryDao countryDao;
 
 
     @Override
@@ -47,7 +49,7 @@ public class DiseaseCountryCaseServiceImpl implements IDiseaseCountryCaseService
             add(new Sort.Order(Sort.Direction.DESC, "periodStart"));
         }};
 
-        Page<DiseaseCountryCase> countryCases = caseDao.findAll(new Specification<DiseaseCountryCase>() {
+        Page<DiseaseCountryCase> countryCases = dcCaseDao.findAll(new Specification<DiseaseCountryCase>() {
             @Override
             public Predicate toPredicate(Root<DiseaseCountryCase> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
                 List<Predicate>  list = new ArrayList<>();
@@ -71,12 +73,14 @@ public class DiseaseCountryCaseServiceImpl implements IDiseaseCountryCaseService
                     list.add(criteriaBuilder.equal(root.get("id").as(Long.class), diseaseCountryParam.getId()));
                 }
 
-                        Predicate[] p = new Predicate[list.size()];
+                Predicate[] p = new Predicate[list.size()];
                 return criteriaBuilder.and(list.toArray(p));
             }
         },diseaseCountryParam.toPageRequest(Sort.by(orders)));
-                List<DiseaseCountryCaseVO>  diseaseCountryCaseList =countryCases.getContent().stream().map(DiseaseCountryCaseVO::new).collect(Collectors.toList());
-        return  new PageImpl<>(diseaseCountryCaseList, countryCases.getPageable(), countryCases.getTotalElements());
+
+        List<DiseaseCountryCaseVO>  diseaseCountryCaseList =countryCases.getContent().stream().map(DiseaseCountryCaseVO::new).collect(Collectors.toList());
+
+        return new PageImpl<>(diseaseCountryCaseList, countryCases.getPageable(), countryCases.getTotalElements());
     }
 
     @Override
@@ -89,7 +93,7 @@ public class DiseaseCountryCaseServiceImpl implements IDiseaseCountryCaseService
             Long countryId = dcForm.getCountryId();
             Date periodStart = dcForm.getPeriodStart();
 
-            List<DiseaseCountryCase> caseList = caseDao.findByDiseaseIdAndCountryIdAndPeriodStart(diseaseId, countryId, periodStart);
+            List<DiseaseCountryCase> caseList = dcCaseDao.findByDiseaseIdAndCountryIdAndPeriodStart(diseaseId, countryId, periodStart);
             if (caseList.size() > 0){
                 throw new DataAlreadyExistException("国家名称或者病例数据在此时间段内已经存在");
             }
@@ -111,15 +115,15 @@ public class DiseaseCountryCaseServiceImpl implements IDiseaseCountryCaseService
                 }
                 diseaseCountryCase.setPeriodEnd(Constants.getDateTimeFormat().parse(periodEndStr));
             } catch (ParseException e) {
-                e.printStackTrace();
+                throw new DataintBaseException(BaseExceptionEnum.DATE_PARSE_ERROR);
             }
-            caseDao.save(diseaseCountryCase);
+            dcCaseDao.save(diseaseCountryCase);
 
             return diseaseCountryCase;
         }
         //修改
         else {
-            Optional<DiseaseCountryCase> caseDaoById = caseDao.findById(id);
+            Optional<DiseaseCountryCase> caseDaoById = dcCaseDao.findById(id);
             if (!caseDaoById.isPresent()){
                 throw new DataNotExistException();
             }
@@ -134,16 +138,21 @@ public class DiseaseCountryCaseServiceImpl implements IDiseaseCountryCaseService
             diseaseCountryCase.setConfirmTotal(dcForm.getConfirmTotal());
 
         }
-        caseDao.save(diseaseCountryCase);
+        dcCaseDao.save(diseaseCountryCase);
 
         return diseaseCountryCase;
     }
 
     @Override
-    public List<CountryVO> getCountriesByParam(Long diseaseId, String showType, String periodStart) throws  ParseException  {
+    public List<CountryVO> getCountriesByParam(Long diseaseId, String showType, String periodStart) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date date = sdf.parse(periodStart);
-        List<DiseaseCountryCase> countriesByParamList = caseDao.findByDiseaseIdAndShowTypeAndPeriodStart(diseaseId, showType, date);
+        Date date = null;
+        try {
+            date = sdf.parse(periodStart);
+        } catch (ParseException e) {
+            throw new DataintBaseException(BaseExceptionEnum.DATE_PARSE_ERROR);
+        }
+        List<DiseaseCountryCase> countriesByParamList = dcCaseDao.findByDiseaseIdAndShowTypeAndPeriodStart(diseaseId, showType, date);
         List<Country> countryList = countryDao.findAll();
         Map<Long, Country> countryMap = new HashMap<>();
         countryList.forEach(country -> {
@@ -155,5 +164,15 @@ public class DiseaseCountryCaseServiceImpl implements IDiseaseCountryCaseService
         List<CountryVO> remainCountryList = countryMap.values().stream().map(CountryVO::new).collect(toList());
 
         return remainCountryList;
+    }
+
+    @Override
+    public DiseaseCountryCaseVO getLatestCasesByParam(Long diseaseId, Long countryId) {
+        DiseaseCountryCase latestDCCase = dcCaseDao.findTopByDiseaseIdAndCountryIdOrderByStatisticDateDesc(diseaseId, countryId);
+        if (latestDCCase == null) {
+            throw new DataNotExistException();
+        }
+
+        return new DiseaseCountryCaseVO(latestDCCase);
     }
 }

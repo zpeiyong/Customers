@@ -91,6 +91,66 @@ public class StatisticAdaptImpl implements IStatisticAdapt {
     }
 
     @Override
+    public Object getConfirmedTimeLine(Long diseaseId, String dateStr) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("diseaseId", diseaseId.toString());
+        if (dateStr != null)
+            map.put("dateStr", dateStr);
+        String url ="http://" +  baseUrl + "/statistic/confirmed/getAddTimeLine";
+        return GetPostUtil.sendGet(url, map);
+    }
+
+    @Override
+    public Object getConfirmedTotalCntRank(Long diseaseId, String dateStr) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("diseaseId", diseaseId.toString());
+        if (dateStr != null)
+            map.put("dateStr", dateStr);
+        String url ="http://" +  baseUrl + "/statistic/confirmed/getTotalCntRank";
+        return GetPostUtil.sendGet(url, map);
+    }
+
+    @Override
+    public Object getCuredTimeLine(Long diseaseId, String dateStr) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("diseaseId", diseaseId.toString());
+        if (dateStr != null)
+            map.put("dateStr", dateStr);
+        String url ="http://" +  baseUrl + "/statistic/cured/getAddTimeLine";
+        return GetPostUtil.sendGet(url, map);
+    }
+
+    @Override
+    public Object getCuredTotalCntRank(Long diseaseId, String dateStr) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("diseaseId", diseaseId.toString());
+        if (dateStr != null)
+            map.put("dateStr", dateStr);
+        String url ="http://" +  baseUrl + "/statistic/cured/getTotalCntRank";
+        return GetPostUtil.sendGet(url, map);
+    }
+
+    @Override
+    public Object getDeathTimeLine(Long diseaseId, String dateStr) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("diseaseId", diseaseId.toString());
+        if (dateStr != null)
+            map.put("dateStr", dateStr);
+        String url ="http://" +  baseUrl + "/statistic/death/getAddTimeLine";
+        return GetPostUtil.sendGet(url, map);
+    }
+
+    @Override
+    public Object getDeathTotalCntRank(Long diseaseId, String dateStr) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("diseaseId", diseaseId.toString());
+        if (dateStr != null)
+            map.put("dateStr", dateStr);
+        String url ="http://" +  baseUrl + "/statistic/death/getTotalCntRank";
+        return GetPostUtil.sendGet(url, map);
+    }
+
+    @Override
     public Object getMapCountryList() {
         String url ="http://" +  baseUrl + "/statistic/getMapCountryList";
         return GetPostUtil.sendGet(url);

@@ -35,11 +35,16 @@ public class ArticleAdaptImpl implements IArticleAdapt {
     }
 
     @Override
-    public Object queryMapBasicList(Long countryId, String diseaseName, PageParam pageParam) {
+    public Object queryMapBasicList(Long countryId, Long diseaseId, String searchTime, PageParam pageParam) {
         String url = "http://" +  baseUrl + "/article/queryMapBasicList";
         HashMap<String, String> map = new HashMap<>();
-        map.put("countryId", countryId.toString());
-        map.put("diseaseName", diseaseName);
+        if (countryId != null) {
+            map.put("countryId", countryId.toString());
+        }
+        if (!StringUtils.isEmpty(searchTime)) {
+            map.put("searchTime", searchTime);
+        }
+        map.put("diseaseId", diseaseId.toString());
         map.put("current",pageParam.getCurrent().toString());
         map.put("pageSize", pageParam.getPageSize().toString());
         return GetPostUtil.sendGet(url, map);
@@ -66,7 +71,6 @@ public class ArticleAdaptImpl implements IArticleAdapt {
             map.put("regionId", articleListQueryParam.getRegionId().toString());
         
         String url ="http://" +  baseUrl + "/article/normal/getArticleList";
-
         return GetPostUtil.sendGet(url, map);
     }
 
@@ -74,6 +78,16 @@ public class ArticleAdaptImpl implements IArticleAdapt {
     public JSONObject getArticleById(Long id) {
         String url = "http://" +  baseUrl + "/article/normal/" + id.toString();
         return GetPostUtil.sendGet(url);
+    }
+
+    @Override
+    public JSONObject getSimilarArticlesById(Long id, PageParam pageParam) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("current", pageParam.getCurrent().toString());
+        map.put("pageSize", pageParam.getPageSize().toString());
+
+        String url = "http://" +  baseUrl + "/article/normal/similar/" + id.toString();
+        return GetPostUtil.sendGet(url, map);
     }
 
     @Override
