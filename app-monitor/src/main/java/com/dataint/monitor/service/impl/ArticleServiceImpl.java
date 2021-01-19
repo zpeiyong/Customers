@@ -163,11 +163,10 @@ public class ArticleServiceImpl implements IArticleService {
     }
 
     @Override
-    public JSONObject updateArticle(Long userId, ArticleUpdateForm articleUpdateForm) {
+    public Object updateArticle(Long userId, ArticleUpdateForm articleUpdateForm) {
 
         Object updateArticle = articleAdapt.updateArticle(articleUpdateForm);
-        JSONObject jsonObject = JSONObject.parseObject((String) updateArticle);
-        return  jsonObject;
+        return  updateArticle;
 //        return null;
 //        ResultVO<JSONObject> retVO = articleProvider.updateArticle(articleUpdateForm);
 //        if (retVO.getCode() == 200) {

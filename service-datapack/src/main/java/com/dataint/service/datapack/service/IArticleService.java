@@ -27,7 +27,7 @@ public interface IArticleService {
      * @param pageParam
      * @return
      */
-    List<ArticleBasicVO> queryBasicList(PageParam pageParam);
+    ResultVO queryBasicList(PageParam pageParam);
 
     /**
      *

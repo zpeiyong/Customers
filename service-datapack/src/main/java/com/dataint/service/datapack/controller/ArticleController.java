@@ -53,7 +53,7 @@ public class ArticleController {
     @GetMapping("/queryBasicList")
     public ResultVO queryBasicList(@ModelAttribute PageParam pageParam) {
 
-        return ResultVO.success(articleService.queryBasicList(pageParam));
+        return articleService.queryBasicList(pageParam);
     }
 
     @ApiOperation(value = "根据id获取ArticleBasic", notes = "根据id获取ArticleBasic")
@@ -97,8 +97,9 @@ public class ArticleController {
 
     @ApiOperation(value = "单个/批量删除舆情", notes = "根据舆情id列表删除舆情信息")
     @ApiImplicitParam(paramType = "query", name = "idListStr", value = "舆情IDs", required = true, dataType = "string")
-    @DeleteMapping(value = "/normal/delArticles")
-    public ResultVO delArticles(@RequestParam String idListStr) {
+    @PutMapping(value = "/normal/delArticles")
+    public ResultVO delArticles(@RequestBody ArticleKeyWordsForm articleKeyWordsForm) {
+        String idListStr = articleKeyWordsForm.getIdListStr();
         log.debug("delete with id: {}", idListStr);
 
         List<Long> idList = Arrays.stream(idListStr.split(Constants.SPLITTER)).map(Long::valueOf).collect(Collectors.toList());

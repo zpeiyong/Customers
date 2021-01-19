@@ -334,10 +334,14 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
     }
 
     @Override
-    public List<ArticleBasicVO> queryBasicList(PageParam pageParam) {
+    public ResultVO queryBasicList(PageParam pageParam) {
         Page<Article> pageResult = articleDao.findAllByIfDeleted(false, pageParam.toPageRequest("gmtRelease"));
-
-        return pageResult.getContent().stream().map(ArticleBasicVO::new).collect(Collectors.toList());
+        List<ArticleBasicVO> collect = pageResult.getContent().stream().map(ArticleBasicVO::new).collect(Collectors.toList());
+        Pagination pagination = new Pagination();
+        pagination.setCurrent(pageParam.getCurrent());
+        pagination.setPageSize(pageParam.getPageSize());
+        pagination.setTotal(pageResult.getTotalElements());
+        return ResultVO.success(collect, pagination);
     }
 
     @Override
