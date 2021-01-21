@@ -29,7 +29,7 @@ public interface IArticleAdapt {
 
     Object updateLevel(Long id, Long levelId);
 
-    Object updateArticle(ArticleUpdateForm articleUpdateForm);
+    JSONObject updateArticle(ArticleUpdateForm articleUpdateForm);
 
     Object queryEventList(Long diseaseId,Long pageSize, Long current,String  releaseTime,String searchTime);
 

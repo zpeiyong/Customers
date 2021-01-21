@@ -157,9 +157,9 @@ public class ArticleController {
     @ApiOperation(value = "更新舆情详情信息", notes = "根据舆情id更新舆情详情信息")
     @ApiImplicitParam(paramType = "query", name = "articleUpdateForm", value = "舆情详情信息", required = true, dataType = "ArticleUpdateForm")
     @PutMapping(value = "/updateArticle")
-    public Object updateArticle(@RequestBody ArticleUpdateForm articleUpdateForm, @RequestHeader(Constants.AUTHORIZE_ACCESS_TOKEN) String accessToken) {
+    public ResultVO updateArticle(@RequestBody ArticleUpdateForm articleUpdateForm, @RequestHeader(Constants.AUTHORIZE_ACCESS_TOKEN) String accessToken) {
         Long userId = JWTUtil.getUserId(accessToken);
-
-        return articleService.updateArticle(userId, articleUpdateForm);
+        String systemType = JWTUtil.getSystemType(accessToken);
+        return ResultVO.success(articleService.updateArticle(userId,systemType,articleUpdateForm));
     }
 }

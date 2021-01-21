@@ -10,10 +10,7 @@ import com.dataint.cloud.common.model.ResultVO;
 import com.dataint.cloud.common.model.param.PageParam;
 import com.dataint.cloud.common.utils.MD5Util;
 import com.dataint.service.datapack.db.IArticleEvent;
-import com.dataint.service.datapack.db.dao.IArticleDao;
-import com.dataint.service.datapack.db.dao.ICountryDao;
-import com.dataint.service.datapack.db.dao.IFocusDiseaseDao;
-import com.dataint.service.datapack.db.dao.ISiteDao;
+import com.dataint.service.datapack.db.dao.*;
 import com.dataint.service.datapack.db.entity.*;
 import com.dataint.service.datapack.model.form.*;
 import com.dataint.service.datapack.model.param.ArticleListQueryParam;
@@ -55,6 +52,9 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
 
     @Autowired
     private IFocusDiseaseDao diseaseDao;
+
+    @Autowired
+    private IArticleDiseaseDao articleDiseaseDao;
 
     @Override
     public List<Map<String, Object>> queryEventList(Long diseaseId, int pageSize, int current, String  releaseTime,String searchTime) {
@@ -656,8 +656,30 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
 
                 // diseases
                 FocusDisease diseases = diseaseDao.getOne(diseaseForm.getDiseaseId());
+                Long articleId = articleUpdateForm.getArticleId();
+                articleDisease.setArticleId(articleId);
                 articleDisease.setDiseaseCode(diseases.getNameCn());
-                articleDisease.setDiseaseId(diseaseForm.getDiseaseId());
+                if (diseaseForm.getDiseaseId() != null)
+                    articleDisease.setDiseaseId(diseaseForm.getDiseaseId());
+                if (diseaseForm.getCountryId() != null)
+                    articleDisease.setCountryId(diseaseForm.getCountryId());
+                if (diseaseForm.getPeriodConfirm() != null)
+                    articleDisease.setPeriodConfirm(diseaseForm.getPeriodConfirm());
+                if (diseaseForm.getPeriodDeath() != null)
+                    articleDisease.setPeriodDeath(diseaseForm.getPeriodDeath());
+                if (diseaseForm.getPeriodCure() != null)
+                    articleDisease.setPeriodCure(diseaseForm.getPeriodCure());
+                if (diseaseForm.getConfirmCases() != null)
+                    articleDisease.setConfirmCases(diseaseForm.getConfirmCases());
+                if (diseaseForm.getCureCases() != null)
+                    articleDisease.setCureCases(diseaseForm.getCureCases());
+                if (diseaseForm.getDeathCases() != null)
+                    articleDisease.setDeathCases(diseaseForm.getDeathCases());
+
+
+                Long id = articleDiseaseDao.finIdByArticleId(articleId);
+
+                articleDisease.setId(id);
                 try {
                     if (!StringUtils.isEmpty(diseaseForm.getDiseaseStart()))
                         articleDisease.setDiseaseStart(Constants.DateSDF.parse(diseaseForm.getDiseaseStart()));
@@ -676,10 +698,9 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
 ////                    articleDisease.setCountryCodes(StringUtils.join(
 ////                            countryList.stream().map(Country::getCode).collect(Collectors.toList()), Constants.JOINER));
 //                }
-
+                articleDiseaseDao.save(articleDisease);
                 diseaseList.add(articleDisease);
             }
-//            article.setDiseaseList(diseaseList);
         }
         // summary
         if (!StringUtils.isEmpty(articleUpdateForm.getSummary()))
