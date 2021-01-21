@@ -13,6 +13,8 @@ import java.util.List;
 @Repository
 public interface IReportDao extends JpaRepository<Report, Long> {
 
+    @Query(value = "from Report r " +
+            "where r.gmtStart >= ?1 and r.gmtEnd <= ?2 and r.reportType = ?3")
     Page<Report> findByGmtStartAndGmtEndAndReportType(Date gmtStart, Date gmtEnd, String reportType, Pageable pageable);
 
     List<Report> findByGmtStartAndGmtEndAndReportType(Date gmtStart, Date gmtEnd, String reportType);
@@ -21,6 +23,4 @@ public interface IReportDao extends JpaRepository<Report, Long> {
 
     Page<Report> findAllByReportTypeAndTitleIn(String reportType, List<String> titleList, Pageable pageable);
 
-    @Query(value = "from Report r where (r.gmtStart<=?1 and r.gmtEnd>=?1) and r.reportType = ?2")
-    Page<Report> findByDateAndType(Date reportDate, String reportType, Pageable pageable);
 }
