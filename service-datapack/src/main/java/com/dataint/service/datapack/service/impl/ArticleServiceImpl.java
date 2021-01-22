@@ -675,11 +675,6 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
                     articleDisease.setCureCases(diseaseForm.getCureCases());
                 if (diseaseForm.getDeathCases() != null)
                     articleDisease.setDeathCases(diseaseForm.getDeathCases());
-
-
-                Long id = articleDiseaseDao.finIdByArticleId(articleId);
-
-                articleDisease.setId(id);
                 try {
                     if (!StringUtils.isEmpty(diseaseForm.getDiseaseStart()))
                         articleDisease.setDiseaseStart(Constants.DateSDF.parse(diseaseForm.getDiseaseStart()));
@@ -688,6 +683,14 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
                 } catch (ParseException pe) {
                     System.out.println("时间格式有误!");
                     pe.printStackTrace();
+                }
+                List<Long> idList = articleDiseaseDao.finIdByArticleId(articleId);
+                if (idList==null){
+                    //执行添加操作
+                    articleDiseaseDao.save(articleDisease);
+                }
+                else  if (idList.size()>=1){
+                    updateArticleDisease(idList,diseaseForm,articleUpdateForm,diseases);
                 }
 //                // countries
 //                List<Long> countryIdList = diseaseForm.getCountryIdList();
@@ -698,7 +701,6 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
 ////                    articleDisease.setCountryCodes(StringUtils.join(
 ////                            countryList.stream().map(Country::getCode).collect(Collectors.toList()), Constants.JOINER));
 //                }
-                articleDiseaseDao.save(articleDisease);
                 diseaseList.add(articleDisease);
             }
         }
@@ -711,6 +713,56 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
 
         articleDao.save(article);
         return new ArticleVO(article);
+    }
+    private  void  updateArticleDisease(List<Long> idList, ArticleDiseaseForm diseaseForm,ArticleUpdateForm articleUpdateForm,FocusDisease focusDisease){
+        //修改
+        Long id = idList.get(0);
+        Optional<ArticleDisease> articleDiseaseById = articleDiseaseDao.findById(id);
+        ArticleDisease articleDiseaseInfos = articleDiseaseById.get();
+        articleDiseaseInfos.setId(id);
+
+        //判断和数据库中的是否一致
+        //articleId
+        if(articleDiseaseInfos.getArticleId()!=articleUpdateForm.getArticleId())
+            articleDiseaseInfos.setArticleId(articleUpdateForm.getArticleId());
+        //diseaseId
+        if (articleDiseaseInfos.getDiseaseId()!=diseaseForm.getDiseaseId())
+            articleDiseaseInfos.setDiseaseId(diseaseForm.getDiseaseId());
+        //diseaseCode
+        if (articleDiseaseInfos.getDiseaseCode()!=focusDisease.getNameCn())
+            articleDiseaseInfos.setDiseaseCode(focusDisease.getNameCn());
+        //countryId
+        if (articleDiseaseInfos.getCountryId()!=diseaseForm.getCountryId())
+            articleDiseaseInfos.setCountryId(diseaseForm.getCountryId());
+        //diseaseStart diseaseEnd
+        try {
+            if (articleDiseaseInfos.getDiseaseStart()!=Constants.DateSDF.parse(diseaseForm.getDiseaseStart()))
+                articleDiseaseInfos.setDiseaseStart(Constants.DateSDF.parse(diseaseForm.getDiseaseStart()));
+            if (articleDiseaseInfos.getDiseaseEnd()!=Constants.DateSDF.parse(diseaseForm.getDiseaseEnd()))
+                articleDiseaseInfos.setDiseaseEnd(Constants.DateSDF.parse(diseaseForm.getDiseaseEnd()));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        //periodConfirm
+        if (articleDiseaseInfos.getPeriodConfirm()!=diseaseForm.getPeriodConfirm())
+            articleDiseaseInfos.setPeriodConfirm(diseaseForm.getPeriodConfirm());
+        //periodDeath
+        if (articleDiseaseInfos.getPeriodDeath()!=diseaseForm.getPeriodDeath())
+            articleDiseaseInfos.setPeriodDeath(diseaseForm.getPeriodDeath());
+        //periodCure
+        if (articleDiseaseInfos.getPeriodCure()!=diseaseForm.getPeriodCure())
+            articleDiseaseInfos.setPeriodCure(diseaseForm.getPeriodCure());
+        //confirmCase
+        if (articleDiseaseInfos.getConfirmCases()!=diseaseForm.getConfirmCases())
+            articleDiseaseInfos.setConfirmCases(diseaseForm.getConfirmCases());
+        //deathCases
+        if (articleDiseaseInfos.getDeathCases()!=diseaseForm.getDeathCases())
+            articleDiseaseInfos.setDeathCases(diseaseForm.getDeathCases());
+        //cureCases
+        if (articleDiseaseInfos.getCureCases()!=diseaseForm.getCureCases())
+            articleDiseaseInfos.setCureCases(diseaseForm.getCureCases());
+            articleDiseaseDao.save(articleDiseaseInfos);
+
     }
 
     @Override
