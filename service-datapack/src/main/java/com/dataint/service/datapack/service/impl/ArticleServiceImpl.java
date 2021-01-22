@@ -647,62 +647,42 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
         }
         Article article = articleOpt.get();
 
-        // diseaseList
-        if (articleUpdateForm.getDiseaseFormList() != null) {
-            List<ArticleDisease> diseaseList = new ArrayList<>();
-            for (ArticleDiseaseForm diseaseForm : articleUpdateForm.getDiseaseFormList()) {
-                ArticleDisease articleDisease = new ArticleDisease();
-                BeanUtils.copyProperties(diseaseForm, articleDisease);
+        // ArticleDiseaseList
+        // 获取库中已存在的ArticleDisease列表
+        List<ArticleDisease> existADList = articleDiseaseDao.findAllByArticleId(articleUpdateForm.getArticleId());
 
-                // diseases
-                FocusDisease diseases = diseaseDao.getOne(diseaseForm.getDiseaseId());
-                Long articleId = articleUpdateForm.getArticleId();
-                articleDisease.setArticleId(articleId);
-                articleDisease.setDiseaseCode(diseases.getNameCn());
-                if (diseaseForm.getDiseaseId() != null)
-                    articleDisease.setDiseaseId(diseaseForm.getDiseaseId());
-                if (diseaseForm.getCountryId() != null)
-                    articleDisease.setCountryId(diseaseForm.getCountryId());
-                if (diseaseForm.getPeriodConfirm() != null)
-                    articleDisease.setPeriodConfirm(diseaseForm.getPeriodConfirm());
-                if (diseaseForm.getPeriodDeath() != null)
-                    articleDisease.setPeriodDeath(diseaseForm.getPeriodDeath());
-                if (diseaseForm.getPeriodCure() != null)
-                    articleDisease.setPeriodCure(diseaseForm.getPeriodCure());
-                if (diseaseForm.getConfirmCases() != null)
-                    articleDisease.setConfirmCases(diseaseForm.getConfirmCases());
-                if (diseaseForm.getCureCases() != null)
-                    articleDisease.setCureCases(diseaseForm.getCureCases());
-                if (diseaseForm.getDeathCases() != null)
-                    articleDisease.setDeathCases(diseaseForm.getDeathCases());
-                try {
-                    if (!StringUtils.isEmpty(diseaseForm.getDiseaseStart()))
-                        articleDisease.setDiseaseStart(Constants.DateSDF.parse(diseaseForm.getDiseaseStart()));
-                    if (!StringUtils.isEmpty(diseaseForm.getDiseaseEnd()))
-                        articleDisease.setDiseaseEnd(Constants.DateSDF.parse(diseaseForm.getDiseaseEnd()));
-                } catch (ParseException pe) {
-                    System.out.println("时间格式有误!");
-                    pe.printStackTrace();
+        if (!CollectionUtils.isEmpty(articleUpdateForm.getDiseaseFormList())) {
+            // 最终需要保存到表中的list
+            List<ArticleDisease> diseaseList = new ArrayList<>();
+            // 遍历前端传入的diseaseFormList，整理出最终需要再持久化回库中的ArticleDiseaseList
+            List<ArticleDiseaseForm> diseaseFormList = articleUpdateForm.getDiseaseFormList();
+            List<ArticleDisease> usedADList = new ArrayList<>();
+            for (int i=0; i<diseaseFormList.size(); i++) {
+                ArticleDisease newAD = new ArticleDisease();
+                BeanUtils.copyProperties(diseaseFormList.get(i), newAD);
+                newAD.setArticleId(articleUpdateForm.getArticleId());
+
+                // 判断当前index，在existADList中是否存在对应的元素
+                if (i+1 <= existADList.size()) {
+                    // 更新, 将frontAD的值重新赋值给oldAD
+                    FocusDisease diseases = diseaseDao.getOne(existADList.get(i).getDiseaseId());
+                    Country country = countryDao.getOne(existADList.get(i).getCountryId());
+                    newAD.setId(existADList.get(i).getId());
+                    newAD.setDiseaseCode(diseases.getNameCn());
+                    newAD.setCountryCode(country.getNameCn());
+                    usedADList.add(existADList.get(i));
                 }
-                List<Long> idList = articleDiseaseDao.finIdByArticleId(articleId);
-                if (idList==null){
-                    //执行添加操作
-                    articleDiseaseDao.save(articleDisease);
-                }
-                else  if (idList.size()>=1){
-                    updateArticleDisease(idList,diseaseForm,articleUpdateForm,diseases);
-                }
-//                // countries
-//                List<Long> countryIdList = diseaseForm.getCountryIdList();
-//                if (countryIdList != null && countryIdList.size()>0) {
-//                    List<Country> countryList = countryDao.findAllById(countryIdList);
-////                    articleDisease.setCountryIds(StringUtils.join(
-////                            countryIdList, Constants.JOINER));
-////                    articleDisease.setCountryCodes(StringUtils.join(
-////                            countryList.stream().map(Country::getCode).collect(Collectors.toList()), Constants.JOINER));
-//                }
-                diseaseList.add(articleDisease);
+                diseaseList.add(newAD);
             }
+            // 删除不需要的ADList
+            existADList.removeAll(usedADList);
+            articleDiseaseDao.deleteAll(existADList);
+
+            article.setDiseaseList(diseaseList);
+        } else {
+            // 前端传入参数为空，则删除表中已存在列表
+            articleDiseaseDao.deleteAll(existADList);
+            article.setDiseaseList(null);
         }
         // summary
         if (!StringUtils.isEmpty(articleUpdateForm.getSummary()))
@@ -713,56 +693,6 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
 
         articleDao.save(article);
         return new ArticleVO(article);
-    }
-    private  void  updateArticleDisease(List<Long> idList, ArticleDiseaseForm diseaseForm,ArticleUpdateForm articleUpdateForm,FocusDisease focusDisease){
-        //修改
-        Long id = idList.get(0);
-        Optional<ArticleDisease> articleDiseaseById = articleDiseaseDao.findById(id);
-        ArticleDisease articleDiseaseInfos = articleDiseaseById.get();
-        articleDiseaseInfos.setId(id);
-
-        //判断和数据库中的是否一致
-        //articleId
-        if(articleDiseaseInfos.getArticleId()!=articleUpdateForm.getArticleId())
-            articleDiseaseInfos.setArticleId(articleUpdateForm.getArticleId());
-        //diseaseId
-        if (articleDiseaseInfos.getDiseaseId()!=diseaseForm.getDiseaseId())
-            articleDiseaseInfos.setDiseaseId(diseaseForm.getDiseaseId());
-        //diseaseCode
-        if (articleDiseaseInfos.getDiseaseCode()!=focusDisease.getNameCn())
-            articleDiseaseInfos.setDiseaseCode(focusDisease.getNameCn());
-        //countryId
-        if (articleDiseaseInfos.getCountryId()!=diseaseForm.getCountryId())
-            articleDiseaseInfos.setCountryId(diseaseForm.getCountryId());
-        //diseaseStart diseaseEnd
-        try {
-            if (articleDiseaseInfos.getDiseaseStart()!=Constants.DateSDF.parse(diseaseForm.getDiseaseStart()))
-                articleDiseaseInfos.setDiseaseStart(Constants.DateSDF.parse(diseaseForm.getDiseaseStart()));
-            if (articleDiseaseInfos.getDiseaseEnd()!=Constants.DateSDF.parse(diseaseForm.getDiseaseEnd()))
-                articleDiseaseInfos.setDiseaseEnd(Constants.DateSDF.parse(diseaseForm.getDiseaseEnd()));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        //periodConfirm
-        if (articleDiseaseInfos.getPeriodConfirm()!=diseaseForm.getPeriodConfirm())
-            articleDiseaseInfos.setPeriodConfirm(diseaseForm.getPeriodConfirm());
-        //periodDeath
-        if (articleDiseaseInfos.getPeriodDeath()!=diseaseForm.getPeriodDeath())
-            articleDiseaseInfos.setPeriodDeath(diseaseForm.getPeriodDeath());
-        //periodCure
-        if (articleDiseaseInfos.getPeriodCure()!=diseaseForm.getPeriodCure())
-            articleDiseaseInfos.setPeriodCure(diseaseForm.getPeriodCure());
-        //confirmCase
-        if (articleDiseaseInfos.getConfirmCases()!=diseaseForm.getConfirmCases())
-            articleDiseaseInfos.setConfirmCases(diseaseForm.getConfirmCases());
-        //deathCases
-        if (articleDiseaseInfos.getDeathCases()!=diseaseForm.getDeathCases())
-            articleDiseaseInfos.setDeathCases(diseaseForm.getDeathCases());
-        //cureCases
-        if (articleDiseaseInfos.getCureCases()!=diseaseForm.getCureCases())
-            articleDiseaseInfos.setCureCases(diseaseForm.getCureCases());
-            articleDiseaseDao.save(articleDiseaseInfos);
-
     }
 
     @Override

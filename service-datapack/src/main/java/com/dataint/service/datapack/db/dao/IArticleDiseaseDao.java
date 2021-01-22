@@ -21,7 +21,7 @@ public interface IArticleDiseaseDao extends JpaRepository<ArticleDisease, Long> 
             "LIMIT 10", nativeQuery = true)
     List<Object[]> queryDiseaseCntByCountry(Date startTime, Date endTime, String countryCode);
 
-    @Query(value ="SELECT  ad.id FROM article_disease ad  where ad.article_id=?1" ,nativeQuery = true)
-    List<Long> finIdByArticleId(Long articleId);
+//    @Query(value ="SELECT  ad.id FROM article_disease ad  where ad.article_id=?1" ,nativeQuery = true)
+    List<ArticleDisease> findAllByArticleId(Long  articleId);
 
 }
