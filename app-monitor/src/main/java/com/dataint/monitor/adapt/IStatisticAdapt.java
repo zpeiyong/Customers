@@ -17,6 +17,8 @@ public interface IStatisticAdapt {
 
     Object getArticleTotalCntRank(Long diseaseId, String dateStr);
 
+    Object getArticleAddTimeLineByType(Long diseaseId, String dateStr);
+
     Object getConfirmedTimeLine(Long diseaseId, String dateStr);
 
     Object getConfirmedTotalCntRank(Long diseaseId, String dateStr);

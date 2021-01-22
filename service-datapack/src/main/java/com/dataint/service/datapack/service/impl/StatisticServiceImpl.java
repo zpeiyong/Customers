@@ -2,6 +2,7 @@ package com.dataint.service.datapack.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.dataint.cloud.common.dim.BaseExceptionEnum;
 import com.dataint.cloud.common.exception.DataNotExistException;
 import com.dataint.cloud.common.exception.DataintBaseException;
 import com.dataint.cloud.common.model.Constants;
@@ -158,7 +159,7 @@ public class StatisticServiceImpl implements IStatisticService {
                 date = sdf.parse(dateStr);
             } catch (ParseException e) {
                 e.printStackTrace();
-                throw new DataintBaseException("日期参数有误!", 300);
+                throw new DataintBaseException(BaseExceptionEnum.DATE_PARSE_ERROR);
             }
         }
         List<Map<String, Object>> respList = buildRespList(date, days);
@@ -190,7 +191,7 @@ public class StatisticServiceImpl implements IStatisticService {
             yesStartDate = sdf.parse(DateUtil.getYesterdayStart(dateTimeStr));
         } catch (ParseException e) {
             e.printStackTrace();
-            throw new DataintBaseException("日期参数有误!", 300);
+            throw new DataintBaseException(BaseExceptionEnum.DATE_PARSE_ERROR);
         }
 
         List<Map<String, Object>> poList = diseaseCountryPODao.getRiskRankByDiseaseIdAndStatisticDate(diseaseId, yesStartDate,
@@ -214,7 +215,7 @@ public class StatisticServiceImpl implements IStatisticService {
                 date = sdf.parse(dateStr);
             } catch (ParseException e) {
                 e.printStackTrace();
-                throw new DataintBaseException("日期参数有误!", 300);
+                throw new DataintBaseException(BaseExceptionEnum.DATE_PARSE_ERROR);
             }
         }
         List<Map<String, Object>> respList = buildRespList(date, days);
@@ -246,7 +247,7 @@ public class StatisticServiceImpl implements IStatisticService {
             yesStartDate = sdf.parse(DateUtil.getYesterdayStart(dateTimeStr));
         } catch (ParseException e) {
             e.printStackTrace();
-            throw new DataintBaseException("日期参数有误!", 300);
+            throw new DataintBaseException(BaseExceptionEnum.DATE_PARSE_ERROR);
         }
 
         List<Map<String, Object>> poList = diseaseCountryPODao.getEventCntByDiseaseIdAndStatisticDate(diseaseId, yesStartDate,
@@ -274,7 +275,7 @@ public class StatisticServiceImpl implements IStatisticService {
                 date = sdf.parse(dateStr);
             } catch (ParseException e) {
                 e.printStackTrace();
-                throw new DataintBaseException("日期参数有误!", 300);
+                throw new DataintBaseException(BaseExceptionEnum.DATE_PARSE_ERROR);
             }
         }
         List<Map<String, Object>> respList = buildRespList(date, days);
@@ -306,7 +307,7 @@ public class StatisticServiceImpl implements IStatisticService {
             yesStartDate = sdf.parse(DateUtil.getYesterdayStart(dateTimeStr));
         } catch (ParseException e) {
             e.printStackTrace();
-            throw new DataintBaseException("日期参数有误!", 300);
+            throw new DataintBaseException(BaseExceptionEnum.DATE_PARSE_ERROR);
         }
 
         List<Map<String, Object>> poList = diseaseCountryPODao.getArticleCntByDiseaseIdAndStatisticDate(diseaseId, yesStartDate,
@@ -320,6 +321,50 @@ public class StatisticServiceImpl implements IStatisticService {
                 itemMap.put("articleTotal", 0);
             }
             respList.add(itemMap);
+        }
+
+        return respList;
+    }
+
+    @Override
+    public List<Map<String, Object>> getArticleAddTimeLineByType(Long diseaseId, String dateStr, Integer days) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+        if (!StringUtils.isEmpty(dateStr)) {
+            try {
+                date = sdf.parse(dateStr);
+            } catch (ParseException e) {
+                e.printStackTrace();
+                throw new DataintBaseException(BaseExceptionEnum.DATE_PARSE_ERROR);
+            }
+        }
+
+        // 构造返回值结构
+        List<Map<String, Object>> respList = buildRespList(date, days);
+        respList.forEach(map -> {
+            map.put("officialAdd", 0);
+            map.put("mediaAdd", 0);
+        });
+
+        // 表中查询数据
+        List<Map<String, Object>> dayList = diseaseCountryPODao.getArticleAddGroupByDiseaseIdAndStatisticDate(diseaseId,dateStr, days);
+
+        // 重构返回值
+        for (Map<String,Object> item : dayList) {
+            respList.forEach((e) -> {
+                if (sdf.format(item.get("statisticDate")).equals(e.get("day"))) {
+                    Object officialAdd = item.get("officialAdd");
+                    Object mediaAdd = item.get("mediaAdd");
+
+                    if (officialAdd != null) {
+                        e.put("officialAdd", Integer.valueOf((String) officialAdd));
+                    }
+                    if (mediaAdd != null) {
+                        e.put("mediaAdd", Integer.valueOf((String) mediaAdd));
+                    }
+                    e.put("value", (int) e.get("officialAdd") + (int) e.get("mediaAdd"));
+                }
+            });
         }
 
         return respList;
@@ -349,7 +394,7 @@ public class StatisticServiceImpl implements IStatisticService {
                 date = Constants.getDateFormat().parse(dateStr);
             } catch (ParseException e) {
                 e.printStackTrace();
-                throw new DataintBaseException("日期参数有误!", 300);
+                throw new DataintBaseException(BaseExceptionEnum.DATE_PARSE_ERROR);
             }
         }
         List<Map<String, Object>> respList = buildRespList(date, days);
@@ -367,7 +412,7 @@ public class StatisticServiceImpl implements IStatisticService {
     }
 
     @Override
-    public List<Map<String, Object>> getDeathTimeLine(Long diseaseId, String dateStr, int i) {
+    public List<Map<String, Object>> getDeathTimeLine(Long diseaseId, String dateStr, Integer days) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
         if (!StringUtils.isEmpty(dateStr)) {
@@ -375,12 +420,12 @@ public class StatisticServiceImpl implements IStatisticService {
                 date = sdf.parse(dateStr);
             } catch (ParseException e) {
                 e.printStackTrace();
-                throw new DataintBaseException("日期参数有误!", 300);
+                throw new DataintBaseException(BaseExceptionEnum.DATE_PARSE_ERROR);
             }
         }
         ArrayList<String> countryNameList = new ArrayList<>();
 
-        List<DiseaseCountryCase> dayList = diseaseCountryCaseDao.getDailyDeathAddByDiseaseId(diseaseId, 5, dateStr, i);
+        List<DiseaseCountryCase> dayList = diseaseCountryCaseDao.getDailyDeathAddByDiseaseId(diseaseId, 5, dateStr, days);
         ArrayList<Map<String, Object>> maps = new ArrayList<>();
         HashMap<String, Object> map = new HashMap<>();
         List<Map<String, Object>> respList = new ArrayList<>();
@@ -392,7 +437,7 @@ public class StatisticServiceImpl implements IStatisticService {
                     maps.add(cloneMap);
                     map.clear();
                 }
-                respList = buildRespList(date, i);
+                respList = buildRespList(date, days);
                 countryNameList.add(item.getCountryNameCn());
                 map.put("countryName", item.getCountryNameCn());
             }
@@ -427,7 +472,7 @@ public class StatisticServiceImpl implements IStatisticService {
             yesStartDate = sdf.parse(DateUtil.getYesterdayStart(dateTimeStr));
         } catch (ParseException e) {
             e.printStackTrace();
-            throw new DataintBaseException("日期参数有误!", 300);
+            throw new DataintBaseException(BaseExceptionEnum.DATE_PARSE_ERROR);
         }
 
         List<Map<String, Object>> poList = diseaseCountryCaseDao.getDeathCntByDiseaseIdAndStatisticDate(diseaseId, yesStartDate,
@@ -443,7 +488,7 @@ public class StatisticServiceImpl implements IStatisticService {
     }
 
     @Override
-    public List<Map<String, Object>> getConfirmedTimeLine(Long diseaseId, String dateStr, int i) {
+    public List<Map<String, Object>> getConfirmedTimeLine(Long diseaseId, String dateStr, Integer days) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
         if (!StringUtils.isEmpty(dateStr)) {
@@ -451,13 +496,13 @@ public class StatisticServiceImpl implements IStatisticService {
                 date = sdf.parse(dateStr);
             } catch (ParseException e) {
                 e.printStackTrace();
-                throw new DataintBaseException("日期参数有误!", 300);
+                throw new DataintBaseException(BaseExceptionEnum.DATE_PARSE_ERROR);
             }
         }
 
         ArrayList<String> countryNameList = new ArrayList<>();
 
-        List<DiseaseCountryCase> dayList = diseaseCountryCaseDao.getDailyConFirmedAddByDiseaseId(diseaseId, 5, dateStr, i);
+        List<DiseaseCountryCase> dayList = diseaseCountryCaseDao.getDailyConFirmedAddByDiseaseId(diseaseId, 5, dateStr, days);
         ArrayList<Map<String, Object>> maps = new ArrayList<>();
         HashMap<String, Object> map = new HashMap<>();
         List<Map<String, Object>> respList = new ArrayList<>();
@@ -469,7 +514,7 @@ public class StatisticServiceImpl implements IStatisticService {
                     maps.add(cloneMap);
                     map.clear();
                 }
-                respList = buildRespList(date, i);
+                respList = buildRespList(date, days);
                 countryNameList.add(item.getCountryNameCn());
                 map.put("countryName", item.getCountryNameCn());
             }
@@ -504,7 +549,7 @@ public class StatisticServiceImpl implements IStatisticService {
             yesStartDate = sdf.parse(DateUtil.getYesterdayStart(dateTimeStr));
         } catch (ParseException e) {
             e.printStackTrace();
-            throw new DataintBaseException("日期参数有误!", 300);
+            throw new DataintBaseException(BaseExceptionEnum.DATE_PARSE_ERROR);
         }
 
         List<Map<String, Object>> poList = diseaseCountryCaseDao.getConfirmedCntByDiseaseIdAndStatisticDate(diseaseId, yesStartDate,
@@ -520,7 +565,7 @@ public class StatisticServiceImpl implements IStatisticService {
     }
 
     @Override
-    public List<Map<String, Object>> getCuredTimeLine(Long diseaseId, String dateStr, int i) {
+    public List<Map<String, Object>> getCuredTimeLine(Long diseaseId, String dateStr, Integer days) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
         if (!StringUtils.isEmpty(dateStr)) {
@@ -528,12 +573,12 @@ public class StatisticServiceImpl implements IStatisticService {
                 date = sdf.parse(dateStr);
             } catch (ParseException e) {
                 e.printStackTrace();
-                throw new DataintBaseException("日期参数有误!", 300);
+                throw new DataintBaseException(BaseExceptionEnum.DATE_PARSE_ERROR);
             }
         }
         ArrayList<String> countryNameList = new ArrayList<>();
 
-        List<DiseaseCountryCase> dayList = diseaseCountryCaseDao.getDailyCuredAddByDiseaseId(diseaseId, 5, dateStr, i);
+        List<DiseaseCountryCase> dayList = diseaseCountryCaseDao.getDailyCuredAddByDiseaseId(diseaseId, 5, dateStr, days);
         ArrayList<Map<String, Object>> maps = new ArrayList<>();
         HashMap<String, Object> map = new HashMap<>();
         List<Map<String, Object>> respList = new ArrayList<>();
@@ -545,7 +590,7 @@ public class StatisticServiceImpl implements IStatisticService {
                     maps.add(cloneMap);
                     map.clear();
                 }
-                respList = buildRespList(date, i);
+                respList = buildRespList(date, days);
                 countryNameList.add(item.getCountryNameCn());
                 map.put("countryName", item.getCountryNameCn());
             }
@@ -580,7 +625,7 @@ public class StatisticServiceImpl implements IStatisticService {
             yesStartDate = sdf.parse(DateUtil.getYesterdayStart(dateTimeStr));
         } catch (ParseException e) {
             e.printStackTrace();
-            throw new DataintBaseException("日期参数有误!", 300);
+            throw new DataintBaseException(BaseExceptionEnum.DATE_PARSE_ERROR);
         }
 
         List<Map<String, Object>> poList = diseaseCountryCaseDao.getCuredCntByDiseaseIdAndStatisticDate(diseaseId, yesStartDate,
@@ -594,36 +639,6 @@ public class StatisticServiceImpl implements IStatisticService {
 
         return respList;
     }
-
-    @Override
-    public List<Map<String, Object>> getArticleAddTimeLineByType(Long diseaseId, String dateStr, int i) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = new Date();
-        if (!StringUtils.isEmpty(dateStr)) {
-            try {
-                date = sdf.parse(dateStr);
-            } catch (ParseException e) {
-                e.printStackTrace();
-                throw new DataintBaseException("日期参数有误!", 300);
-            }
-        }
-
-        List<Map<String,Object>> dayList = diseaseCountryPODao.getArticleAddGroupByDiseaseIdAndStatisticDate(diseaseId,dateStr, i);
-        List<Map<String, Object>> respList = buildRespList(date, i);
-        for (Map<String,Object> item : dayList) {
-            respList.forEach((e) -> {
-//                System.out.println(sdf.format(item.get("statisticDate")));
-                if (sdf.format(item.get("statisticDate")).equals(e.get("day"))) {
-                    e.put("officialAdd", item.get("officialAdd"));
-                    e.put("mediaAdd",item.get("mediaAdd"));
-                    e.put("value",Integer.parseInt(item.get("officialAdd").toString()) + Integer.parseInt(item.get("mediaAdd").toString()));
-                }
-            });
-        }
-
-        return respList;
-    }
-
 
     /**
      * 构造时间线返回结构

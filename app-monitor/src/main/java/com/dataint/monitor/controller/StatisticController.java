@@ -108,6 +108,18 @@ public class StatisticController {
         return statisticAdapt.getArticleTotalCntRank(diseaseId, dateStr);
     }
 
+    @ApiOperation(value = "[舆情数量]获取过去7天不同来源新增舆情数(折线图)", notes = "获取过去7天不同来源新增舆情数(折线图)")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "diseaseId", value = "传染病id", required = true, dataType = "long"),
+            @ApiImplicitParam(paramType = "query", name = "dateStr", value = "查看日期", dataType = "string")
+    })
+    @GetMapping("/article/getAddTimeLineByType")
+    public Object getArticleAddTimeLineByType(@RequestParam Long diseaseId,
+                                                @RequestParam(required = false) String dateStr) {
+
+        return statisticAdapt.getArticleAddTimeLineByType(diseaseId, dateStr);
+    }
+
     @ApiOperation(value = "[确诊趋势]获取过去7天新增确诊数(折线图)", notes = "获取过去7天新增确诊数(折线图)")
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "diseaseId", value = "传染病id", required = true, dataType = "long"),

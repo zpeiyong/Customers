@@ -147,7 +147,7 @@ public class StatisticController {
             @ApiImplicitParam(paramType = "query", name = "diseaseId", value = "传染病id", required = true, dataType = "long"),
             @ApiImplicitParam(paramType = "query", name = "dateStr", value = "查看日期", dataType = "string")
     })
-    @GetMapping("/article/getArticleAddTimeLineByType")
+    @GetMapping("/article/getAddTimeLineByType")
     public ResultVO getArticleAddTimeLineByType(@RequestParam Long diseaseId,
                                           @RequestParam(required = false) String dateStr) {
 

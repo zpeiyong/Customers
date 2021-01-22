@@ -170,7 +170,7 @@ public class DiseaseCountryCaseServiceImpl implements IDiseaseCountryCaseService
     public DiseaseCountryCaseVO getLatestCasesByParam(Long diseaseId, Long countryId) {
         DiseaseCountryCase latestDCCase = dcCaseDao.findTopByDiseaseIdAndCountryIdOrderByStatisticDateDesc(diseaseId, countryId);
         if (latestDCCase == null) {
-            throw new DataNotExistException();
+            latestDCCase = new DiseaseCountryCase();
         }
 
         return new DiseaseCountryCaseVO(latestDCCase);

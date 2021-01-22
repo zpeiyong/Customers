@@ -91,6 +91,16 @@ public class StatisticAdaptImpl implements IStatisticAdapt {
     }
 
     @Override
+    public Object getArticleAddTimeLineByType(Long diseaseId, String dateStr) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("diseaseId", diseaseId.toString());
+        if (dateStr != null)
+            map.put("dateStr", dateStr);
+        String url ="http://" +  baseUrl + "/statistic/article/getAddTimeLineByType";
+        return GetPostUtil.sendGet(url, map);
+    }
+
+    @Override
     public Object getConfirmedTimeLine(Long diseaseId, String dateStr) {
         HashMap<String, String> map = new HashMap<>();
         map.put("diseaseId", diseaseId.toString());

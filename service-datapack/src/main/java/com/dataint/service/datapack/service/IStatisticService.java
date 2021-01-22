@@ -91,6 +91,15 @@ public interface IStatisticService {
 
     /**
      *
+     * @param diseaseId
+     * @param dateStr
+     * @param days
+     * @return
+     */
+    List<Map<String, Object>> getArticleAddTimeLineByType(Long diseaseId, String dateStr, Integer days);
+
+    /**
+     *
      * @return
      */
     List<Map<String, Object>> getMapCountryList();
@@ -115,19 +124,19 @@ public interface IStatisticService {
      *
      * @param diseaseId
      * @param dateStr
-     * @param i
+     * @param days
      * @return
      */
-    List<Map<String, Object>> getDeathTimeLine(Long diseaseId, String dateStr, int i);
+    List<Map<String, Object>> getDeathTimeLine(Long diseaseId, String dateStr, Integer days);
 
     /**
      *
      * @param diseaseId
      * @param dateStr
-     * @param i
+     * @param days
      * @return
      */
-    List<Map<String, Object>> getConfirmedTimeLine(Long diseaseId, String dateStr, int i);
+    List<Map<String, Object>> getConfirmedTimeLine(Long diseaseId, String dateStr, Integer days);
 
     /**
      *
@@ -141,10 +150,10 @@ public interface IStatisticService {
      *
      * @param diseaseId
      * @param dateStr
-     * @param i
+     * @param days
      * @return
      */
-    List<Map<String, Object>> getCuredTimeLine(Long diseaseId, String dateStr, int i);
+    List<Map<String, Object>> getCuredTimeLine(Long diseaseId, String dateStr, Integer days);
 
     /**
      *
@@ -154,5 +163,4 @@ public interface IStatisticService {
      */
     List<Map<String, Object>> getCuredTotalCntRank(Long diseaseId, String dateStr);
 
-    List<Map<String, Object>> getArticleAddTimeLineByType(Long diseaseId, String dateStr, int i);
 }
