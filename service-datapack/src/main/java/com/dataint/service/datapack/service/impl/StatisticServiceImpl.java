@@ -480,7 +480,14 @@ public class StatisticServiceImpl implements IStatisticService {
         for (Map<String, Object> poMap : poList) {
             Map<String, Object> itemMap = new HashMap<>();
             itemMap.put("countryNameCn", poMap.get("0"));
-            itemMap.put("deathPercent", Double.parseDouble(poMap.get("1").toString())/ 100);
+
+            Object rate = poMap.get("1");
+            if (rate == null || "null".equals(rate)) {
+                itemMap.put("deathPercent", 0);
+            } else {
+                itemMap.put("deathPercent", Double.valueOf((String) rate)/ 100);
+            }
+
             respList.add(itemMap);
         }
 
@@ -633,7 +640,13 @@ public class StatisticServiceImpl implements IStatisticService {
         for (Map<String, Object> poMap : poList) {
             Map<String, Object> itemMap = new HashMap<>();
             itemMap.put("countryNameCn", poMap.get("0"));
-            itemMap.put("curedPercent", Double.parseDouble(poMap.get("1").toString())/ 100);
+
+            Object rate = poMap.get("1");
+            if (rate == null || "null".equals(rate)) {
+                itemMap.put("curedPercent", 0);
+            } else {
+                itemMap.put("curedPercent", Double.valueOf((String) rate)/ 100);
+            }
             respList.add(itemMap);
         }
 
