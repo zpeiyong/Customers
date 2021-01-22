@@ -5,7 +5,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
 @ApiModel
 @Data
@@ -15,7 +14,7 @@ public class ArticleDiseaseForm {
     private Long diseaseId;
 
     @ApiModelProperty(value = "国家表主键Id列表")
-    private List<Long> countryIdList;
+    private Long countryId;
 
     @ApiModelProperty(value = "疫情开始时间")
     private String diseaseStart;

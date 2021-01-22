@@ -67,7 +67,7 @@ public class ArticleServiceImpl implements IArticleService {
         } else {
             return JSON.parseObject(responseJO.toString(), ResultVO.class);
         }
-        
+
         return ResultVO.success(data);
     }
 
@@ -170,12 +170,9 @@ public class ArticleServiceImpl implements IArticleService {
     }
 
     @Override
-    public Object updateArticle(Long userId, ArticleUpdateForm articleUpdateForm) {
+    public JSONObject updateArticle(Long userId,String systemType,ArticleUpdateForm articleUpdateForm) {
 
-        Object updateArticle = articleAdapt.updateArticle(articleUpdateForm);
-        return updateArticle;
 //        return null;
-//        ResultVO<JSONObject> retVO = articleProvider.updateArticle(articleUpdateForm);
 //        if (retVO.getCode() == 200) {
 //            ArticleAudit ifExist = articleAuditDao.findByArticleId(articleUpdateForm.getArticleId());
 //            if (ifExist != null) {
@@ -187,12 +184,12 @@ public class ArticleServiceImpl implements IArticleService {
 //
 //            articleAuditDao.save(ifExist);
 //        }
-//
-//        JSONObject retJO = retVO.getData();
-//        if (retJO != null)
-//            return rebuildArticle(userId, retJO);
-//
-//        return new JSONObject();
+        JSONObject retVo = articleAdapt.updateArticle(articleUpdateForm);
+        JSONObject data = retVo.getJSONObject("data");
+        if (data != null)
+            data= rebuildArticle(userId, data, systemType);
+
+        return  data;
     }
 
     @Override

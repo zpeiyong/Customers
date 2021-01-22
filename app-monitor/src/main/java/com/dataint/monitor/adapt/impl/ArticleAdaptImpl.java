@@ -128,7 +128,7 @@ public class ArticleAdaptImpl implements IArticleAdapt {
     }
 
     @Override
-    public Object updateArticle(ArticleUpdateForm articleUpdateForm) {
+    public JSONObject updateArticle(ArticleUpdateForm articleUpdateForm) {
         String url = "http://" + baseUrl + "/article/updateArticle";
         String jsonString = JSONObject.toJSONString(articleUpdateForm);
         return GetPostUtil.sendPut(url, jsonString, 3000);
