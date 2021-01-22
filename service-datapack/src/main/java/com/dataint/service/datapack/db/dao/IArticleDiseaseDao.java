@@ -21,4 +21,6 @@ public interface IArticleDiseaseDao extends JpaRepository<ArticleDisease, Long> 
             "LIMIT 10", nativeQuery = true)
     List<Object[]> queryDiseaseCntByCountry(Date startTime, Date endTime, String countryCode);
 
+    List<ArticleDisease> findAllByArticleId(Long  articleId);
+
 }

@@ -10,10 +10,7 @@ import com.dataint.cloud.common.model.ResultVO;
 import com.dataint.cloud.common.model.param.PageParam;
 import com.dataint.cloud.common.utils.MD5Util;
 import com.dataint.service.datapack.db.IArticleEvent;
-import com.dataint.service.datapack.db.dao.IArticleDao;
-import com.dataint.service.datapack.db.dao.ICountryDao;
-import com.dataint.service.datapack.db.dao.IFocusDiseaseDao;
-import com.dataint.service.datapack.db.dao.ISiteDao;
+import com.dataint.service.datapack.db.dao.*;
 import com.dataint.service.datapack.db.entity.*;
 import com.dataint.service.datapack.model.form.*;
 import com.dataint.service.datapack.model.param.ArticleListQueryParam;
@@ -55,6 +52,9 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
 
     @Autowired
     private IFocusDiseaseDao diseaseDao;
+
+    @Autowired
+    private IArticleDiseaseDao articleDiseaseDao;
 
     @Override
     public List<Map<String, Object>> queryEventList(Long diseaseId, int pageSize, int current, String  releaseTime,String searchTime) {
@@ -647,39 +647,42 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
         }
         Article article = articleOpt.get();
 
-        // diseaseList
-        if (articleUpdateForm.getDiseaseFormList() != null) {
+        // ArticleDiseaseList
+        // 获取库中已存在的ArticleDisease列表
+        List<ArticleDisease> existADList = articleDiseaseDao.findAllByArticleId(articleUpdateForm.getArticleId());
+
+        if (!CollectionUtils.isEmpty(articleUpdateForm.getDiseaseFormList())) {
+            // 最终需要保存到表中的list
             List<ArticleDisease> diseaseList = new ArrayList<>();
-            for (ArticleDiseaseForm diseaseForm : articleUpdateForm.getDiseaseFormList()) {
-                ArticleDisease articleDisease = new ArticleDisease();
-                BeanUtils.copyProperties(diseaseForm, articleDisease);
+            // 遍历前端传入的diseaseFormList，整理出最终需要再持久化回库中的ArticleDiseaseList
+            List<ArticleDiseaseForm> diseaseFormList = articleUpdateForm.getDiseaseFormList();
+            List<ArticleDisease> usedADList = new ArrayList<>();
+            for (int i=0; i<diseaseFormList.size(); i++) {
+                ArticleDisease newAD = new ArticleDisease();
+                BeanUtils.copyProperties(diseaseFormList.get(i), newAD);
+                newAD.setArticleId(articleUpdateForm.getArticleId());
 
-                // diseases
-                FocusDisease diseases = diseaseDao.getOne(diseaseForm.getDiseaseId());
-                articleDisease.setDiseaseCode(diseases.getNameCn());
-                articleDisease.setDiseaseId(diseaseForm.getDiseaseId());
-                try {
-                    if (!StringUtils.isEmpty(diseaseForm.getDiseaseStart()))
-                        articleDisease.setDiseaseStart(Constants.DateSDF.parse(diseaseForm.getDiseaseStart()));
-                    if (!StringUtils.isEmpty(diseaseForm.getDiseaseEnd()))
-                        articleDisease.setDiseaseEnd(Constants.DateSDF.parse(diseaseForm.getDiseaseEnd()));
-                } catch (ParseException pe) {
-                    System.out.println("时间格式有误!");
-                    pe.printStackTrace();
+                // 判断当前index，在existADList中是否存在对应的元素
+                if (i+1 <= existADList.size()) {
+                    // 更新, 将frontAD的值重新赋值给oldAD
+                    FocusDisease diseases = diseaseDao.getOne(existADList.get(i).getDiseaseId());
+                    Country country = countryDao.getOne(existADList.get(i).getCountryId());
+                    newAD.setId(existADList.get(i).getId());
+                    newAD.setDiseaseCode(diseases.getNameCn());
+                    newAD.setCountryCode(country.getNameCn());
+                    usedADList.add(existADList.get(i));
                 }
-//                // countries
-//                List<Long> countryIdList = diseaseForm.getCountryIdList();
-//                if (countryIdList != null && countryIdList.size()>0) {
-//                    List<Country> countryList = countryDao.findAllById(countryIdList);
-////                    articleDisease.setCountryIds(StringUtils.join(
-////                            countryIdList, Constants.JOINER));
-////                    articleDisease.setCountryCodes(StringUtils.join(
-////                            countryList.stream().map(Country::getCode).collect(Collectors.toList()), Constants.JOINER));
-//                }
-
-                diseaseList.add(articleDisease);
+                diseaseList.add(newAD);
             }
-//            article.setDiseaseList(diseaseList);
+            // 删除不需要的ADList
+            existADList.removeAll(usedADList);
+            articleDiseaseDao.deleteAll(existADList);
+
+            article.setDiseaseList(diseaseList);
+        } else {
+            // 前端传入参数为空，则删除表中已存在列表
+            articleDiseaseDao.deleteAll(existADList);
+            article.setDiseaseList(null);
         }
         // summary
         if (!StringUtils.isEmpty(articleUpdateForm.getSummary()))

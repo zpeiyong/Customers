@@ -95,7 +95,7 @@ public interface IArticleService {
      * @param articleUpdateForm
      * @return
      */
-    Object updateArticle(Long userId, ArticleUpdateForm articleUpdateForm);
+    Object updateArticle(Long userId,String systemType,ArticleUpdateForm articleUpdateForm);
 
     /**
      *
