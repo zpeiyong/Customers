@@ -20,7 +20,7 @@ then
 fi
 
 # Environment
-export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+export JAVA_HOME=/usr/local/java/jdk1.8.0_281
 export PATH=$JAVA_HOME/bin:$PATH
 export BASE_HOME=/opt/coding/wxhg-infectDisMonitor-back
 
