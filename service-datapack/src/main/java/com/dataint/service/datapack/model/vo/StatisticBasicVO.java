@@ -16,7 +16,9 @@ import java.util.Date;
 public class StatisticBasicVO extends BaseVO {
 
     public StatisticBasicVO(StatisticBasic statisticBasic) {
-        BeanUtils.copyProperties(statisticBasic, this);
+        if (statisticBasic != null) {
+            BeanUtils.copyProperties(statisticBasic, this);
+        }
     }
 
     private Long diseaseId;  // 传染病id(暂对应focus_disease表)
