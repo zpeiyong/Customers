@@ -9,5 +9,6 @@ import java.util.List;
 @Repository
 public interface IWarningDao extends JpaRepository<Warning, Long> {
 
-    List<Warning> findByEnable(Boolean enable);
+//    List<Warning> findByEnable(Boolean enable);
+    List<Warning> getByEnableOrderByCreatedTimeDesc(Boolean  enable);
 }

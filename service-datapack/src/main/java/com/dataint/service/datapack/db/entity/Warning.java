@@ -9,6 +9,7 @@ import lombok.experimental.Accessors;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.util.Date;
 
 /**
  * 预警表
@@ -40,4 +41,6 @@ public class Warning extends BasePO {
     @Column(name = "reason")
     private String reason;  // 预警原因
 
+    @Column(name = "created_time")
+    private Date createdTime;  // 疫情事件开始时间
 }

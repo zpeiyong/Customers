@@ -18,7 +18,7 @@ public class WarningServiceImpl implements IWarningService {
 
     @Override
     public List<WarningVO> getWarningInfos() {
-        List<Warning> warningList = warningDao.findByEnable(true);
+        List<Warning> warningList = warningDao.getByEnableOrderByCreatedTimeDesc(true);
 
         return warningList.stream().map(WarningVO::new).collect(Collectors.toList());
     }
