@@ -8,6 +8,7 @@ import lombok.experimental.Accessors;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
@@ -20,6 +21,9 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FocusDisease extends BasePO {
+
+    @Id
+    private Long id;
 
     @Column(name = "code", nullable = false)
     private String code;  // 国际疾病伤害及死因分类标准第十版code
