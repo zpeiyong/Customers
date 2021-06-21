@@ -169,7 +169,7 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
                 throw new DataAlreadyExistException("该数据已存在");
             else
                 // TODO: 当同一条articleKey不同数据请求存储, 是update还是忽略??
-                // article.setId(ifArticleExist.getId());
+                // article.setId(ifArticle.Exist.getId());
                 throw new DataAlreadyExistException("该数据已存在");
         }
         Article article = buildArticle(articleForm, site);
@@ -227,14 +227,23 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
                 ArticleDisease articleDisease = new ArticleDisease();
 
                 // 根据预处理传过来的值获取国家和传染病信息
-                Country country = countryDao.findByNameCn(entry.getKey());
+               // Country country = countryDao.findByNameCn(entry.getKey());
+
+                String alias = "%|" + entry.getKey() + "|%";
+                Country country = this.countryDao.findByNameCnOrAlias(entry.getKey(),alias);
+
                 if (country != null) {
                     articleDisease.setCountryId(country.getId());
                     articleDisease.setCountryCode(country.getCode());
                 } else {
                     articleDisease.setCountryCode(entry.getKey());
                 }
-                FocusDisease disease = diseaseDao.findByNameCn(entry.getValue());
+
+                String diseaseName = entry.getValue();
+                String diseaseAlias = "%|" + diseaseName + "|%";
+             //   FocusDisease disease = diseaseDao.findByNameCn(entry.getValue());
+                FocusDisease disease = this.diseaseDao.findByNameCnOrAlias(diseaseName,diseaseAlias);
+
                 if (disease != null) {
                     articleDisease.setDiseaseId(disease.getId());
                     articleDisease.setDiseaseCode(disease.getCode());

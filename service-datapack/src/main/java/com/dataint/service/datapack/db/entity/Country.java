@@ -40,4 +40,7 @@ public class Country extends BasePO {
 
     @Column(name = "status")
     private Integer status;  // 状态(1:可用; 0:不可用)
+
+    @Column(name = "alias_cn",insertable = false,updatable = false)
+    private String alias;// 中文别名，所有可抓取的该病的其他名称以“|”分割
 }

@@ -41,4 +41,7 @@ public class FocusDisease extends BasePO {
 
     @Column(name = "status")
     private Integer status;  // 状态(1:可用; 0:不可用)
+
+    @Column(name = "alias_cn")
+    private String alias;//别名
 }
