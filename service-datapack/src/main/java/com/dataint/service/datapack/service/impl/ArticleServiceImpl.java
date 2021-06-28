@@ -503,7 +503,7 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
                 .map(article -> {
                     ArticleBasicVO basicVO = new ArticleBasicVO(article);
                     /*
-                    TODO: 需要返回- 当前用户是否关注, 相似文章数量; 后台管理另需要- 评审数量, 是否已加入日报, 是否有原文, 是否已关联到相似文章
+                    TODO: 需要返回 相似文章数量; 后台管理另需要- 评审数量, 是否已加入日报, 是否有原文, 是否已关联到相似文章
                     service-datapack:
                         - 相似文章数量
                         - 是否有原文
