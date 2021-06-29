@@ -48,7 +48,7 @@ public interface IArticleService {
      * @param systemType
      * @return
      */
-    ResultVO getSimilarArticlesById(Long userId, Long id, PageParam pageParam, String systemType);
+    Object getSimilarArticlesById(Long userId, Long id, PageParam pageParam, String systemType);
 
     /**
      *

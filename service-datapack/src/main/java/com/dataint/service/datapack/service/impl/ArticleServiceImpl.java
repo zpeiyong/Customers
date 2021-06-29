@@ -57,12 +57,12 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
     private IArticleDiseaseDao articleDiseaseDao;
 
     @Override
-    public List<Map<String, Object>> queryEventList(Long diseaseId, int pageSize, int current, String  releaseTime,String searchTime) {
+    public List<Map<String, Object>> queryEventList(Long diseaseId, int pageSize, int current, String releaseTime, String searchTime) {
         SimpleDateFormat sdformat = new SimpleDateFormat("yyyy-MM-dd");
 
 
         //默认查询情况，查询最近七天的事件列表信息
-        if (releaseTime==null){
+        if (releaseTime == null) {
             Date searchingTime = null;
             try {
                 searchingTime = sdformat.parse(searchTime);
@@ -70,11 +70,11 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
                 e.printStackTrace();
             }
             List<Map<String, Object>> utilTimeList = buildRespList(searchingTime, 7);
-            for (int i=0; i<utilTimeList.size(); i++){
+            for (int i = 0; i < utilTimeList.size(); i++) {
                 String day = utilTimeList.get(i).get("day").toString();
-                Page<IArticleEvent> releaseLike = articleDao.findGmtTime(diseaseId,day+"%", PageRequest.of(current-1, pageSize));
+                Page<IArticleEvent> releaseLike = articleDao.findGmtTime(diseaseId, day + "%", PageRequest.of(current - 1, pageSize));
 
-                Pagination pagination  = new Pagination();
+                Pagination pagination = new Pagination();
                 pagination.setCurrent(current);
                 pagination.setPageSize(pageSize);
                 pagination.setTotal(releaseLike.getTotalElements());
@@ -85,7 +85,7 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
 
                 utilTimeList.get(i).put("value", responseMap);
             }
-            return  utilTimeList;
+            return utilTimeList;
         }
         //查询指定日期的事件记录
         else {
@@ -117,8 +117,8 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         List<Map<String, Object>> respList = new ArrayList<>(days);
         Calendar calendar = Calendar.getInstance();
-            if (date != null) {
-                calendar.setTime(date);
+        if (date != null) {
+            calendar.setTime(date);
         }
         calendar.add(Calendar.DAY_OF_YEAR, -days);
         for (int i = days; i > 0; i--) {
@@ -230,7 +230,7 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
                // Country country = countryDao.findByNameCn(entry.getKey());
 
                 String alias = "%|" + entry.getKey() + "|%";
-                Country country = this.countryDao.findByNameCnOrAlias(entry.getKey(),alias);
+                Country country = this.countryDao.findByNameCnOrAlias(entry.getKey(), alias);
 
                 if (country != null) {
                     articleDisease.setCountryId(country.getId());
@@ -560,11 +560,39 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
             similarArticlePage = articleDao.findAllBySimilarArticleId(
                     article.getId(),
                     pageParam.toPageRequest());
+        } else if (article.getKeywords() != null) {
+            String articleKeywords = article.getKeywords();
+            String[] keywords = articleKeywords.split("\\|");
+            /*数据结构发生变化,similarId为空。现在暂时采用取前三位关键字取交集作为实现逻辑
+            后续可能需要优化
+            * */
+            //如果没有关键字则finalList为该条文章
+            List<Long> finalList = new ArrayList<>();
+            if (keywords[0] != null) {
+                String firstKeyword = keywords[0];
+                List<Long> firstKeywordList = articleDao.findKeyword(firstKeyword);
+                finalList.addAll(firstKeywordList);
+                if (keywords[1] != null) {
+                    String secondKeyword = keywords[1];
+                    List<Long> secondKeywordList = articleDao.findKeyword(secondKeyword);
+                    finalList.retainAll(secondKeywordList);
+                    if (keywords[2] != null) {
+                        String thirdKeyword = keywords[2];
+                        List<Long> thirdKeywordList = articleDao.findKeyword(thirdKeyword);
+                        finalList.retainAll(thirdKeywordList);
+                    }
+                }
+            }
+            if (finalList.size()>=2) {
+                finalList.remove(articleId);
+                similarArticlePage = articleDao.findAllById(finalList, pageParam.toPageRequest());
+            }else{
+                throw new DataNotExistException("关键字为空");
+            }
         } else {
-            similarArticlePage = articleDao.findAllBySimilarArticleIdOrId(
-                    article.getSimilarArticleId(),
-                    article.getSimilarArticleId(),
-                    pageParam.toPageRequest());
+
+            throw new DataNotExistException("关键字为空");
+
         }
 
         List<ArticleBasicVO> articleBasicVOList = similarArticlePage.getContent().stream().map(ArticleBasicVO::new).collect(Collectors.toList());
@@ -666,13 +694,13 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
             // 遍历前端传入的diseaseFormList，整理出最终需要再持久化回库中的ArticleDiseaseList
             List<ArticleDiseaseForm> diseaseFormList = articleUpdateForm.getDiseaseFormList();
             List<ArticleDisease> usedADList = new ArrayList<>();
-            for (int i=0; i<diseaseFormList.size(); i++) {
+            for (int i = 0; i < diseaseFormList.size(); i++) {
                 ArticleDisease newAD = new ArticleDisease();
                 BeanUtils.copyProperties(diseaseFormList.get(i), newAD);
                 newAD.setArticleId(articleUpdateForm.getArticleId());
 
                 // 判断当前index，在existADList中是否存在对应的元素
-                if (i+1 <= existADList.size()) {
+                if (i + 1 <= existADList.size()) {
                     // 更新, 将frontAD的值重新赋值给oldAD
                     FocusDisease diseases = diseaseDao.getOne(existADList.get(i).getDiseaseId());
                     Country country = countryDao.getOne(existADList.get(i).getCountryId());
