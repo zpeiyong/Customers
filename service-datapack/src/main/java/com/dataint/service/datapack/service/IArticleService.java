@@ -112,4 +112,11 @@ public interface IArticleService {
     List<ArticleReportVO> queryReportContent(List<Long> articleIdList);
 
     List<Map<String, Object>> queryEventList(Long diseaseId, int pageSize, int current, String  releaseTime,String searchTime);
+
+    /**
+     * 根据疾病名称查询关键字
+     * @param fDisName
+     * @return
+     */
+    List<String> getKeywordsByFoDiseaseName(String  fDisName);
 }

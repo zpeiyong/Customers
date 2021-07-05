@@ -25,4 +25,9 @@ public class KeywordServiceImpl implements IKeywordService {
 
         return voList;
     }
+
+    @Override
+    public List<KeywordVO> getKeywordListByDiease(String diseas) {
+        return null;
+    }
 }

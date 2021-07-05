@@ -34,4 +34,8 @@ public interface IArticleAdapt {
     Object queryEventList(Long diseaseId,Long pageSize, Long current,String  releaseTime,String searchTime);
 
     JSONObject queryArticlesByIdList(List<Long> articleIdList);
+
+    List<String> getKeywordsByFoDiseaseName(String  fDisName);
+
+
 }

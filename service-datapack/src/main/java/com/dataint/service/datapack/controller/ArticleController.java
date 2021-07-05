@@ -181,4 +181,14 @@ public class ArticleController {
         return ResultVO.success(articleService.queryReportContent(idListStr));
     }
 
+    @ApiOperation(value = "根据疾病名称找关键字", notes = "")
+    @ApiImplicitParam(paramType = "query", name = "diseaseName", value = "病名称或别名", allowMultiple = false, required = true, dataType = "string")
+    @GetMapping("/getKeywordsByFoDiseaseName")
+    public ResultVO getKeywordsByFoDiseaseName(@RequestParam String diseaseName) {
+
+        List<String> result = this.articleService.getKeywordsByFoDiseaseName(diseaseName);
+
+        return ResultVO.success(result);
+    }
+
 }

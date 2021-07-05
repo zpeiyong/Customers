@@ -97,4 +97,10 @@ public interface IArticleDao extends JpaRepository<Article, Long>, JpaSpecificat
     @Query(value = "from Article a " +
             "where (a.similarArticleId = ?1 and a.similarArticleId != ?2) or a.id = ?2")
     Page<Article> findAllBySimilarArticleIdOrId(Long similarId, Long articleId, Pageable pageable);
+
+    @Query("from Article a where a.keywords like :keyword")
+    Page<Article> findAllByKeywrods(String keyword,Pageable pageable);
+
+    @Query("select a.keywords from Article a where a.id in ?1 and a.keywords is not null and a.ifDeleted = false")
+    List<String> findKeywordByIds(List<Long> ids);
 }

@@ -248,4 +248,14 @@ public class ArticleServiceImpl implements IArticleService {
 
         return jsonObject;
     }
+
+    /**
+     * 根据疾病名称查询关键字
+     * @param fDisName
+     * @return
+     */
+    public List<String> getKeywordsByFoDiseaseName(String  fDisName){
+
+        return this.articleAdapt.getKeywordsByFoDiseaseName(fDisName);
+    }
 }

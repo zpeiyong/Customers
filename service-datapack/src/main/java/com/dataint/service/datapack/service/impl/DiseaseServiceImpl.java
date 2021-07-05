@@ -260,4 +260,10 @@ public class DiseaseServiceImpl implements IDiseaseService {
 
         return diseaseCountryCaseVO;
     }
+
+    @Override
+    public List<String> getKeywordsByDisease(String diseaName) {
+
+        return null;
+    }
 }

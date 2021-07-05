@@ -79,4 +79,11 @@ public interface IDiseaseService {
      * @return
      */
     DiseaseCountryCaseVO getCasesByCidAndDid(Long countryId, Long diseaseId, String dateStr);
+
+    /**
+     * 根据疾病名称找关键字
+     * @param diseaName
+     * @return
+     */
+    List<String> getKeywordsByDisease(String diseaName);
 }

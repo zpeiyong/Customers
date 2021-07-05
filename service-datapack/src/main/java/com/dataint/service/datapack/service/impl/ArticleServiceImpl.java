@@ -25,6 +25,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -716,5 +717,45 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
         List<ArticleReportVO> voList = articleList.stream().map(ArticleReportVO::new).collect(Collectors.toList());
 
         return voList;
+    }
+
+    @Override
+    public List<String> getKeywordsByFoDiseaseName(String  fDisName) {
+
+        FocusDisease focusDisease = this.diseaseDao.findByNameCn(fDisName);
+
+        if(focusDisease == null) {
+            if (log.isDebugEnabled()) {
+                log.debug("{0} not found disease", fDisName);
+            }
+            return null;
+        }
+
+        Pageable page = PageRequest.of(0,16);
+        Page<Long> articleList = this.articleDiseaseDao.findByDisease(focusDisease.getId(),page);
+
+        if(articleList.isEmpty()) {
+            if(log.isDebugEnabled()) {
+
+                log.debug("{} focusDisease not found articel!",focusDisease.getId());
+            }
+            return null;
+        }
+
+        List<String> keywords = this.articleDao.findKeywordByIds(articleList.getContent());
+
+        List<String> results = new ArrayList<String>();
+        for(String keyword : keywords) {
+
+            String[] ks = keyword.split("\\|");
+
+            for(String k : ks) {
+                if((k != null && !k.trim().equals("")) && !results.contains(k)) {
+                    results.add(k);
+                }
+            }
+        }
+
+        return results;
     }
 }
