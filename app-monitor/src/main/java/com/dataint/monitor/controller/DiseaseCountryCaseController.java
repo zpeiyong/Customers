@@ -59,4 +59,20 @@ public class DiseaseCountryCaseController {
 
         return countriesByParamList;
     }
+
+
+    @GetMapping(value = "/getCountryDataTj")
+    @ApiOperation(value = "查询国家严重程度分布",notes = "查询国家严重程度分布")
+    public Object getCountryDataTj() {
+        Object countryDataTj = dcCaseService.getCountryDataTj();
+        return countryDataTj;
+    }
+
+    @GetMapping(value = "/getDiseaseDataTj")
+    @ApiOperation(value = "查询国家严重程度分布",notes = "查询国家严重程度分布")
+    public Object getDiseaseDataTj() {
+        Object diseaseDataTj = dcCaseService.getDiseaseDataTj();
+        return diseaseDataTj;
+    }
+
 }

@@ -71,4 +71,17 @@ public class DiseaseCountryCaseAdaptImpl implements IDiseaseCountryCaseAdapt {
         String url ="http://" +  baseUrl + "/countryCase/getLatestCasesByParam";
         return GetPostUtil.sendGet(url, map);
     }
+
+    @Override
+    public Object getCountryDataTj() {
+        String url ="http://" +  baseUrl + "/countryCase/getCountryDataTj";
+        return GetPostUtil.sendGet(url);
+    }
+
+    @Override
+    public Object getDiseaseDataTj() {
+        String url ="http://" +  baseUrl + "/countryCase/getDiseaseDataTj";
+        return GetPostUtil.sendGet(url);
+    }
+
 }

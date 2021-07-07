@@ -3,6 +3,7 @@ package com.dataint.service.datapack.db.dao;
 import com.dataint.service.datapack.db.IMapCountry;
 import com.dataint.service.datapack.db.entity.DiseaseCountryCase;
 import com.dataint.service.datapack.model.vo.DiseaseCountryCaseVO;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -90,23 +91,44 @@ public interface IDiseaseCountryCaseDao extends JpaRepository<DiseaseCountryCase
             "ORDER BY d.country_name_cn DESC;", nativeQuery = true)
     List<DiseaseCountryCase> getDailyDeathAddByDiseaseId(Long diseaseId, int limit,String dateStr, int i);
 
-    @Query(value = "select new map(dcc.countryNameCn, dcc.deathTotal * 10000  / dcc.confirmTotal) " +
-            "from DiseaseCountryCase dcc " +
-            "where dcc.diseaseId = ?1 and dcc.statisticDate = ?2 " +
-            "order by dcc.deathTotal/dcc.confirmTotal desc")
-    List<Map<String, Object>> getDeathCntByDiseaseIdAndStatisticDate(Long diseaseId, Date yesStartDate, PageRequest articleTotal);
+    @Query(value = "select new map(dcc.countryNameCn, dcc.deathTotal * 10000  / dcc.confirmTotal)" +
+            " from DiseaseCountryCase dcc " +
+            " where dcc.diseaseId = ?1 and dcc.statisticDate = ?2 " +
+            " order by dcc.deathTotal/dcc.confirmTotal  desc")
+    Page<Map<String, Object>> getDeathCntByDiseaseIdAndStatisticDate(Long diseaseId, Date yesStartDate, PageRequest articleTotal);
 
     @Query(value = "select new map(dcc.countryNameCn, dcc.confirmAdd) " +
-            "from DiseaseCountryCase dcc " +
-            "where dcc.diseaseId = ?1 and dcc.statisticDate = ?2 " +
-            "order by dcc.confirmAdd desc")
+            " from DiseaseCountryCase dcc " +
+            " where dcc.diseaseId = ?1 and dcc.statisticDate = ?2 " +
+            " order by dcc.confirmAdd desc")
     List<Map<String, Object>> getConfirmedCntByDiseaseIdAndStatisticDate(Long diseaseId, Date yesStartDate, PageRequest of);
 
     @Query(value = "select new map(dcc.countryNameCn, dcc.cureTotal * 10000 / dcc.confirmTotal) " +
-            "from DiseaseCountryCase dcc " +
-            "where dcc.diseaseId = ?1 and dcc.statisticDate = ?2 " +
-            "order by dcc.cureTotal/dcc.confirmTotal desc")
+            " from DiseaseCountryCase dcc " +
+            " where dcc.diseaseId = ?1 and dcc.statisticDate = ?2 " +
+            " order by dcc.cureTotal / dcc.confirmTotal  desc")
     List<Map<String, Object>> getCuredCntByDiseaseIdAndStatisticDate(Long diseaseId, Date yesStartDate, PageRequest of);
 
     DiseaseCountryCase findTopByDiseaseIdAndCountryIdOrderByStatisticDateDesc(Long diseaseId, Long countryId);
+
+    @Query(nativeQuery = true,value="select dcc2.country_id,max(dcc2.country_name_cn) country_name_cn,sum(dcc2.confirm_total) confirm_total\n" +
+            " from disease_country_case dcc2 where dcc2.id in (\n" +
+            " select max(id) from disease_country_case dcc where (dcc.period_end,dcc.country_id) in (\n" +
+            " select max(dcc1.period_end),dcc1.country_id from disease_country_case  dcc1 GROUP BY dcc1.country_id) group by dcc.country_id)\n" +
+
+            " group by dcc2.country_id\n" +
+            " order by confirm_total desc\n" +
+            " limit 0,10")
+    List<Map<String,Object>> getCountryDataTj();
+
+    @Query(nativeQuery = true,value="select  max(dcc2.disease_id) as disease_id,max(dcc2.disease_name_cn) as disease_name_cn ,SUM(dcc2.confirm_total ) as confirm_total\n" +
+            " from disease_country_case dcc2 where dcc2.id in (\n" +
+            " select max(id) from disease_country_case dcc where (dcc.period_end,dcc.disease_id,dcc.country_id) in (\n" +
+            " select max(dcc1.period_end),dcc1.disease_id,dcc1.country_id from disease_country_case  dcc1 where dcc1.confirm_total is not null  GROUP BY dcc1.disease_id,dcc1.country_id) group by dcc.disease_id,dcc.country_id)\n" +
+            "-- and dcc2.country_id = 2\n" +
+            " GROUP BY dcc2.disease_id\n" +
+            " order by confirm_total desc\n" +
+            " limit 0,10")
+    List<Map<String,Object>> getDiseaseDataTj();
+
 }

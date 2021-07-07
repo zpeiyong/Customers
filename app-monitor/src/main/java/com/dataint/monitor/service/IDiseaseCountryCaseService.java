@@ -11,4 +11,8 @@ public interface IDiseaseCountryCaseService {
     Object  getCountriesByParam(Long diseaseId, String showType, String periodStart);
 
     Object getLatestCasesByParam(Long diseaseId, Long countryId);
+
+    Object getCountryDataTj();
+
+    Object getDiseaseDataTj();
 }

@@ -175,4 +175,18 @@ public class DiseaseCountryCaseServiceImpl implements IDiseaseCountryCaseService
 
         return new DiseaseCountryCaseVO(latestDCCase);
     }
+
+    @Override
+    public List<Map<String,Object>> getCountryDataTj() {
+        List<Map<String, Object>> countryDataTj = dcCaseDao.getCountryDataTj();
+        return countryDataTj;
+    }
+
+    @Override
+    public List<Map<String, Object>> getDiseaseDataTj() {
+        List<Map<String, Object>> diseaseDataTj = dcCaseDao.getDiseaseDataTj();
+        return diseaseDataTj;
+    }
+
+
 }

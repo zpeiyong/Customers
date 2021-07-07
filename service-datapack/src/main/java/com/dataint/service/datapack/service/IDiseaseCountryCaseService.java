@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 
 import java.text.ParseException;
 import java.util.List;
+import java.util.Map;
 
 public interface IDiseaseCountryCaseService {
     /**
@@ -40,4 +41,9 @@ public interface IDiseaseCountryCaseService {
      * @return
      */
     DiseaseCountryCaseVO getLatestCasesByParam(Long diseaseId, Long countryId);
+
+
+    List<Map<String,Object>> getCountryDataTj();
+
+    List<Map<String,Object>> getDiseaseDataTj();
 }

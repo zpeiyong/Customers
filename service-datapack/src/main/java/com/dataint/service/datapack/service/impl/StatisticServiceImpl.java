@@ -476,7 +476,7 @@ public class StatisticServiceImpl implements IStatisticService {
         }
 
         List<Map<String, Object>> poList = diseaseCountryCaseDao.getDeathCntByDiseaseIdAndStatisticDate(diseaseId, yesStartDate,
-                PageRequest.of(0, 5));
+                PageRequest.of(0, 5)).getContent();
         for (Map<String, Object> poMap : poList) {
             Map<String, Object> itemMap = new HashMap<>();
             itemMap.put("countryNameCn", poMap.get("0"));
