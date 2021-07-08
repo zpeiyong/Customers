@@ -37,7 +37,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
         web.ignoring()
                 .antMatchers("/index.html", "/static/**", "/favicon.ico")
-                .antMatchers("/user/login", "/user/logout","/knowsConf/getRelativeDataFx")
+                .antMatchers("/user/login", "/user/logout",
+                        "/knowsConf/getRelativeDataFx","/topicArticle/getPopularFeelingsTj","/focusDisease/defaultFocusDisease")
                 // 给 swagger 放行: 不需要权限能访问的资源
                 .antMatchers("/swagger-ui.html", "/swagger-resources/**", "/images/**", "/webjars/**", "/v2/api-docs", "/configuration/ui", "/configuration/security");
     }

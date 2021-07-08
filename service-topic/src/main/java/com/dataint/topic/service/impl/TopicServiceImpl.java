@@ -5,6 +5,7 @@ import com.dataint.cloud.common.exception.DataNotExistException;
 import com.dataint.cloud.common.model.Pagination;
 import com.dataint.cloud.common.model.ResultVO;
 import com.dataint.topic.db.dao.IKeywordDao;
+import com.dataint.topic.db.dao.ITopicArticleDao;
 import com.dataint.topic.db.dao.ITopicDao;
 import com.dataint.topic.db.dao.ITopicKeywordDao;
 import com.dataint.topic.db.entity.Keywords;
@@ -35,6 +36,8 @@ public class TopicServiceImpl implements ITopicService {
     private ITopicKeywordDao topicKeywordDao;
     @Autowired
     private ISpiderService spiderService;
+    @Autowired
+    private ITopicArticleDao topicArticleDao;
 
     @Override
     public TopicVO addTopic(TopicForm topicForm) {
@@ -249,4 +252,12 @@ public class TopicServiceImpl implements ITopicService {
 
         return topicVO;
     }
+
+    @Override
+    public List<Map<String, Object>> getPopularFeelingsTj(String gmtDate) {
+        List<Map<String, Object>> popularFeelingsTj = topicArticleDao.getPopularFeelingsTj(gmtDate);
+        return popularFeelingsTj;
+    }
+
+
 }

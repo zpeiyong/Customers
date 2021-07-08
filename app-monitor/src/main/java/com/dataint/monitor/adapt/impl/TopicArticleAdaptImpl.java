@@ -42,4 +42,12 @@ public class TopicArticleAdaptImpl implements ITopicArticleAdapt {
         String url ="http://" +  baseUrl + "/topicArticle/getArticleById";
         return GetPostUtil.sendGet(url, map);
     }
+
+    @Override
+    public Object getPopularFeelingsTj(String gmtDate) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("gmtDate", gmtDate);
+        String url ="http://" +  baseUrl + "/topicArticle/getPopularFeelingsTj";
+        return GetPostUtil.sendGet(url, map);
+    }
 }

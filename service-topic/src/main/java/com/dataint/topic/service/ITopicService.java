@@ -6,7 +6,9 @@ import com.dataint.topic.model.form.TopicForm;
 import com.dataint.topic.model.form.UpdateTopicForm;
 import com.dataint.topic.model.vo.TopicVO;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public interface ITopicService {
     /**
@@ -54,4 +56,6 @@ public interface ITopicService {
      * @return
      */
     TopicVO recoveryTopic(Long id);
+
+    List<Map<String,Object>> getPopularFeelingsTj(String gmtDate);
 }
