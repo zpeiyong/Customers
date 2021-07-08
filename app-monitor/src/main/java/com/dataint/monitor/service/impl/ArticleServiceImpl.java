@@ -61,6 +61,8 @@ public class ArticleServiceImpl implements IArticleService {
             List<JSONObject> rebuildJA = new ArrayList<>();
             for (Object object : data.getJSONArray("list")) {
                 JSONObject rebuildJO = rebuildArticle(userId, (Map)object, systemType);
+
+                rebuildJO.remove("content");
                 rebuildJA.add(rebuildJO);
             }
             data.put("list", rebuildJA);

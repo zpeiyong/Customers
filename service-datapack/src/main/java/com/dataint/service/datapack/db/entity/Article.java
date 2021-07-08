@@ -21,7 +21,7 @@ public class Article extends BasePO {
     @Column(name = "article_key", nullable = false)
     private String articleKey;  // 文章唯一性标识(中台通过此值做数据幂等), 应取mongodb的_id
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "site_id")
     private Site site;  // 网站
 
