@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 public interface IArticleLikeDao extends JpaRepository<ArticleLike, Long> {
 
     boolean existsByArticleIdAndUserId(Long articleId, Long userId);
+    ArticleLike getArticleLikeByArticleIdAndUserId(Long articleId, Long userId);
 }

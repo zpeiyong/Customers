@@ -63,6 +63,20 @@ public class DiseaseCountryCaseController {
         return ResultVO.success(dcCaseService.getLatestCasesByParam(diseaseId, countryId));
     }
 
+    @GetMapping(value = "/getCountryDataTj")
+    @ApiOperation(value = "查询国家严重程度分布",notes = "查询国家严重程度分布")
+    public ResultVO getCountryDataTj() {
+        return ResultVO.success(dcCaseService.getCountryDataTj());
+    }
+
+    @GetMapping(value = "/getDiseaseDataTj")
+    @ApiOperation(value = "查询传染病严重程度分布",notes = "查询传染病严重程度分布")
+    public ResultVO getDiseaseDataTj() {
+        return ResultVO.success(dcCaseService.getDiseaseDataTj());
+    }
+
+}
+
     @ApiOperation(value = "确证，死亡周统计", notes = "获取国家当前病种最新的周统计信息")
     @RequestMapping(value = "/getDiseaseForCountryRisk")
     @ApiImplicitParams({

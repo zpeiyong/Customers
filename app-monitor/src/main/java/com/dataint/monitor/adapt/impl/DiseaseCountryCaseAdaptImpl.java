@@ -73,6 +73,19 @@ public class DiseaseCountryCaseAdaptImpl implements IDiseaseCountryCaseAdapt {
     }
 
     @Override
+    public Object getCountryDataTj() {
+        String url ="http://" +  baseUrl + "/countryCase/getCountryDataTj";
+        return GetPostUtil.sendGet(url);
+    }
+
+    @Override
+    public Object getDiseaseDataTj() {
+        String url ="http://" +  baseUrl + "/countryCase/getDiseaseDataTj";
+        return GetPostUtil.sendGet(url);
+    }
+
+
+    @Override
     public Object getForCountryRisk(int disease, int country, int week) {
         HashMap<String, String> map = new HashMap<>();
         map.put("diseaseId", String.valueOf(disease));

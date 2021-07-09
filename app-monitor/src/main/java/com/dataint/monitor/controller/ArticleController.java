@@ -14,6 +14,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -75,16 +76,31 @@ public class ArticleController {
      * Web视点模块
      */
     @ApiOperation(value = "获取舆情列表", notes = "获取舆情信息列表")
+    @ResponseBody
     @GetMapping(value = "/normal/getArticleList")
     public ResultVO getArticleList(@ModelAttribute ArticleListQueryParam articleListQueryParam,
-                                   @RequestHeader(Constants.AUTHORIZE_ACCESS_TOKEN) String accessToken) {
+                                   @RequestHeader(Constants.AUTHORIZE_ACCESS_TOKEN) String accessToken, HttpServletResponse res) {
         log.debug("get article: {}", articleListQueryParam);
 
         // 解析token获取userId
         Long userId = JWTUtil.getUserId(accessToken);
         String systemType = JWTUtil.getSystemType(accessToken);
+        ResultVO result = articleService.getArticleList(articleListQueryParam, userId, systemType);
 
-        return articleService.getArticleList(articleListQueryParam, userId, systemType);
+
+        String json = JSONObject.toJSONString(result);
+;
+        log.debug("json:" + json);
+        try {
+            res.getOutputStream().write(json.getBytes());
+            res.getOutputStream().flush();
+            res.getOutputStream().close();
+        } catch(Exception e) {
+
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     @ApiOperation(value = "获取舆情信息", notes = "获取舆情信息")
@@ -104,7 +120,7 @@ public class ArticleController {
     @ApiOperation(value = "获取舆情信息相似文章", notes = "根据id获取舆情信息相似文章")
     @ApiImplicitParam(paramType = "path", name = "id", value = "舆情ID", required = true, dataType = "long")
     @GetMapping(value = "/normal/similar/{id}")
-    public ResultVO getSimilarArticlesById(@PathVariable Long id,
+    public Object getSimilarArticlesById(@PathVariable Long id,
                                            @ModelAttribute PageParam pageParam,
                                            @RequestHeader(Constants.AUTHORIZE_ACCESS_TOKEN) String accessToken) {
         log.debug("get with id: {}", id);

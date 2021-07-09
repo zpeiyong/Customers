@@ -2,11 +2,14 @@ package com.dataint.monitor.controller;
 
 import com.dataint.monitor.adapt.ITopicArticleAdapt;
 import com.dataint.monitor.model.form.ArticleConditionForm;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Date;
 
 @RestController
 @RequestMapping(value = "/topicArticle")
@@ -41,6 +44,14 @@ public class TopicArticleController {
     public Object getArticleById(@RequestParam(value = "id", required = true) Long id) {
 
         return topicArticleAdapt.getArticleById(id);
+    }
+
+    @ApiOperation(value = "根据时间查询疫情总体分布", notes = "根据时间查询疫情总体分布")
+    @RequestMapping("/getPopularFeelingsTj")
+    public Object getPopularFeelingsTj(@RequestParam String gmtDate) {
+//        log.debug("get all keyword by topicId");
+
+        return topicArticleAdapt.getPopularFeelingsTj(gmtDate);
     }
 
 }

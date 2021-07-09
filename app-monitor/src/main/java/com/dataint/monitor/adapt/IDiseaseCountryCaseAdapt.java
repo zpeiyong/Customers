@@ -18,5 +18,9 @@ public interface IDiseaseCountryCaseAdapt {
 
     JSONObject getLatestCasesByParam(Long diseaseId, Long countryId);
 
+    Object getCountryDataTj();
+
+    Object getDiseaseDataTj();
+
     Object getForCountryRisk(int disease,int country,int week);
 }

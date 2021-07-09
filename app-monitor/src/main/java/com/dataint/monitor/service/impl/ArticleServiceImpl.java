@@ -61,6 +61,8 @@ public class ArticleServiceImpl implements IArticleService {
             List<JSONObject> rebuildJA = new ArrayList<>();
             for (Object object : data.getJSONArray("list")) {
                 JSONObject rebuildJO = rebuildArticle(userId, (Map)object, systemType);
+
+                rebuildJO.remove("content");
                 rebuildJA.add(rebuildJO);
             }
             data.put("list", rebuildJA);
@@ -87,18 +89,18 @@ public class ArticleServiceImpl implements IArticleService {
     }
 
     @Override
-    public ResultVO getSimilarArticlesById(Long userId, Long id, PageParam pageParam, String systemType) {
+    public Object getSimilarArticlesById(Long userId, Long id, PageParam pageParam, String systemType) {
         // 从datapack服务获取舆情相似文章列表
-        JSONObject responseJO = articleAdapt.getSimilarArticlesById(id, pageParam);
+        Object responseJO = articleAdapt.getSimilarArticlesById(id, pageParam);
 
-        JSONObject data = responseJO.getJSONObject("data");
-        if (data != null) {
-            data = rebuildArticle(userId, data, systemType);
-        } else {
-            return JSON.parseObject(responseJO.toString(), ResultVO.class);
-        }
+//        JSONObject data = responseJO.getJSONObject("data");
+//        if (data != null) {
+//            data = rebuildArticle(userId, data, systemType);
+//        } else {
+//            return JSON.parseObject(responseJO.toString(), ResultVO.class);
+//        }
 
-        return ResultVO.success(data);
+        return responseJO;
     }
 
     @Override

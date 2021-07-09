@@ -105,7 +105,7 @@ public class ArticleController {
     public ResultVO getSimilarArticlesById(@PathVariable Long id, @ModelAttribute PageParam pageParam) {
         log.debug("get similar articles by id: {}", id);
 
-        return ResultVO.success(articleService.getSimilarArticlesById(id, pageParam));
+        return articleService.getSimilarArticlesById(id, pageParam);
     }
 
     @ApiOperation(value = "单个/批量删除舆情", notes = "根据舆情id列表删除舆情信息")

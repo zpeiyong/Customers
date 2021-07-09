@@ -19,9 +19,9 @@ spring:
 logging:
   file: logs/${spring.application.name}.log
   level:
-    root: Info
-    org.springframework: Debug
-    com.dataint: Debug
+    root: Error
+
+
 
 
 #######

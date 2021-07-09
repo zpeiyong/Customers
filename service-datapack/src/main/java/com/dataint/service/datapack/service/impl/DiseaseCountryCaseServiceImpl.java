@@ -177,6 +177,20 @@ public class DiseaseCountryCaseServiceImpl implements IDiseaseCountryCaseService
     }
 
     @Override
+    public List<Map<String,Object>> getCountryDataTj() {
+        List<Map<String, Object>> countryDataTj = dcCaseDao.getCountryDataTj();
+        return countryDataTj;
+    }
+
+    @Override
+    public List<Map<String, Object>> getDiseaseDataTj() {
+        List<Map<String, Object>> diseaseDataTj = dcCaseDao.getDiseaseDataTj();
+        return diseaseDataTj;
+    }
+
+
+
+    @Override
     public List<DiseaseCountryCaseVO> getForCountryRisk1(int diseaseId, int countryId, int week) {
 
         List<Map<String,String>> daoResult = this.dcCaseDao.getForCountryRisk1(diseaseId,countryId,week,0);
