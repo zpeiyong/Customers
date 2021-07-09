@@ -5,6 +5,7 @@ import com.dataint.service.datapack.db.entity.DiseaseCountryCase;
 import com.dataint.service.datapack.model.vo.DiseaseCountryCaseVO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -141,4 +142,7 @@ public interface IDiseaseCountryCaseDao extends JpaRepository<DiseaseCountryCase
             " \n" +
             " order by week_num" ,nativeQuery = true)
     List<Map<String,String>> getForCountryRisk1(int diseaseId,int countryId,int week,int year);
+
+    @Query("from DiseaseCountryCase dcc where dcc.diseaseId=?1 and  dcc.countryId=?2 order by dcc.periodEnd desc")
+    List<DiseaseCountryCase> getForCountryDiseaseAdd(long diseaseId, long countryId, Pageable page);
 }

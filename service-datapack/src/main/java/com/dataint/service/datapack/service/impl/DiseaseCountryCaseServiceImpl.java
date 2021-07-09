@@ -17,9 +17,7 @@ import com.dataint.service.datapack.model.vo.DiseaseCountryCaseVO;
 import com.dataint.service.datapack.service.IDiseaseCountryCaseService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -246,4 +244,26 @@ public class DiseaseCountryCaseServiceImpl implements IDiseaseCountryCaseService
         return result;
 
     }
+
+    @Override
+    public List<DiseaseCountryCaseVO> getForCountryPreDay(int diseaseId, int countryId, int day) {
+
+        Pageable page = PageRequest.of(1,day);
+
+        List<DiseaseCountryCase> cases = this.dcCaseDao.getForCountryDiseaseAdd(Integer.valueOf(diseaseId).longValue() ,countryId,page);
+
+        List<DiseaseCountryCaseVO> result = new ArrayList<DiseaseCountryCaseVO>();
+
+        for(DiseaseCountryCase c : cases) {
+            DiseaseCountryCaseVO vo = new DiseaseCountryCaseVO();
+
+            vo.setPeriodEnd(c.getPeriodEnd());
+            vo.setConfirmAdd(c.getConfirmAdd());
+
+            result.add(vo);
+        }
+
+        return result;
+    }
+
 }

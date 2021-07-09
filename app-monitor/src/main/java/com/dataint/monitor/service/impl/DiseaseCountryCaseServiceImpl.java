@@ -52,5 +52,9 @@ public class DiseaseCountryCaseServiceImpl implements IDiseaseCountryCaseService
         return dcCaseAdapt.getForCountryRisk(disease,country,week);
     }
 
+    @Override
+    public Object getForCountryPreDay(int diseaseId, int countryId, int day) {
 
+        return this.dcCaseAdapt.getForCountryPreDay(diseaseId,countryId,day);
+    }
 }

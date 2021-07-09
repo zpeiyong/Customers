@@ -95,4 +95,15 @@ public class DiseaseCountryCaseAdaptImpl implements IDiseaseCountryCaseAdapt {
         String url ="http://" +  baseUrl + "/countryCase/getDiseaseForCountryRisk";
         return GetPostUtil.sendGet(url, map);
     }
+
+    @Override
+    public Object getForCountryPreDay(int disease, int country, int day) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("diseaseId", String.valueOf(disease));
+        map.put("countryId", String.valueOf(country));
+        map.put("week",String.valueOf(day));
+
+        String url ="http://" +  baseUrl + "/countryCase/getForCountryPreDay";
+        return GetPostUtil.sendGet(url, map);
+    }
 }

@@ -3,6 +3,8 @@ package com.dataint.monitor.service;
 import com.dataint.monitor.model.DiseaseCountryCase;
 import com.dataint.monitor.model.param.DiseaseCountryParam;
 
+import java.util.List;
+
 public interface IDiseaseCountryCaseService {
     Object listDiseaseCountry(DiseaseCountryParam diseaseCountryParam);
 
@@ -17,4 +19,13 @@ public interface IDiseaseCountryCaseService {
     Object getDiseaseDataTj();
 
     Object getForCountryRisk(int disease,int country,int week);
+
+    /**
+     *
+     * @param diseaseId
+     * @param countryId
+     * @param day
+     * @return
+     */
+    public Object getForCountryPreDay(int diseaseId, int countryId, int day);
 }
