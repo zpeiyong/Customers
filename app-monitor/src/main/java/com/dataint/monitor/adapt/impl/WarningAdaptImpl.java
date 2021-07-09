@@ -12,7 +12,8 @@ public class WarningAdaptImpl implements IWarningAdapt {
     private String baseUrl;
 
     @Override
-    public Object getWarningInfos() {
+    public Object
+    getWarningInfos() {
         String url ="http://" +  baseUrl + "/warning/getWarningInfos";
         return GetPostUtil.sendGet(url);
     }

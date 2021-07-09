@@ -36,4 +36,11 @@ public class DiseaseCountryCaseServiceImpl implements IDiseaseCountryCaseService
 
         return dcCaseAdapt.getLatestCasesByParam(diseaseId, countryId);
     }
+
+    @Override
+    public Object getForCountryRisk(int disease, int country, int week) {
+        return dcCaseAdapt.getForCountryRisk(disease,country,week);
+    }
+
+
 }

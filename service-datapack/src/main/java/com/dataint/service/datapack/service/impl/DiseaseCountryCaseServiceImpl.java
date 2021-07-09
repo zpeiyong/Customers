@@ -175,4 +175,59 @@ public class DiseaseCountryCaseServiceImpl implements IDiseaseCountryCaseService
 
         return new DiseaseCountryCaseVO(latestDCCase);
     }
+
+    @Override
+    public List<DiseaseCountryCaseVO> getForCountryRisk1(int diseaseId, int countryId, int week) {
+
+        List<Map<String,String>> daoResult = this.dcCaseDao.getForCountryRisk1(diseaseId,countryId,week,0);
+
+        List<Map<String,String>> lastDaoResult = this.dcCaseDao.getForCountryRisk1(diseaseId,countryId,week - 1,1);
+
+        List<DiseaseCountryCaseVO> result = new ArrayList<DiseaseCountryCaseVO>();
+
+        Map<String,String> lastMap = null;
+
+        int index = 0;
+
+        for(Map<String,String> daoMap : daoResult) {
+
+            if(lastMap == null) {
+
+                lastMap = daoMap;
+                continue;
+            }
+
+            Map<String,String> lastYearMap = lastDaoResult.get(index ++);
+
+            DiseaseCountryCaseVO vo = new DiseaseCountryCaseVO();
+
+            vo.setConfirmAdd(Integer.parseInt(daoMap.get("confirm_add")));
+            vo.setDeathAdd(Integer.parseInt(daoMap.get("death_add")));
+
+            float lastConfirmAdd = Float.parseFloat(lastMap.get("confirm_add"));
+            float lastDeathAdd = Float.parseFloat(lastMap.get("death_add"));
+
+            float lastYearConfirmAdd = Float.parseFloat(lastYearMap.get("confirm_add"));
+            float lastYearDeathAdd = Float.parseFloat(lastYearMap.get("death_add"));
+            lastMap = daoMap;
+
+            float confirmChain = (vo.getConfirmAdd() - lastConfirmAdd) / lastConfirmAdd;
+            float deathChain =  (vo.getDeathAdd() - lastDeathAdd) / lastDeathAdd;
+
+            float confirmLastYearChain = (vo.getConfirmAdd() - lastYearConfirmAdd) / lastYearConfirmAdd;
+            float deathLastYearChain = (vo.getDeathAdd() - lastYearDeathAdd) / lastYearDeathAdd;
+
+            vo.setChainComparison(confirmChain);
+            vo.setChainDeathComparison(deathChain);
+
+            vo.setYearComparison(confirmLastYearChain);
+            vo.setYearDeathComparison(deathLastYearChain);
+
+            result.add(vo);
+
+
+        }
+        return result;
+
+    }
 }

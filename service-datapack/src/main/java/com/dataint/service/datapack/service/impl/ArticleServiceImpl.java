@@ -52,7 +52,9 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
     private ICountryDao countryDao;
 
     @Autowired
-    private IFocusDiseaseDao diseaseDao;
+    private IFocusDiseaseDao fDiseaseDao;
+
+    private IDiseasesDao diseaseDao;
 
     @Autowired
     private IArticleDiseaseDao articleDiseaseDao;
@@ -60,7 +62,6 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
     @Override
     public List<Map<String, Object>> queryEventList(Long diseaseId, int pageSize, int current, String  releaseTime,String searchTime) {
         SimpleDateFormat sdformat = new SimpleDateFormat("yyyy-MM-dd");
-
 
         //默认查询情况，查询最近七天的事件列表信息
         if (releaseTime==null){
@@ -243,11 +244,12 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
                 String diseaseName = entry.getValue();
                 String diseaseAlias = "%|" + diseaseName + "|%";
              //   FocusDisease disease = diseaseDao.findByNameCn(entry.getValue());
-                FocusDisease disease = this.diseaseDao.findByNameCnOrAlias(diseaseName,diseaseAlias);
+                Diseases disease = this.diseaseDao.findByNameCnOrAlias(diseaseName,diseaseAlias);
+                //FocusDisease disease = this.diseaseDao.findByNameCnOrAlias(diseaseName,diseaseAlias);
 
                 if (disease != null) {
                     articleDisease.setDiseaseId(disease.getId());
-                    articleDisease.setDiseaseCode(disease.getCode());
+                    articleDisease.setDiseaseCode(disease.getIcd10Code());
                 } else {
                     articleDisease.setDiseaseCode(entry.getValue());
                 }
@@ -262,17 +264,20 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
                 ArticleDisease articleDisease = new ArticleDisease();
 
                 //
-                Country country = countryDao.findByNameCn(staDiseaseForm.getCountry());
+                String alias = "%|" + staDiseaseForm.getCountry() + "|%";
+                Country country = this.countryDao.findByNameCnOrAlias(staDiseaseForm.getCountry(),alias);
                 if (country != null) {
                     articleDisease.setCountryId(country.getId());
                     articleDisease.setCountryCode(country.getCode());
                 } else {
                     articleDisease.setCountryCode(staDiseaseForm.getCountry());
                 }
-                FocusDisease disease = diseaseDao.findByNameCn(staDiseaseForm.getDiseaseName());
+                String diseaseAlias = "%|" + staDiseaseForm.getDiseaseName() + "|%";
+
+                Diseases disease = this.diseaseDao.findByNameCnOrAlias(staDiseaseForm.getDiseaseName(),diseaseAlias);
                 if (disease != null) {
                     articleDisease.setDiseaseId(disease.getId());
-                    articleDisease.setDiseaseCode(disease.getCode());
+                    articleDisease.setDiseaseCode(disease.getIcd10Code());
                 }
 
                 //
@@ -675,7 +680,7 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
                 // 判断当前index，在existADList中是否存在对应的元素
                 if (i+1 <= existADList.size()) {
                     // 更新, 将frontAD的值重新赋值给oldAD
-                    FocusDisease diseases = diseaseDao.getOne(existADList.get(i).getDiseaseId());
+                    Diseases diseases = diseaseDao.getOne(existADList.get(i).getDiseaseId());
                     Country country = countryDao.getOne(existADList.get(i).getCountryId());
                     newAD.setId(existADList.get(i).getId());
                     newAD.setDiseaseCode(diseases.getNameCn());
@@ -722,9 +727,11 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
     @Override
     public List<String> getKeywordsByFoDiseaseName(String  fDisName) {
 
-        FocusDisease focusDisease = this.diseaseDao.findByNameCn(fDisName);
+        String diseaseAlias = "%|" + fDisName + "|%";
 
-        if(focusDisease == null) {
+        Diseases disease = this.diseaseDao.findByNameCnOrAlias(fDisName,diseaseAlias);
+
+        if(disease == null) {
             if (log.isDebugEnabled()) {
                 log.debug("{0} not found disease", fDisName);
             }
@@ -732,12 +739,12 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
         }
 
         Pageable page = PageRequest.of(0,16);
-        Page<Long> articleList = this.articleDiseaseDao.findByDisease(focusDisease.getId(),page);
+        Page<Long> articleList = this.articleDiseaseDao.findByDisease(disease.getId(),page);
 
         if(articleList.isEmpty()) {
             if(log.isDebugEnabled()) {
 
-                log.debug("{} focusDisease not found articel!",focusDisease.getId());
+                log.debug("{} focusDisease not found articel!",disease.getId());
             }
             return null;
         }

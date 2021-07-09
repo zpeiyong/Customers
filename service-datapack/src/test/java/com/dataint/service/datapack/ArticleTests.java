@@ -2,6 +2,7 @@ package com.dataint.service.datapack;
 
 import com.dataint.service.datapack.db.dao.ICountryDao;
 import com.dataint.service.datapack.db.dao.IFocusDiseaseDao;
+import com.dataint.service.datapack.model.param.ArticleListQueryParam;
 import com.dataint.service.datapack.service.IArticleService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +27,14 @@ class ArticleTests {
         }
 
         System.out.println(keywords.size());
-
-
-
     }
 
+    @Test
+    public void testGetArticleList() {
+
+        ArticleListQueryParam param = new ArticleListQueryParam();
+        param.setKeyword("key");
+
+        this.articleService.getArticleList(param);
+    }
 }

@@ -40,4 +40,13 @@ public interface IDiseaseCountryCaseService {
      * @return
      */
     DiseaseCountryCaseVO getLatestCasesByParam(Long diseaseId, Long countryId);
+
+    /**
+     *
+     * @param diseaseId
+     * @param countryId
+     * @param week
+     * @return
+     */
+    public List<DiseaseCountryCaseVO> getForCountryRisk1(int diseaseId,int countryId,int week);
 }

@@ -109,4 +109,14 @@ public interface IDiseaseCountryCaseDao extends JpaRepository<DiseaseCountryCase
     List<Map<String, Object>> getCuredCntByDiseaseIdAndStatisticDate(Long diseaseId, Date yesStartDate, PageRequest of);
 
     DiseaseCountryCase findTopByDiseaseIdAndCountryIdOrderByStatisticDateDesc(Long diseaseId, Long countryId);
+
+    @Query(value = "select dcc.country_id,dcc.disease_id,sum(dcc.confirm_add) confirm_add,sum(dcc.death_add) death_add, week(dcc.period_end) week_num\n" +
+            " from disease_country_case dcc \n" +
+            " where dcc.show_type='daily' and dcc.disease_id=?1 and dcc.country_id=?2\n" +
+            " \n" +
+            " and year(now()) - year(dcc.period_end) = ?4  and (week(now()) - week(dcc.period_end))  between 0 and ?3\t\n" +
+            " group by week(dcc.period_end) ,dcc.country_name_cn\n" +
+            " \n" +
+            " order by week_num" ,nativeQuery = true)
+    List<Map<String,String>> getForCountryRisk1(int diseaseId,int countryId,int week,int year);
 }

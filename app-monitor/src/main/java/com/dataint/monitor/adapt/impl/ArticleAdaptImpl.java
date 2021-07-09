@@ -1,11 +1,13 @@
 package com.dataint.monitor.adapt.impl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.dataint.cloud.common.model.param.PageParam;
 import com.dataint.cloud.common.utils.GetPostUtil;
 import com.dataint.monitor.adapt.IArticleAdapt;
 import com.dataint.monitor.model.form.ArticleUpdateForm;
 import com.dataint.monitor.model.param.ArticleListQueryParam;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 
+@Slf4j
 @Service
 public class ArticleAdaptImpl implements IArticleAdapt {
 
@@ -159,5 +162,28 @@ public class ArticleAdaptImpl implements IArticleAdapt {
         HashMap<String, String> map = new HashMap<>();
         map.put("idListStr", idListStr);
         return GetPostUtil.sendGet(url, map);
+    }
+
+    public List<String> getKeywordsByFoDiseaseName(String  fDisName){
+
+        String url = "http://" + baseUrl + "/article/getKeywordsByFoDiseaseName";
+        HashMap<String, String> map = new HashMap<>();
+        map.put("diseaseName", fDisName);
+
+        if(log.isDebugEnabled()) {
+            log.debug("url : {}",url);
+        }
+
+        JSONObject result = GetPostUtil.sendGet(url,map);
+        if(result.containsKey("data")) {
+           JSONArray jsonArray = result.getJSONArray("data");
+
+           if(!jsonArray.isEmpty()) {
+
+               return jsonArray.toJavaList(String.class);
+           }
+        }
+
+        return null;
     }
 }
