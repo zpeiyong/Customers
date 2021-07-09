@@ -217,6 +217,7 @@ public class DiseaseCountryCaseServiceImpl implements IDiseaseCountryCaseService
 
             vo.setConfirmAdd(Integer.parseInt(daoMap.get("confirm_add")));
             vo.setDeathAdd(Integer.parseInt(daoMap.get("death_add")));
+            vo.setWeek(Integer.parseInt(daoMap.get("week_num")));
 
             float lastConfirmAdd = Float.parseFloat(lastMap.get("confirm_add"));
             float lastDeathAdd = Float.parseFloat(lastMap.get("death_add"));
@@ -236,6 +237,7 @@ public class DiseaseCountryCaseServiceImpl implements IDiseaseCountryCaseService
 
             vo.setYearComparison(confirmLastYearChain);
             vo.setYearDeathComparison(deathLastYearChain);
+
 
             result.add(vo);
 
