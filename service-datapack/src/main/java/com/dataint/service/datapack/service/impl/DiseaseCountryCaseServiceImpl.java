@@ -266,4 +266,9 @@ public class DiseaseCountryCaseServiceImpl implements IDiseaseCountryCaseService
         return result;
     }
 
+    public Object getDiseaseAnalysis(int diseaseId,int countryId) {
+
+        return this.dcCaseDao.getDiseaseAnalysis(diseaseId,countryId);
+    }
+
 }

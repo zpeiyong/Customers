@@ -99,4 +99,16 @@ public class DiseaseCountryCaseController {
         return ResultVO.success(dcCaseService.getForCountryPreDay(diseaseId,countryId,day));
     }
 
+    @ApiOperation(value = "分析", notes = "分析")
+    @RequestMapping(value = "/getDiseaseAnalysis")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "diseaseId", required = true, value = "传染病id", dataType ="Integer", paramType = "query"),
+            @ApiImplicitParam(name = "countryId", required = true, value = "国家ID", dataType ="Integer", paramType = "query"),
+
+    })
+    public ResultVO getForCountryPreDay(@RequestParam Integer diseaseId, @RequestParam Integer countryId) {
+
+        return ResultVO.success(dcCaseService.getDiseaseAnalysis(diseaseId,countryId));
+    }
+
 }

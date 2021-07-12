@@ -19,6 +19,8 @@ class CountryDiseaseCaseTests {
     private int countryId = 2;
     private int week = 12;
 
+    private int day = 7;
+
     @Test
     void testGetKeywordsByFoDiseaseName() {
 
@@ -28,4 +30,20 @@ class CountryDiseaseCaseTests {
        System.out.println(result);
     }
 
+    @Test
+    void getForCountryPreDay() {
+
+        List result = this.diseaseCountryCaseService.getForCountryPreDay(diseaseId,countryId,day);
+
+        System.out.println(result.size());
+        System.out.println(result);
+    }
+
+    @Test
+    void getDiseaseAnalysis() {
+
+        Object result = this.diseaseCountryCaseService.getDiseaseAnalysis(this.diseaseId,this.countryId);
+
+        System.out.println(result);
+    }
 }

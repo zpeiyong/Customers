@@ -64,4 +64,13 @@ public interface IDiseaseCountryCaseService {
      * @return
      */
     public List<DiseaseCountryCaseVO> getForCountryPreDay(int diseaseId,int countryId,int day);
+
+
+    /**
+     *
+     * @param diseaseId
+     * @param countryId
+     * @return
+     */
+    public Object getDiseaseAnalysis(int diseaseId,int countryId);
 }

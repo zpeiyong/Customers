@@ -145,4 +145,24 @@ public interface IDiseaseCountryCaseDao extends JpaRepository<DiseaseCountryCase
 
     @Query("from DiseaseCountryCase dcc where dcc.diseaseId=?1 and  dcc.countryId=?2 order by dcc.periodEnd desc")
     List<DiseaseCountryCase> getForCountryDiseaseAdd(long diseaseId, long countryId, Pageable page);
+
+    @Query(value="from select \n" +
+            " (select max(dcc.confirm_total) from disease_country_case dcc where dcc.disease_id=?1 and dcc.country_id=?2) a1,\n" +
+            " (select max(dcc.confirm_total) from disease_country_case dcc) a,\n" +
+            " (select dcc.confirm_add from disease_country_case dcc  where dcc.disease_id=?1 and dcc.country_id=?2 order by dcc.period_end,id limit 0,1) b1,\n" +
+            " (select max(dcc.confirm_add) from disease_country_case dcc) b,\n" +
+            " (select count(*) from disease_country_case dcc  where dcc.disease_id=?1 and dcc.country_id=?2 and dcc.period_end is not null and dcc.confirm_add=0 order by dcc.period_end,id desc) c1,\n" +
+            " (select max(c) from (\n" +
+            " select count(*) c from disease_country_case dcc where  dcc.period_end is not null and dcc.confirm_add=0  group by dcc.country_id,dcc.disease_id) temp) c ,\n" +
+            " (select count(*) from (\n" +
+            " select dcc.country_id from disease_country_case dcc where dcc.disease_id=?1 group by dcc.country_id) temp) d1,\n" +
+            " (select count(*) from country) d,\n" +
+            " (select dcc.death_total / dcc.confirm_total \n" +
+            " from disease_country_case dcc \n" +
+            " where dcc.disease_id=?1 and dcc.country_id=?2 order by dcc.period_end desc,dcc.id desc\n" +
+            " LIMIT 0,1) e1 ,1 e,\n" +
+            " (select max(dcc.death_total) from disease_country_case dcc where dcc.disease_id=?1 and dcc.country_id=?2 ) f1,\n" +
+            " (select sum(temp.dt) from (\n" +
+            " select max(dcc.death_total) dt from disease_country_case dcc where dcc.death_total is not null group by dcc.disease_id,dcc.country_id) temp) f  from dual",nativeQuery=true)
+    public Object getDiseaseAnalysis(int diseaseId,int countryId);
 }
