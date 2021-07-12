@@ -28,7 +28,7 @@ public class KnowsConfVO extends BaseVO {
 
 
         this.setX(random.nextInt(400) * -1);
-        this.setY(random.nextInt(400));
+        this.setY(random.nextInt(200));
     }
 
     private Long id;
