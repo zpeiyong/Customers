@@ -46,4 +46,15 @@ public class DiseaseCountryCaseServiceImpl implements IDiseaseCountryCaseService
     public Object getDiseaseDataTj() {
         return dcCaseAdapt.getDiseaseDataTj();
     }
+
+    @Override
+    public Object getForCountryRisk(int disease, int country, int week) {
+        return dcCaseAdapt.getForCountryRisk(disease,country,week);
+    }
+
+    @Override
+    public Object getForCountryPreDay(int diseaseId, int countryId, int day) {
+
+        return this.dcCaseAdapt.getForCountryPreDay(diseaseId,countryId,day);
+    }
 }

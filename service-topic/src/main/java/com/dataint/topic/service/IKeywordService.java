@@ -11,4 +11,11 @@ public interface IKeywordService {
      * @return
      */
     List<KeywordVO> getKeywordListByTopicId(Long topicId);
+
+    /**
+     * 根据疾病名称找关键字
+     * @param diseas
+     * @return
+     */
+    List<KeywordVO> getKeywordListByDiease(String diseas);
 }

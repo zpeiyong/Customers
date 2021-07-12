@@ -17,9 +17,7 @@ import com.dataint.service.datapack.model.vo.DiseaseCountryCaseVO;
 import com.dataint.service.datapack.service.IDiseaseCountryCaseService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -188,5 +186,84 @@ public class DiseaseCountryCaseServiceImpl implements IDiseaseCountryCaseService
         return diseaseDataTj;
     }
 
+
+
+    @Override
+    public List<DiseaseCountryCaseVO> getForCountryRisk1(int diseaseId, int countryId, int week) {
+
+        List<Map<String,String>> daoResult = this.dcCaseDao.getForCountryRisk1(diseaseId,countryId,week,0);
+
+        List<Map<String,String>> lastDaoResult = this.dcCaseDao.getForCountryRisk1(diseaseId,countryId,week - 1,1);
+
+        List<DiseaseCountryCaseVO> result = new ArrayList<DiseaseCountryCaseVO>();
+
+        Map<String,String> lastMap = null;
+
+        int index = 0;
+
+        for(Map<String,String> daoMap : daoResult) {
+
+            if(lastMap == null) {
+
+                lastMap = daoMap;
+                continue;
+            }
+
+            Map<String,String> lastYearMap = lastDaoResult.get(index ++);
+
+            DiseaseCountryCaseVO vo = new DiseaseCountryCaseVO();
+
+            vo.setConfirmAdd(Integer.parseInt(daoMap.get("confirm_add")));
+            vo.setDeathAdd(Integer.parseInt(daoMap.get("death_add")));
+            vo.setWeek(Integer.parseInt(daoMap.get("week_num")));
+
+            float lastConfirmAdd = Float.parseFloat(lastMap.get("confirm_add"));
+            float lastDeathAdd = Float.parseFloat(lastMap.get("death_add"));
+
+            float lastYearConfirmAdd = Float.parseFloat(lastYearMap.get("confirm_add"));
+            float lastYearDeathAdd = Float.parseFloat(lastYearMap.get("death_add"));
+            lastMap = daoMap;
+
+            float confirmChain = (vo.getConfirmAdd() - lastConfirmAdd) / lastConfirmAdd;
+            float deathChain =  (vo.getDeathAdd() - lastDeathAdd) / lastDeathAdd;
+
+            float confirmLastYearChain = (vo.getConfirmAdd() - lastYearConfirmAdd) / lastYearConfirmAdd;
+            float deathLastYearChain = (vo.getDeathAdd() - lastYearDeathAdd) / lastYearDeathAdd;
+
+            vo.setChainComparison(confirmChain);
+            vo.setChainDeathComparison(deathChain);
+
+            vo.setYearComparison(confirmLastYearChain);
+            vo.setYearDeathComparison(deathLastYearChain);
+
+
+            result.add(vo);
+
+
+        }
+        return result;
+
+    }
+
+    @Override
+    public List<DiseaseCountryCaseVO> getForCountryPreDay(int diseaseId, int countryId, int day) {
+
+        Pageable page = PageRequest.of(1,day);
+
+        List<DiseaseCountryCase> cases = this.dcCaseDao.getForCountryDiseaseAdd(Integer.valueOf(diseaseId).longValue() ,countryId,page);
+
+        List<DiseaseCountryCaseVO> result = new ArrayList<DiseaseCountryCaseVO>();
+
+        for(DiseaseCountryCase c : cases) {
+            DiseaseCountryCaseVO vo = new DiseaseCountryCaseVO();
+
+            vo.setPeriodEnd(c.getPeriodEnd());
+            vo.setConfirmAdd(c.getConfirmAdd());
+
+            result.add(vo);
+        }
+
+        return result;
+    }
 
 }

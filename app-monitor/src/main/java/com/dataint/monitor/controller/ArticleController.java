@@ -18,6 +18,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "/article")
 @Slf4j
@@ -177,5 +179,15 @@ public class ArticleController {
         Long userId = JWTUtil.getUserId(accessToken);
         String systemType = JWTUtil.getSystemType(accessToken);
         return ResultVO.success(articleService.updateArticle(userId,systemType,articleUpdateForm));
+    }
+
+    @ApiOperation(value = "根据疾病名称找关键字", notes = "")
+    @ApiImplicitParam(paramType = "query", name = "diseaseName", value = "病名称或别名", allowMultiple = false, required = true, dataType = "string")
+    @GetMapping("/getKeywordsByFoDiseaseName")
+    public ResultVO queryArticlesByIdList(@RequestParam String diseaseName) {
+
+        List<String> result = this.articleService.getKeywordsByFoDiseaseName(diseaseName);
+
+        return ResultVO.success(result);
     }
 }

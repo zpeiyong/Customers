@@ -49,4 +49,14 @@ public class DiseaseCountryCaseVO extends BaseVO {
     private Integer cureTotal;  // 截止periodEnd总治愈人数
 
     private Integer cureAdd;  // 时间段内新增治愈
+
+    private int week; //周数
+
+    private float chainComparison; //环比
+
+    private float yearComparison; //同比
+
+    private float chainDeathComparison; //死亡 环比
+
+    private float yearDeathComparison; //死亡同比
 }

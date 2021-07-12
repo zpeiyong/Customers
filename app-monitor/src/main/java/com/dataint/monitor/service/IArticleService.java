@@ -107,4 +107,11 @@ public interface IArticleService {
      */
     JSONObject queryEventList(Long diseaseId,Long pageSize, Long current, String releaseTime,String searchTime);
 
+    /**
+     * 根据疾病名称查询关键字
+     * @param fDisName
+     * @return
+     */
+    List<String> getKeywordsByFoDiseaseName(String  fDisName);
+
 }

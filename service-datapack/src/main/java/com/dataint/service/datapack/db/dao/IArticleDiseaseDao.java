@@ -1,6 +1,8 @@
 package com.dataint.service.datapack.db.dao;
 
 import com.dataint.service.datapack.db.entity.ArticleDisease;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -22,5 +24,8 @@ public interface IArticleDiseaseDao extends JpaRepository<ArticleDisease, Long> 
     List<Object[]> queryDiseaseCntByCountry(Date startTime, Date endTime, String countryCode);
 
     List<ArticleDisease> findAllByArticleId(Long  articleId);
+
+    @Query("select ad.articleId from ArticleDisease ad where ad.diseaseId = ?1 order by ad.id desc")
+    Page<Long> findByDisease(long diseaseId, Pageable page);
 
 }

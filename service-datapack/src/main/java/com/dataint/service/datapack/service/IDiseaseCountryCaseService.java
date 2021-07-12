@@ -46,4 +46,22 @@ public interface IDiseaseCountryCaseService {
     List<Map<String,Object>> getCountryDataTj();
 
     List<Map<String,Object>> getDiseaseDataTj();
+
+    /**
+     *
+     * @param diseaseId
+     * @param countryId
+     * @param week
+     * @return
+     */
+    public List<DiseaseCountryCaseVO> getForCountryRisk1(int diseaseId,int countryId,int week);
+
+    /**
+     *
+     * @param diseaseId
+     * @param countryId
+     * @param day
+     * @return
+     */
+    public List<DiseaseCountryCaseVO> getForCountryPreDay(int diseaseId,int countryId,int day);
 }

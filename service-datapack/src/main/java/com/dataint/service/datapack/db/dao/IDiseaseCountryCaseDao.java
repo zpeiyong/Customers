@@ -5,6 +5,7 @@ import com.dataint.service.datapack.db.entity.DiseaseCountryCase;
 import com.dataint.service.datapack.model.vo.DiseaseCountryCaseVO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -131,4 +132,17 @@ public interface IDiseaseCountryCaseDao extends JpaRepository<DiseaseCountryCase
             " limit 0,10")
     List<Map<String,Object>> getDiseaseDataTj();
 
+
+    @Query(value = "select dcc.country_id,dcc.disease_id,sum(dcc.confirm_add) confirm_add,sum(dcc.death_add) death_add, week(dcc.period_end) week_num\n" +
+            " from disease_country_case dcc \n" +
+            " where dcc.show_type='daily' and dcc.disease_id=?1 and dcc.country_id=?2\n" +
+            " \n" +
+            " and year(now()) - year(dcc.period_end) = ?4  and (week(now()) - week(dcc.period_end))  between 0 and ?3\t\n" +
+            " group by week(dcc.period_end) ,dcc.country_name_cn\n" +
+            " \n" +
+            " order by week_num" ,nativeQuery = true)
+    List<Map<String,String>> getForCountryRisk1(int diseaseId,int countryId,int week,int year);
+
+    @Query("from DiseaseCountryCase dcc where dcc.diseaseId=?1 and  dcc.countryId=?2 order by dcc.periodEnd desc")
+    List<DiseaseCountryCase> getForCountryDiseaseAdd(long diseaseId, long countryId, Pageable page);
 }

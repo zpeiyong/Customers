@@ -21,4 +21,8 @@ public interface IDiseaseCountryCaseAdapt {
     Object getCountryDataTj();
 
     Object getDiseaseDataTj();
+
+    Object getForCountryRisk(int disease,int country,int week);
+
+    Object getForCountryPreDay(int disease,int country,int day);
 }

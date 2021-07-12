@@ -1,5 +1,6 @@
 package com.dataint.monitor.controller;
 
+import com.dataint.cloud.common.model.ResultVO;
 import com.dataint.monitor.model.DiseaseCountryCase;
 import com.dataint.monitor.model.param.DiseaseCountryParam;
 import com.dataint.monitor.service.IDiseaseCountryCaseService;
@@ -74,5 +75,31 @@ public class DiseaseCountryCaseController {
         Object diseaseDataTj = dcCaseService.getDiseaseDataTj();
         return diseaseDataTj;
     }
+
+
+    @ApiOperation(value = "确证，死亡周统计", notes = "获取国家当前病种最新的周统计信息")
+    @RequestMapping(value = "/getDiseaseForCountryRisk")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "diseaseId", required = true, value = "传染病id", dataType ="Integer", paramType = "query"),
+            @ApiImplicitParam(name = "countryId", required = true, value = "国家ID", dataType ="Integer", paramType = "query"),
+            @ApiImplicitParam(name = "week", required = true, value = "统计周数", dataType ="Integer", paramType = "query"),
+    })
+    public ResultVO getForCountryRisk(@RequestParam Integer diseaseId, @RequestParam Integer countryId, @RequestParam Integer week) {
+
+        return ResultVO.success(dcCaseService.getForCountryRisk(diseaseId,countryId,week));
+    }
+
+    @ApiOperation(value = "确证趋势", notes = "获取国家当前病种最新的趋势")
+    @RequestMapping(value = "/getForCountryPreDay")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "diseaseId", required = true, value = "传染病id", dataType ="Integer", paramType = "query"),
+            @ApiImplicitParam(name = "countryId", required = true, value = "国家ID", dataType ="Integer", paramType = "query"),
+            @ApiImplicitParam(name = "day", required = true, value = "统计日数", dataType ="Integer", paramType = "query"),
+    })
+    public ResultVO getForCountryPreDay(@RequestParam Integer diseaseId, @RequestParam Integer countryId,@RequestParam Integer day) {
+
+        return ResultVO.success(dcCaseService.getForCountryPreDay(diseaseId,countryId,day));
+    }
+
 
 }
