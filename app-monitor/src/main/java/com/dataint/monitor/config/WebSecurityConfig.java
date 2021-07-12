@@ -38,7 +38,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         web.ignoring()
                 .antMatchers("/index.html", "/static/**", "/favicon.ico")
                 .antMatchers("/user/login", "/user/logout",
-                        "/knowsConf/getRelativeDataFx","/topicArticle/getPopularFeelingsTj","/focusDisease/defaultFocusDisease")
+                        "/knowsConf/getRelativeDataFx","/topicArticle/getPopularFeelingsTj","/focusDisease/defaultFocusDisease","/countryCase/**")
                 // 给 swagger 放行: 不需要权限能访问的资源
                 .antMatchers("/swagger-ui.html", "/swagger-resources/**", "/images/**", "/webjars/**", "/v2/api-docs", "/configuration/ui", "/configuration/security");
     }
