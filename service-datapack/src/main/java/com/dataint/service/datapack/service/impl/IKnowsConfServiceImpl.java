@@ -41,7 +41,6 @@ public class IKnowsConfServiceImpl implements IKnowsConfService {
 
             symbolSize -= 1;
             category += 1;
-            System.out.println("=====" + symbolSize);
             for (KnowsConf child : childs) {
                 child.setSymbolSize(symbolSize);
                 child.setCategory(category);
@@ -66,7 +65,7 @@ public class IKnowsConfServiceImpl implements IKnowsConfService {
 
             KnowsConfVO node = new KnowsConfVO(knowConf);
             node.setSymbolSize(knowConf.getSymbolSize() + symbolSize * -1 + 1);
-            node.setSymbolSize(node.getSymbolSize() * 10);
+            node.setSymbolSize(node.getSymbolSize() * 12);
             node.setCategory(knowConf.getCategory());
             nodes.add(node);
             idMap.put(node.getId().intValue(),index ++);
