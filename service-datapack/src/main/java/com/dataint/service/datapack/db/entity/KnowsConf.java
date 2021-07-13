@@ -27,7 +27,7 @@ public class KnowsConf {
     private String nodeName;    //传染病名字
 
     @Column(name = "node_content")
-    private String nodeContent;    //传染病ID
+    private String nodeContent;    //传染病内容
 
     @Column(name = "parent_id")
     private Integer parentId;    //传染病父节点

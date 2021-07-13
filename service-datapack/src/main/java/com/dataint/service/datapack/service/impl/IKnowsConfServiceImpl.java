@@ -67,6 +67,7 @@ public class IKnowsConfServiceImpl implements IKnowsConfService {
             node.setSymbolSize(knowConf.getSymbolSize() + symbolSize * -1 + 1);
             node.setSymbolSize(node.getSymbolSize() * 12);
             node.setCategory(knowConf.getCategory());
+            node.setContent(knowConf.getNodeContent());
             nodes.add(node);
             idMap.put(node.getId().intValue(),index ++);
         }
@@ -89,7 +90,7 @@ public class IKnowsConfServiceImpl implements IKnowsConfService {
 
         List<Map<String,String>> categoryMap = new ArrayList<Map<String,String>>(category);
 
-        for(int i = 0 ; i < category ; i ++) {
+        for(int i = 0 ; i <= category ; i ++) {
 
             Map<String,String> cateMap = new HashMap<String,String>(1);
             cateMap.put("name",i + "");
