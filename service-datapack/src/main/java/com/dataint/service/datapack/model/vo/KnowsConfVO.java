@@ -19,6 +19,7 @@ public class KnowsConfVO extends BaseVO {
 
         this.setId(knowsConf.getId());
         this.setName(knowsConf.getNodeName());
+        this.setContent(knowsConf.getNodeContent());
       //  this.setValue(knowsConf.getNodeContent());
         this.setDiseaseId(knowsConf.getDiseaseId());
         this.setParentId(knowsConf.getParentId());
@@ -36,6 +37,7 @@ public class KnowsConfVO extends BaseVO {
     private Integer diseaseId;
 
     private String name;
+    private String content;
 
     private String value;  // 传染病内容概述
 
