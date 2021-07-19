@@ -1,7 +1,7 @@
 stages:
   - .pre
   - build_common
-  - build_A
+  - build_all
 #  - .post
 
 ## pre
