@@ -1,7 +1,7 @@
 stages:
   - .pre
   - build_common
-  - build_all
+  - build_a
 #  - .post
 
 ## pre
@@ -66,16 +66,9 @@ build_parent:
 #      - ./service-topic/target/service-topic-0.0.1-SNAPSHOT.jar
 
 
-build_all:
-    stage: build_all
-    dependencies:
-        - build_app
-        - build_data
-        - build_topic
-
 ## app-monitor
 build_app-monitor:
-  stage: build_app
+  stage: build_a
   only:
     refs:
 #      - master
@@ -100,7 +93,7 @@ build_app-monitor:
 
 ## service-datapack
 build_service-datapack:
-  stage: build_data
+  stage: build_a
   only:
     refs:
 #      - master
@@ -125,7 +118,7 @@ build_service-datapack:
 
 ## service-topic
 build_service-topic:
-  stage: build_topic
+  stage: build_a
   only:
     refs:
 #      - master
@@ -148,12 +141,6 @@ build_service-topic:
   dependencies:
     - build_parent
 
-build_A:
-  stage: build_A
-  dependencies:
-      - build_app
-      - build_data
-      - build_topic
 ### post
 #post_deploy_file:
 #  stage: .post
