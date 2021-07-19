@@ -54,6 +54,7 @@ public class ArticleServiceImpl extends AbstractBuild implements IArticleService
     @Autowired
     private IFocusDiseaseDao fDiseaseDao;
 
+    @Autowired
     private IDiseasesDao diseaseDao;
 
     @Autowired
