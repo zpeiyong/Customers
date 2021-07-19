@@ -68,7 +68,7 @@ build_parent:
 
 ## app-monitor
 build_app-monitor:
-  stage: build_A
+  stage: build_app
   only:
     refs:
 #      - master
@@ -93,7 +93,7 @@ build_app-monitor:
 
 ## service-datapack
 build_service-datapack:
-  stage: build_A
+  stage: build_data
   only:
     refs:
 #      - master
@@ -118,7 +118,7 @@ build_service-datapack:
 
 ## service-topic
 build_service-topic:
-  stage: build_A
+  stage: build_topic
   only:
     refs:
 #      - master
@@ -141,6 +141,12 @@ build_service-topic:
   dependencies:
     - build_parent
 
+build_A:
+  stage: build_A
+  dependencies:
+      - build_app
+      - build_data
+      - build_topic
 ### post
 #post_deploy_file:
 #  stage: .post
