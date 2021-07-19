@@ -68,7 +68,7 @@ build_parent:
 
 ## app-monitor
 build_app-monitor:
-  stage: build_A
+  stage: build_app
   only:
     refs:
 #      - master
@@ -93,7 +93,7 @@ build_app-monitor:
 
 ## service-datapack
 build_service-datapack:
-  stage: build_A
+  stage: build_data
   only:
     refs:
 #      - master
@@ -118,7 +118,7 @@ build_service-datapack:
 
 ## service-topic
 build_service-topic:
-  stage: build_A
+  stage: build_topic
   only:
     refs:
 #      - master
@@ -154,3 +154,11 @@ build_service-topic:
 #    - if [ "${CI_COMMIT_REF_NAME}" == "master" ]; then USER_NAME=${user_master}; else USER_NAME=${user_test}; fi
 #    - if [ "${CI_COMMIT_REF_NAME}" == "master" ]; then HOST=${host_master}; else HOST=${host_test}; fi
 #    - ssh -p 88 ${USER_NAME}@${HOST} "cd /opt/coding/wxhg-infectDisMonitor-back/ ; rm deploy.zip"
+
+build_a
+    stage:build_A
+dependencies:
+    - build_app
+    - build_data
+    - build_topic
+    
