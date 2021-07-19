@@ -156,7 +156,7 @@ build_service-topic:
 #    - ssh -p 88 ${USER_NAME}@${HOST} "cd /opt/coding/wxhg-infectDisMonitor-back/ ; rm deploy.zip"
 
 build_A:
-    stage:build_A
+    stage: build_A
 dependencies:
     - build_app
     - build_data
