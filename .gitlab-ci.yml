@@ -157,8 +157,8 @@ build_service-topic:
 
 build_A:
     stage: build_A
-dependencies:
-    - build_app
-    - build_data
-    - build_topic
+    dependencies:
+        - build_app
+        - build_data
+        - build_topic
     
