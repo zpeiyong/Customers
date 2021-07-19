@@ -66,8 +66,8 @@ build_parent:
 #      - ./service-topic/target/service-topic-0.0.1-SNAPSHOT.jar
 
 
-build-A:
-    stage: build_A
+build_all:
+    stage: build_all
     dependencies:
         - build_app
         - build_data
